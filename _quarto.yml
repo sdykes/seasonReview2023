@@ -1,0 +1,43 @@
+project:
+  type: book
+
+book:
+  title: "SeasonReview2023QuartoMaster"
+  author: "Stuart Dykes"
+  date: "19/11/2023"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - cycloneGabrielle.qmd
+    - climateSummary.qmd
+    - seasonalPhenology.qmd
+    - pestAndDiseaseMonitoring.qmd
+    - yieldAndFruitSizePrediction.qmd
+    - harvestMaturityManagement.qmd
+    - yieldPerformance.qmd
+    - storage.qmd
+    - qualityPhytosanitaryPerformance.qmd
+    - packHousePerformance.qmd
+    - fruitSizeAndSKUMix.qmd
+    - stockOnHandAndInventory.qmd
+    - inMarketQuality.qmd
+    - summary.qmd
+    - references.qmd
+    - appendices.qmd
+
+bibliography: 
+  - book.bib
+  - phytoRef.bib
+
+pdf-engine: lualatex
+mainfont: Geograph
+monofont: Geograph
+sansfont: Geograph
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+
+editor: source
+

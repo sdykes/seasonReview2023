@@ -1,0 +1,735 @@
+# Yield Performance
+
+Author: Stuart Dykes and Lachlan MacKay
+
+
+```{r}
+#| label: initialisation
+#| echo: false
+#| message: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+year <- 2023
+```
+
+```{r}
+#| label: dataExtraction
+
+growingSystem <- read_csv("data/yieldPerformance/growingSystem.csv", show_col_types = F)
+systemLookup <- read_csv("data/yieldPerformance/sysLookup.csv", show_col_types = F)
+
+con <- DBI::dbConnect(odbc::odbc(),    
+    Driver = "ODBC Driver 17 for SQL Server", 
+    Server = "abcrepldb.database.windows.net",  
+    Database = "ABCPackerRepl",   
+    UID = "abcadmin",   
+    PWD = "Trauts2018!",
+    Port = 1433
+  )
+
+orchardSummary <- left_join(tbl(con, "sw_Farm_BlockT") |> dplyr::select(c(BlockID, BlockCode, BlockName, 
+                                                                          FarmID, Hectares, YearPlanted, 
+                                                                          RootstockID, SubdivisionID)),
+                            tbl(con, "sw_FarmT") |> dplyr::select(c(FarmID, GrowerCompanyID, 
+                                                                  FarmCode, FarmName)), 
+                            by = "FarmID") |>
+  left_join(tbl(con, "sw_CompanyT") |> dplyr::select(c(CompanyID, CompanyName)), 
+            by = c("GrowerCompanyID" = "CompanyID")) |>
+  left_join(tbl(con, "sw_RootstockT") |> dplyr::select(c(RootstockID, RootstockCode, RootstockDesc)), 
+            by = "RootstockID") |>
+  left_join(tbl(con, "sw_SubdivisionT") |> dplyr::select(SubdivisionID, SubdivisionCode, SubdivisionDesc), 
+            by = "SubdivisionID") |>
+  collect() |>
+  filter(FarmName != "Default") |>
+  left_join(systemLookup |> dplyr::select(c(FarmCode, BlockCode, plantingType, growingSystem)), 
+            by = c("FarmCode", "BlockCode")) |>
+  select(c(FarmID,
+           BlockID,
+           FarmCode,
+           FarmName,
+           BlockCode,
+           BlockName,
+           CompanyName,
+           Hectares,
+           YearPlanted,
+           RootstockDesc,
+           plantingType,
+           growingSystem))
+  fruitHarvested <- left_join(tbl(con, "ma_Bin_UsageT") |>
+                              dplyr::select(c(BinUsageID, BinDeliveryID, BinQty, 
+                                              GraderBatchID)), 
+                            tbl(con, "ma_Bin_DeliveryT") |> 
+                              dplyr::select(c(BinDeliveryID, PresizeFlag, SeasonID, FarmID, 
+                                              BlockID, BinTypeID, TagID)),
+                            by = "BinDeliveryID") |>
+  left_join(tbl(con, "ma_Grader_BatchT") %>% dplyr::select(c(GraderBatchID, InputKgs)),
+            by = "GraderBatchID") |>
+  filter(PresizeFlag != 1) |>
+  mutate(InputKgs = case_when(is.na(InputKgs) & BinTypeID == 5 ~ BinQty*220, 
+                              is.na(InputKgs) & BinTypeID == 1 ~ BinQty*425,
+                              TRUE ~ InputKgs), 
+         Season = case_when(SeasonID == 6 ~ 2020,
+                            SeasonID == 7 ~ 2021,
+                            SeasonID == 8 ~ 2022,
+                            TRUE ~ 2023),
+        tag = if_else(TagID == 48 | FarmID == 20, "floodAffected", "notAffected")) |>
+  filter(tag != "floodAffected") |>
+  collect()
+  
+DBI::dbDisconnect(con)
+  
+fhAlreadyPacked <- fruitHarvested |>
+  filter(!is.na(GraderBatchID)) |> 
+  group_by(Season, GraderBatchID) |>
+  summarise(FarmID = first(FarmID),
+            BlockID = first(BlockID),
+            tag = first(tag),
+            BinQty = sum(BinQty, na.rm=T),
+            InputKgs = max(InputKgs),
+            .groups = "drop") 
+  
+fhToBePacked <- fruitHarvested |>
+  filter(is.na(GraderBatchID)) |>
+  group_by(Season, BlockID) |>
+  summarise(FarmID = first(FarmID),
+            BinQty = sum(BinQty, na.rm=T),
+            InputKgs = sum(InputKgs, na.rm=T),
+            .groups = "drop") 
+  
+fh <- fhAlreadyPacked |>
+  bind_rows(fhToBePacked) |>
+  dplyr::select(-GraderBatchID) |>
+  group_by(Season, FarmID, BlockID) |>
+  summarise(BinQty = sum(BinQty, na.rm=T),
+            InputKgs = sum(InputKgs, na.rm=T),
+            .groups = "drop")
+  
+yieldInterim <- fh  |>
+  left_join(orchardSummary, by=c("FarmID", "BlockID")) |>
+  mutate(BlockID = replace(BlockID, FarmCode == "R2636" & BlockID > 300, 33),
+         BlockCode = replace(BlockCode, FarmCode == "R2636" & BlockID == 33, "B"),
+         BlockName = replace(BlockName, FarmCode == "R2636" & BlockID == 33,
+                             "A2-B1-B2"),
+        YearPlanted = replace(YearPlanted, FarmCode == "R1752", 2016),
+        YearPlanted = replace(YearPlanted, FarmCode == "R1611", 2017),
+        YearPlanted = replace(YearPlanted, FarmCode == "R1751", 2013),
+        YearPlanted = replace(YearPlanted, FarmCode == "R2534", 2012),
+        Hectares = replace(Hectares, FarmCode == "R2636" & BlockName == "A2-B1-B2",
+                            2.96)) |>
+  group_by(Season, FarmID, BlockID) |>
+  summarise(across(.cols = !c("BinQty", "InputKgs"), ~first(.)),
+            across(.cols= c("BinQty", "InputKgs"), ~sum(., na.rm=T)),
+            .groups = "drop") |>
+  mutate(yield = InputKgs/(1000*Hectares),
+         meanOrchardAge = {{year}}-YearPlanted) |>
+  filter(BinQty != 0) |>
+  filter(FarmCode != "R2724") 
+
+```
+
+```{r}
+#| label: defineFunctions
+
+yieldCurve <- function(year, yieldInterim, growingSystem = "3Dim", plantingType = "planted", byRPIN = FALSE) {
+
+  if (growingSystem == "3Dim" & plantingType == "planted") {
+    yieldInterim2 <- yieldInterim |>
+    filter(!growingSystem %in% c("FOPS", "2Dim", "twin"),
+           plantingType == "planted") 
+  } else if (growingSystem == "2Dim") {
+    yieldInterim2 <- yieldInterim |>
+    filter(growingSystem == "2Dim",
+           plantingType == "planted") 
+  } else if (growingSystem == "FOPS") {
+    yieldInterim2 <- yieldInterim |>
+    filter(growingSystem == "FOPS",
+           plantingType == "planted") 
+  } else if (growingSystem == "3Dim" & plantingType == "grafted") {
+    yieldInterim2 <- yieldInterim |>
+    filter(!growingSystem %in% c("FOPS", "2Dim", "twin"),
+           plantingType == "grafted") 
+  } else {
+    yieldInterim2 <- yieldInterim |>
+    filter(growingSystem == "twin",
+           plantingType == "planted") 
+  }
+
+  
+  if(byRPIN) {    
+    yieldSummary <- yieldInterim2 |>
+      filter(Season == {{year}}) |>
+      group_by(FarmCode) |>
+      summarise(FarmName = first(FarmName),
+                meanOrchardAge = weighted.mean(meanOrchardAge, Hectares),
+                InputKgs = sum(InputKgs, na.rm=T),
+                Hectares = sum(Hectares, na.rm=T),
+                .groups = "drop") |>
+      mutate(yield = InputKgs / (1000*Hectares),
+             Season = {{year}})      
+  
+    return(yieldSummary)
+    
+  } else {
+    yieldSummary <- yieldInterim2 |>
+      filter(Season == {{year}}) |>
+      mutate(yield = InputKgs / (1000*Hectares),
+             Season = {{year}})      
+    
+    return(yieldSummary)
+    
+  }
+}
+
+
+NLSreg <- function(year, yod) {
+  
+    yodByYear <<- yod %>%
+      filter(Season == {{year}})
+  
+    initVals <- startValues(yodByYear)
+  
+    modelRPIN <- nls(yield ~ (L/(1 + exp(-alpha * (meanOrchardAge - mid_point)))), start = list(
+      L = initVals$maximum_Estimate, alpha = initVals$slopeParam_Estimate, mid_point = initVals$midPoint_Estimate), 
+      data=yodByYear,
+      trace = F)
+  
+    yield.bootRPIN <- nlstools::nlsBoot(modelRPIN, niter = 999)
+    newdata <- data.frame(meanOrchardAge = seq(1,12,0.1))
+    meanRPIN <- data.frame(estimate = predict(modelRPIN,
+                                              newdata = newdata))
+    CIRPIN <- data.frame(nlstools::nlsBootPredict(yield.bootRPIN, 
+                                                  newdata = newdata, 
+                                                  interval = "confidence"))
+  
+    mean_curveRPIN <- newdata %>%
+      bind_cols(meanRPIN) %>%
+      bind_cols(CIRPIN) %>%
+      rename(low = X2.5.,
+             high = X97.5.) %>%
+      mutate(Season = {{year}})
+    
+  return(mean_curveRPIN)
+
+}
+
+startValues <- function(yodByYear) {
+  
+  regYSBR <- yodByYear %>%
+    rename(time = meanOrchardAge,
+           intensity = yield) %>%
+    dplyr::select(c(time, intensity))
+
+  normRPIN <- sicegar::normalizeData(dataInput = regYSBR)
+
+  sigRPIN <<- sicegar::multipleFitFunction(dataInput=normRPIN, model="sigmoidal")
+  
+return(sigRPIN)
+  
+}
+
+YieldDataOutput <- function(years, yieldInterim, growingSystem, plantingType, byRPIN) {
+  
+  yod <- years |>
+    purrr::map_df(~yieldCurve(., yieldInterim, growingSystem, plantingType, byRPIN)) 
+  
+  return(yod)
+}
+
+yieldCurveOutput <- function(years, yod) {
+  
+  yoc <- years |>
+    purrr::map_df(~NLSreg(., yod)) 
+  
+  return(yoc)
+}
+
+threeYearSummaryChart <- function(yoc) {
+  
+  yoc %>%
+    ggplot(aes(meanOrchardAge, estimate)) +
+    geom_line(aes(colour = factor(Season)), linewidth = .5) +
+    geom_ribbon(aes(ymin = low, ymax = high, group = factor(Season), 
+                    fill = factor(Season)), alpha = 0.1) +
+    labs(x = "orchard age / years",
+         y = "yield / t/ha",
+         colour = "season",
+         fill = "95% confidence intervals") +
+    ggthemes::theme_economist() + 
+    scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+    scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+    theme(axis.title.x = element_text(margin = margin(t = 10), size = 8),
+          axis.title.y = element_text(margin = margin(r = 10), size = 8),
+          axis.text.y = element_text(size = 8, hjust=1),
+          axis.text.x = element_text(size = 8),
+          plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+          legend.text = element_text(size = 6),
+          legend.title = element_text(size = 6),
+          strip.text = element_text(margin = margin(b=10)))  
+  
+}
+
+```
+
+## Introduction
+
+An annual analysis is performed to calculate the orchard yield (excluding pick-out).  This is done to compare one season to another but also to validate the yield versus orchard age assumption used to calculate commercial returns when evaluating potential new orchard investments.   
+
+In 2023 Rockit orchards are grown using four types of systems:  
+
+* 3D spindle (top grafted)
+* 3D spindle (own planted)
+* 2D planar canopy
+* FOPS planar canopy
+* Twin leader
+
+The extent of each planting style is given in table @tbl-GTBreakdown including the mean orchard age (weighted by planted canopy hectares). Approximately 40% of the planting are own-planted 3D spindle and a further 39% for 2D planar canopies. While the future orchard production system (FOPS) is only 4.5% of total (production hectares) in 2023, it represents considerable promise as a planar canopy that is well suited to PremA96. Depending on the performance of existing plantings, it is anticipated that additional PremA96 hectares will be planted using FOPS.
+
+@tbl-yieldProfiles gives the yields that are currently used for modeling orchard investments for 3D spindle, 2D planar and FOPS growing system.  This table has been derived empirically based on historical data and/or theoretical estimates.  This table can be directly compared to the observed yields achieved in 2023.
+
+The yield analysis for 2023 has been complicated by the effects of cyclone Gabrielle.  Extensive flooding across the region meant that many orchards could only be partially harvested.  Some orchards lost 100% of their crop.  In order to keep the analysis consistent, all flood affected orchards were removed from the data-set under analysis.  This has affected, particularly the more mature 2D blocks <!--of Dartmoor, Korokipo and Korokipo Verries-->.
+
+### Other exclusions
+
+Hitherto the yield analysis has only looked for associations with a single predictor variable, namely orchard age.  The analyses is then performed independently for each growing system.  There are a number other co-variates that are likely to have a material impact on yield that have not bee factored, such as:
+
+* soil type
+* seasonal weather and climate
+* root-stock
+* orchard set-up (tree and row spacing)
+* pruning and thinning - strategy and execution
+* pest and disease pressure
+* harvest management
+* ...  
+
+Future analyses will begin to incorporate most or all of the variables using newly developed statistical and machine learning approaches to deliver a more accurate prediction of yield for a given set of parameters.  
+
+```{r}
+#| label: tbl-GTBreakdown
+#| tbl-cap: "Breakdown of New Zealand, producing PremA96 orchards by planting type and growing system"
+
+orchardSummary |>
+  mutate(plantingType = if_else(BlockID == 331, "planted", plantingType),
+         plantingType = if_else(BlockID == 60, "grafted", plantingType),
+         growingSystem = if_else(BlockID == 331, "2Dim", growingSystem),
+         growingSystem = if_else(BlockID == 60, "3Dim", growingSystem),
+         system = str_c(plantingType, growingSystem, sep="_"),
+         orchardAge = lubridate::year(Sys.Date())-YearPlanted) |>
+  group_by(growingSystem, plantingType) |>
+  summarise(orchardAge = round(weighted.mean(orchardAge, Hectares),1),
+            Hectares = round(sum(Hectares, na.rm=T),1),
+            .groups = "drop") |>
+  mutate(proportion = scales::percent(Hectares/sum(Hectares), accuracy = 0.1)) |>
+  kableExtra::kable(col.names = c("growing system", "planting type", "years", "Hectares", "%"),
+                    align=c(rep("l",2),"c", rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::add_header_above(c(" " = 2, "mean orchard age", "planted area" = 2)) |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+
+
+```
+
+```{r}
+#| label: tbl-yieldProfiles
+#| tbl-cap: "Yield profiles for different growing systems currently used in investment models"
+
+imYields <- read_csv("data/yieldPerformance/investmentYields.csv", show_col_types = F)
+
+imYields |>
+  mutate(across(.cols = c(Spindle, FOPS, `2D`), ~scales::comma(., accuracy = 1))) |>
+  kableExtra::kable(col.names = c("orchard age", "3D Spindle", "FOPS", "2D planar"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::add_header_above(c(" " = 1, "yield / tonnes/Ha" = 3)) |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+```
+
+\newpage
+
+## 3D spindle, own-planted
+
+### Introduction
+
+The 3D spindle system is the traditional canopy that was adopted for PremA96.  The management of this growing system is challenging due to the basitonic habits of PremA96 [@johnston_j_compilation_2023] making the early development of the trees more labour intensive. From 2020 a decision was taken to only plant new PremA96 orchard developments in either 2D planar or FOPS canopy systems.  The decision was made principally to facilitate the use of automation and orchard assist technology such as platforms. 
+
+Due to the relative ubiquity of the 3D spindle system for PremA96 there are several orchards that can be included in the analysis with a range of orchard ages.  This allows a high quality curve to be modeled over the data.  The details of the modeling are given in @sec-appendixOne and this approach is applied to all own-planted 3D spindle analysis. The model is based on fitting a logistic curve to the data using non linear least squares regression.  
+
+### 2023 by block
+
+After removing all flood affected blocks, yields (mass of fruit harvested divided by canopy area) were calculated and plotted (@fig-yield2023Blocks). A curve was then estimated using the methodology outlined in @sec-appendixOne.  The modeled result is overlaid as a curve in @fig-yield2023Blocks.   
+
+```{r}
+#| label: fig-yield2023Blocks
+#| fig-cap: "Yield as a function of orchard age for own planted spindle orchards in 2023 inclusive, grouped by block with individual block yields overlaid.  The block names are not shown due to the number of data points but are given in the appendix" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.7
+
+yod2023Block <<- YieldDataOutput(c(2023), yieldInterim, "3Dim", "planted", FALSE)
+
+yoc2023Block <- yieldCurveOutput(years = c(2023), yod2023Block)
+
+yoc2023Block %>%
+    ggplot(aes(meanOrchardAge, estimate)) +
+    geom_line(linewidth = .5, colour = "#a9342c") +
+    geom_ribbon(aes(ymin = low, ymax = high), alpha = 0.1) +
+    geom_jitter(data = yod2023Block, aes(meanOrchardAge, yield)) +
+    labs(x = "orchard age / years",
+         y = "yield / t/ha") +
+    ggthemes::theme_economist() + 
+    scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+    scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+    theme(axis.title.x = element_text(margin = margin(t = 10), size = 8),
+          axis.title.y = element_text(margin = margin(r = 10), size = 8),
+          axis.text.y = element_text(size = 8, hjust=1),
+          axis.text.x = element_text(size = 8),
+          plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+          legend.text = element_text(size = 6),
+          legend.title = element_text(size = 6),
+          strip.text = element_text(margin = margin(b=10)))  
+
+
+```
+
+```{r}
+#| label: tbl-yield2023Block
+#| tbl-cap: "Regression parameters and confidence intervals for 2023 yield model, 3D spindle, planted by block"
+
+initVals <- startValues(yod2023Block)
+  
+modelBlock <- nls(yield ~ (L/(1 + exp(-alpha * (meanOrchardAge - mid_point)))), start = list(
+  L = initVals$maximum_Estimate, alpha = initVals$slopeParam_Estimate, mid_point = initVals$midPoint_Estimate), 
+  data=yod2023Block,
+  trace = F)
+
+yield.boot <- nlstools::nlsBoot(modelBlock, niter = 9999)
+
+tibble(coefficients = c("$L$", "$\\alpha$", "$x_0$")) %>%
+  bind_cols(as_tibble(yield.boot$bootCI)) %>%
+  bind_cols(as_tibble(yield.boot$estiboot) %>%
+              select(-`Std. error`)) %>%
+  relocate(Estimate, .after = coefficients) %>%
+  mutate(across(.cols = Estimate:`97.5%`, ~scales::comma(., accuracy = 0.1))) %>%
+  kableExtra::kable(col.names = (c("coefficients", "mean", "median", "lower 95\\%", "upper 95\\%")),
+                    align=c("l",rep("r",4)), 
+                    booktabs=TRUE, 
+                    escape = F)  %>%
+  kableExtra::add_header_above(c(" " = 3, "confidence intervals" = 2)) %>%
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position")
+
+```
+
+### 2023 by orchard
+
+Yield was also evaluated by aggregated to an orchard or RPIN level.  This is believed to be a superior measure as the planted areas are more consistent and the overall yields more balanced that when comparing individual blocks within an orchard.  Despite the "smoothing" effect of the orchard aggregation, there is still considerable valriability across the orchards. The large variability in the orchard yields (@fig-yield2023RPINs) is a function of various factors, believed to be:
+
+* the initial condition of the trees
+* the choice of rootstock
+* the soil type
+* the early canopy management decisions
+
+Unfortunately the respective effects of these variables not easily quantified. 
+
+```{r}
+#| label: fig-yield2023RPINs
+#| fig-cap: "Yield as a function of orchard age for own planted spindle orchards in 2023 inclusive, grouped by RPIN with individual orchard yields overlaid" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.7
+
+yod2023RPIN <<- YieldDataOutput(c(2023), yieldInterim, "3Dim", "planted", TRUE)
+
+yoc2023RPIN <- yieldCurveOutput(years = c(2023), yod2023Block)
+
+yoc2023RPIN %>%
+  ggplot(aes(meanOrchardAge, estimate)) +
+  geom_line(linewidth = .5, colour = "#a9342c") +
+  geom_ribbon(aes(ymin = low, ymax = high), alpha = 0.1) +
+  geom_jitter(data = yod2023RPIN, aes(meanOrchardAge, yield)) +
+  #geom_text(data = yod2023RPIN, aes(meanOrchardAge, yield, label=FarmName), 
+  #          check_overlap = F, size=2, hjust = .5, vjust = 1.5) +
+  labs(x = "orchard age / years",
+       y = "yield / t/ha") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 8),
+        axis.title.y = element_text(margin = margin(r = 10), size = 8),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        strip.text = element_text(margin = margin(b=10)))  
+
+
+```
+### Three year summary by block
+
+```{r}
+#| label: tbl-yield2023RPIN
+#| tbl-cap: "Regression parameters and confidence intervals for 2023 yield model, 3D spindle, planted by RPIN"
+
+initVals <- startValues(yod2023RPIN)
+  
+modelRPIN <- nls(yield ~ (L/(1 + exp(-alpha * (meanOrchardAge - mid_point)))), start = list(
+  L = initVals$maximum_Estimate, alpha = initVals$slopeParam_Estimate, mid_point = initVals$midPoint_Estimate), 
+  data=yod2023RPIN,
+  trace = F)
+
+yield.boot <- nlstools::nlsBoot(modelRPIN, niter = 9999)
+
+tibble(coefficients = c("$L$", "$\\alpha$", "$x_0$")) %>%
+  bind_cols(as_tibble(yield.boot$bootCI)) %>%
+  bind_cols(as_tibble(yield.boot$estiboot) %>%
+              select(-`Std. error`)) %>%
+  relocate(Estimate, .after = coefficients) %>%
+  mutate(across(.cols = Estimate:`97.5%`, ~scales::comma(., accuracy = 0.1))) %>%
+  kableExtra::kable(col.names = (c("coefficients", "mean", "median", "lower 95\\%", "upper 95\\%")),
+                    align=c("l",rep("r",4)), 
+                    booktabs=TRUE, 
+                    escape = F)  %>%
+  kableExtra::add_header_above(c(" " = 3, "confidence intervals" = 2)) %>%
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position")
+```
+
+```{r}
+#| label: fig-yield3YearSummaryBlocks
+#| fig-cap: "Yield as a function of orchard age for own planted spindle orchards 2021 to 2023 inclusive, grouped by block" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+yodBlock <<- YieldDataOutput(c(2021:2023), yieldInterim, "3Dim", "planted", FALSE)
+
+yocBlock <- yieldCurveOutput(years = c(2021:2023), yodBlock)
+
+threeYearSummaryChart(yocBlock)
+
+```
+```{r}
+#| label: tbl-BlockSummary3years
+#| tbl-cap: "Regression parameters yield model applied to 3D spindle, planted by block, 2021 to 2023"
+
+regCoef <- function(year, yod) {
+
+  initVals <- yod |>
+    dplyr::filter(Season == {{year}}) |>
+    startValues()
+  
+  modelBlock <- nls(yield ~ (L/(1 + exp(-alpha * (meanOrchardAge - mid_point)))), start = list(
+    L = initVals$maximum_Estimate, alpha = initVals$slopeParam_Estimate, mid_point = initVals$midPoint_Estimate), 
+    data=yod |> filter(Season == {{year}}),
+    trace = F) 
+  
+  modelCoefficients <- tibble(coef(modelBlock)) 
+  
+  colnames(modelCoefficients) <- {{year}}
+
+return(modelCoefficients)
+
+}
+
+regResults <- c(2021, 2022, 2023) |>
+  map_dfc(~regCoef(., yodBlock))
+
+tibble(coefficients = c("$L$", "$\\alpha$", "$x_0$")) %>%
+  bind_cols(regResults) |>
+  mutate(across(.cols = `2021`:`2023`, ~round(.,2))) %>%
+  kableExtra::kable(align=c("l",rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = F)  %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+
+
+```
+
+
+### Three year summary by RPIN
+
+```{r}
+#| label: fig-yield3YearSummaryRPINS
+#| fig-cap: "Yield as a function of orchard age for own planted spindle orchards 2021 to 2023 inclusive, grouped by RPIN (orchard)" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+yodRPIN <<- YieldDataOutput(c(2021:2023), yieldInterim, "3Dim", "planted", TRUE)
+
+yocRPIN <- yieldCurveOutput(years = c(2021:2023), yodRPIN)
+
+threeYearSummaryChart(yocRPIN)
+
+```
+```{r}
+#| label: tbl-RPINSummary3years
+#| tbl-cap: "Regression parameters yield model applied to 3D spindle, planted by RPIN, 2021 to 2023"
+
+regResultsRPIN <- c(2021, 2022, 2023) |>
+  map_dfc(~regCoef(., yodRPIN))
+
+tibble(coefficients = c("$L$", "$\\alpha$", "$x_0$")) %>%
+  bind_cols(regResultsRPIN) |>
+  mutate(across(.cols = `2021`:`2023`, ~round(.,2))) %>%
+  kableExtra::kable(align=c("l",rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = F)  %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+
+```
+
+## 2D Planar Canopy
+
+```{r}
+#| label: fig-2DYields
+#| fig-cap: "Yield as a function of orchard age for own planted 2D planar canopy orchards grouped by RPIN (orchard)" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+yod2023RPIN2D <<- YieldDataOutput(c(2023), yieldInterim, "2Dim", "planted", TRUE)
+
+yod2023RPIN2D |>
+  ggplot(aes(x = meanOrchardAge, y = yield)) +
+  geom_smooth(method = "lm", colour = "#a9342c", linewidth=.5) +
+  geom_jitter() +
+  #geom_text(aes(label=FarmName), check_overlap = T, size=2, hjust = 0, vjust = 0, nudge_x = .02) +
+  xlim(2,4.2) +
+  labs(x = "mean orchard age / years",
+       y = "yield / t/ha") +
+  ggthemes::theme_economist() +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 8),
+        axis.title.y = element_text(margin = margin(r = 10), size = 8),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        strip.text = element_text(margin = margin(b=10)))  
+ 
+```
+As shown in @tbl-GTBreakdown 2D canopies now make up almost 40% of the planted Hectares of PremA96.  The principal motivation for planting planar canopies (FOPS and 2D) are for increased gross yield per canopy hectare compared to 3D spindle and to allow for future orchard automation.  In terms of the increased yield, this is yet to be validated to maturity (the oldest producing PremA96 2D orchard is only four years old). The yield results for the 2023 harvest for 2D canopies are shown in @fig-2DYields.  Note that only a single orchard <!--(Waipatu)--> is shown at four years.  The three 2D blocks that are one year older (Dartmoor, Korokipo and Korokipo Verries) were all significantly affected by Cyclone Gabrielle and have been excluded from the analysis.
+
+A linear (least squares) regression was performed and overlaid on the orchard data in @fig-2DYields.  The regression summary is given in @tbl-2DRegSummary and the modeled yield with orchard age is given in @tbl-2DmodeledYields.
+
+```{r}
+#| label: tbl-2DRegSummary
+#| tbl-cap: "Regression parameters yield model applied to 2023 2D planar, planted by RPIN"
+
+model2D <- lm(yield ~ meanOrchardAge, data=yod2023RPIN2D)
+
+tibble(parameters = c("intercept", "slope")) |>
+  bind_cols(broom::tidy(model2D)) |>
+  select(-c(term, std.error, statistic)) |>
+  mutate(estimate = scales::comma(estimate, accuracy = 0.01),
+         p.value = scales::scientific(p.value, accuracy = 0.01)) |>
+  kableExtra::kable(align=c("l",rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T)  %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+
+  
+```
+
+```{r}
+#| label: tbl-2DmodeledYields
+#| tbl-cap: "Modeled yields for 2023 2D planar, planted by RPIN"
+
+broom::augment(model2D) |>
+  mutate(meanOrchardAge = as.integer(meanOrchardAge)) |>
+  group_by(meanOrchardAge) |>
+  summarise(fitted = round(mean(.fitted, na.rm=T),2)) |>
+  kableExtra::kable(col.names = c("years", "tonnes/ha"),
+                    align=c("l","r"), 
+                    booktabs=TRUE, 
+                    escape = T)  %>%
+  kableExtra::add_header_above(c("orchard age", "yield")) %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+
+```
+## FOPS 
+
+In 2023 only two producing orchards were using the FOPS system <!--(Home Block and Ormond Road) -->.  The yields are given in table 9 and for both orchards exceed the estimated years for their respective orchard age.  While this looks promising there are only two data points and no conclusions can be drawn about the mature yields that will be achieved.  
+
+```{r}
+#| label: tbl-FOPSYields
+#| tbl-cap: "Yield as a function of orchard age for own planted FOPS planar canopy orchards grouped by RPIN (orchard)" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+yod2023RPINFOPS <<- YieldDataOutput(c(2023), yieldInterim, "FOPS", "planted", TRUE)
+
+yod2023RPINFOPS |>
+  select(-c(FarmCode, InputKgs, Season)) |>
+  mutate(Hectares = round(Hectares, 1),
+         yield = round(yield, 2)) |>
+  kableExtra::kable(col.names = c("orchard", "years", "hectares", "tonnes/ha"),
+                    align=c("l","c",rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T)  %>%
+  kableExtra::add_header_above(c(" ", "orchard age", "planted area", "yield")) %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position")
+ 
+```
+
+## 3D Top grafted Canopies
+
+The 3D top grafted canopies have become a legacy growing system but still represent 16% of total planting in 2023.  The top grafts are of various types on various root- or inter-stocks. @fig-3DGraftedYields shows the relationship between yield and orchard age. There appears to be little association for these orchards and no attempt has been made to model one. 
+
+```{r}
+#| label: fig-3DGraftedYields
+#| fig-cap: "Yield as a function of orchard age for top grafted 3D canopy orchards grouped by RPIN (orchard)" 
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+yod2023RPIN3DGraft <<- YieldDataOutput(c(2023), yieldInterim, "3Dim", "grafted", TRUE)
+
+yod2023RPIN3DGraft |>
+  ggplot(aes(x = meanOrchardAge, y = yield)) +
+  geom_point(size = 2) +
+  #geom_text(aes(label=FarmName), check_overlap = F, size=2, hjust = 0, vjust = 0, nudge_x = .1) +
+  xlim(6,12) +
+  labs(x = "mean orchard age / years",
+       y = "yield / t/ha") +
+  ggthemes::theme_economist() +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 8),
+        axis.title.y = element_text(margin = margin(r = 10), size = 8),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        strip.text = element_text(margin = margin(b=10)))  
+```
+## Discussion
+
+3D Spindle canopies have traditionally been the prevailing growing system for PremA96.  Initially these were top grafted blocks and more recently own-planted. The 3D spindle top grafted blocks show very little association with orchard age (@fig-3DGraftedYields).  This is understandable when the large range of orchard configurations, ages and conditions that provided the root- and interstock for the top-grafted trees.  In terms of own-planted 3D sindle trees, these are able top be successfully modeled on both a block and an orchard basis.  The orchard (as opposed to block) analysis is recommended as this is less prone to outliers and gives more consistent results.  The yield curve is modeled by a logistic curve and the regression parameters show a high quality fit to the data. The modeled, mature yield for 2023 is calculated as 49.15 tonnes/Ha.  This is similar to the 2022 and 2021 result (48.94 and 49.04 T/Ha respectively), and considerably less that the mature yield used in investment models (@tbl-yieldProfiles).
+
+2D Planar canopies have been in the ground since 2018 and theoretical estimates have calculated mature yields at greater than 100 T/Ha.  The theoretical yield profile for both 2D and FOPS canopies are given in @tbl-yieldProfiles.  The 2023 results (@tbl-2DmodeledYields, @tbl-FOPSYields) shows that in the case of both FOPS and 2D the yields achieved are exceeding the investment model.  It should be noted that in the case of FOPS there are only two data points, and in the case of both planar canopies more season will need to be evaluated to build confidence in the model 
+
+\newpage
+
+## Glossary
+
+

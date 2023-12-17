@@ -1,0 +1,424 @@
+BlockID,FarmID,BlockCode,BlockName,FarmCode,FarmName,plantingType,growingSystem
+1,1,RA,RA,R2709,Benner Road,planted,3Dim
+2,1,RB,RB,R2709,Benner Road,planted,3Dim
+4,2,F,RVA-TR6,R1021,Riverside Apples,grafted,3Dim
+6,2,L,RVA-TD1,R1021,Riverside Apples,planted,3Dim
+8,2,S,RVA-TO1,R1021,Riverside Apples,planted,3Dim
+9,2,T,RVA-TO2,R1021,Riverside Apples,planted,3Dim
+10,3,B,HOME,R1751,Huawhenua - Home,grafted,3Dim
+11,4,A,GLO-A,R2124,Global Orchard,grafted,3Dim
+12,4,B,GLO-B,R2124,Global Orchard,grafted,3Dim
+13,4,C,GLO-C,R2124,Global Orchard,grafted,3Dim
+14,5,A,HME A,R1230,Home Block,planted,FOPS
+15,5,B,HME B,R1230,Home Block,planted,FOPS
+16,5,C,HME C,R1230,Home Block,planted,3Dim
+17,5,D,HME D1-D3,R1230,Home Block,planted,3Dim
+19,6,A,A1-A8,R1231,West Road,grafted,3Dim
+20,6,B,B1-B5,R1231,West Road,grafted,3Dim
+21,7,A,A1-A5,R1232,Raukawa,grafted,3Dim
+22,7,B,B1-B4,R1232,Raukawa,grafted,3Dim
+23,7,C,C1-C4,R1232,Raukawa,grafted,3Dim
+24,8,A,A1-A2,R1233,Te Aute Road North ,grafted,3Dim
+25,8,B,B1-B2,R1233,Te Aute Road North ,grafted,3Dim
+26,9,A,A1-A2,R1936,Wharerangi Orchard,grafted,3Dim
+27,9,B,B1-B2,R1936,Wharerangi Orchard,grafted,3Dim
+28,10,A,SRS A,R2534,Stock Roads,planted,3Dim
+29,10,B,SRS B,R2534,Stock Roads,planted,3Dim
+30,10,C,SRS C,R2534,Stock Roads,planted,3Dim
+31,10,D,SRS D,R2534,Stock Roads,planted,3Dim
+32,11,A1,MOT A1,R2636,Moteo,grafted,3Dim
+33,11,B,A2-B1-B2,R2636,Moteo,grafted,3Dim
+34,12,a,A1-A2,R2666,Stock Road North,planted,3Dim
+35,13,A,TRS A,R2668,Te Aute Road South,planted,3Dim
+36,14,A,A1-A2,R2669,Stock Road Central,planted,3Dim
+38,15,b,NRS B,R2712,Napier Road South,planted,3Dim
+39,2,A,RVA-TR1,R1021,Riverside Apples,grafted,3Dim
+41,17,A,OMAHU A,R2724,Omahu,planted,3Dim
+42,17,C,OMAHU C,R2724,Omahu,planted,3Dim
+48,16,1,MOA-OV1,R1626,Moa Apples,grafted,3Dim
+49,18,A,Riverside ,R1752,Riverside Orchard,grafted,3Dim
+51,16,2,MOA-YV2,R1626,Moa Apples,grafted,3Dim
+52,16,3,MOA-OV3,R1626,Moa Apples,grafted,3Dim
+53,16,4,MOA-NP4,R1626,Moa Apples,grafted,3Dim
+54,16,5,OV,R1626,Moa Apples,grafted,3Dim
+55,16,6,YV,R1626,Moa Apples,grafted,3Dim
+56,16,7,OV,R1626,Moa Apples,grafted,3Dim
+59,16,B,MOA-OVB,R1626,Moa Apples,grafted,3Dim
+60,16,C ,NP,R1626,Moa Apples,grafted,3Dim
+61,16,D,MOA-OVD,R1626,Moa Apples,grafted,3Dim
+62,16,E,MOA-YVE,R1626,Moa Apples,grafted,3Dim
+63,16,F,MOA-OVF,R1626,Moa Apples,grafted,3Dim
+66,20,R,R,R2732,Sunvalley Orchard,planted,3Dim
+68,16,A,MOA-NPA,R1626,Moa Apples,grafted,3Dim
+69,17,B,OMAHU B,R2724,Omahu,planted,3Dim
+70,17,D,OMAHU D,R2724,Omahu,planted,3Dim
+71,17,F,OMAHU F,R2724,Omahu,planted,3Dim
+72,17,G,OMAHU G,R2724,Omahu,planted,3Dim
+73,21,A,HAU A,R2776,Haumoana,planted,3Dim
+74,21,B,HAU B,R2776,Haumoana,planted,3Dim
+75,21,C,HAU C,R2776,Haumoana,planted,3Dim
+76,21,D,HAU D,R2776,Haumoana,planted,3Dim
+77,22,A1,A1,R1639,Napier Road Central,grafted,3Dim
+78,22,A2,A2,R1639,Napier Road Central,grafted,3Dim
+79,22,A3,A3,R1639,Napier Road Central,grafted,3Dim
+80,22,A4,A4,R1639,Napier Road Central,grafted,3Dim
+81,22,B1,B1,R1639,Napier Road Central,grafted,3Dim
+82,22,B2,B2,R1639,Napier Road Central,grafted,3Dim
+83,22,B3,B3,R1639,Napier Road Central,grafted,3Dim
+84,22,B4,B4,R1639,Napier Road Central,grafted,3Dim
+85,22,B5,B5,R1639,Napier Road Central,grafted,3Dim
+86,22,B6,B6,R1639,Napier Road Central,grafted,3Dim
+87,23,A1,A1,R1393,Napier Road George ,planted,3Dim
+88,23,A2,A2,R1393,Napier Road George ,planted,3Dim
+89,9,C,C1-C2,R1936,Wharerangi Orchard,grafted,3Dim
+90,9,D,WHAR D,R1936,Wharerangi Orchard,grafted,3Dim
+153,15,A1,A1,R2712,Napier Road South,planted,3Dim
+154,15,A2,A2,R2712,Napier Road South,planted,3Dim
+155,15,A3,A3,R2712,Napier Road South,planted,3Dim
+156,24,A1,A1,R2775,Napier Road North,planted,3Dim
+157,24,A2,A2,R2775,Napier Road North,planted,3Dim
+158,24,A3,A3,R2775,Napier Road North,planted,3Dim
+159,24,B,NRN B,R2775,Napier Road North,planted,3Dim
+160,18,C,Riverside,R1752,Riverside Orchard,grafted,3Dim
+161,18,D,Riverside,R1752,Riverside Orchard,grafted,3Dim
+162,25,A,Cypress,R2710,Cypress,grafted,3Dim
+173,27,A,OCE-SHED,R1899,Oceanview Orchard,grafted,3Dim
+174,27,B,OCE-MIDDLE,R1899,Oceanview Orchard,grafted,3Dim
+175,27,C,OCE-DRAIN,R1899,Oceanview Orchard,grafted,3Dim
+176,2,W,RVA-TO5,R1021,Riverside Apples,grafted,3Dim
+178,28,A,DTM A,R2150,Dartmoor,planted,3Dim
+179,28,B OLD,C-D,R2150,Dartmoor,planted,3Dim
+180,29,A,RWR A,R2447,WATSON RD,planted,3Dim
+181,29,B,RWR B,R2447,WATSON RD,planted,3Dim
+182,30,C2,C2,R1369,Swamp Road,planted,3Dim
+183,30,F,SWP-BACK,R1369,Swamp Road,planted,3Dim
+184,30,C1,C1,R1369,Swamp Road,planted,3Dim
+185,18,B,Riverside,R1752,Riverside Orchard,grafted,3Dim
+186,18,G,Okohua,R1752,Riverside Orchard,grafted,3Dim
+187,27,D,OCE-LEFT,R1899,Oceanview Orchard,grafted,3Dim
+188,27,E,Right Side,R1899,Oceanview Orchard,grafted,3Dim
+189,30,A1,A1,R1369,Swamp Road,planted,3Dim
+190,30,A2,A2,R1369,Swamp Road,planted,3Dim
+191,30,A3,A3,R1369,Swamp Road,planted,3Dim
+192,32,A,A,R2786,Paki Paki,planted,3Dim
+193,32,B,B,R2786,Paki Paki,planted,3Dim
+194,33,A,A,R1095,Willowbank Orchard ,planted,3Dim
+195,34,KCR1,KOR-KCR1,R2850,Korokipo,planted,2Dim
+196,35,DR1,DAR-DR1,R2851,Dartmoor (Apatu),planted,2Dim
+197,35,DR2,DAR-DR2,R2851,Dartmoor (Apatu),planted,2Dim
+198,35,DR3,DAR-DR3,R2851,Dartmoor (Apatu),planted,2Dim
+199,35,DR4,DAR-DR4,R2851,Dartmoor (Apatu),planted,2Dim
+200,35,DR5,DAR-DR5,R2851,Dartmoor (Apatu),planted,2Dim
+201,35,DR6,DAR-DR6,R2851,Dartmoor (Apatu),planted,2Dim
+202,35,DR7,DAR-DR7,R2851,Dartmoor (Apatu),planted,2Dim
+203,36,A,A,R2879,Manzana 1,planted,3Dim
+204,36,B,B,R2879,Manzana 1,planted,3Dim
+205,36,C,C,R2879,Manzana 1,planted,3Dim
+206,36,D,D,R2879,Manzana 1,planted,3Dim
+207,37,C,MANAHI C,R2880,Manahi,planted,3Dim
+208,37,A,A1,R2880,Manahi,planted,3Dim
+209,38,A,A,R2886,SIM2,planted,3Dim
+210,38,B,B,R2886,SIM2,planted,3Dim
+211,41,C,C,R1611,Okohua Orchard,grafted,3Dim
+212,40,A,A,R2841,Parkhill Orchard,planted,3Dim
+213,31,ROCK,Rockit,R1856,Norton,planted,3Dim
+214,39,A,RockS,R1862,Sissons,planted,3Dim
+215,2,U,RVA-TO3,R1021,Riverside Apples,grafted,3Dim
+216,33,B,WIL-BACK,R1095,Willowbank Orchard ,planted,3Dim
+217,33,C,WIL-FRONT,R1095,Willowbank Orchard ,planted,3Dim
+218,3,D,Home,R1751,Huawhenua - Home,grafted,3Dim
+219,42,A,STEEL A,R1149,Steel,planted,3Dim
+220,42,B,STEEL B,R1149,Steel,planted,3Dim
+221,42,C,STEEL C,R1149,Steel,planted,3Dim
+222,42,D,STEEL D,R1149,Steel,planted,3Dim
+223,5,A1-7,WRD A1 - A7,R1230,Home Block,grafted,3Dim
+224,5,A8,WRD A8,R1230,Home Block,grafted,3Dim
+225,5,B1,WRD B1,R1230,Home Block,grafted,3Dim
+226,5,F,HME F1-F2,R1230,Home Block,planted,3Dim
+227,5,D2,HME D2,R1230,Home Block,planted,3Dim
+228,5,D3,HME D3,R1230,Home Block,planted,FOPS
+229,5,D1,HME D1,R1230,Home Block,planted,FOPS
+230,30,D,SWP-WEAK,R1369,Swamp Road,planted,3Dim
+231,30,E,SWP-NEWCRK,R1369,Swamp Road,planted,3Dim
+232,30,B1,B1,R1369,Swamp Road,planted,3Dim
+233,30,B2,B2,R1369,Swamp Road,planted,3Dim
+234,41,C1,OKO-C1,R1611,Okohua Orchard,grafted,3Dim
+235,41,C2,Okohua,R1611,Okohua Orchard,grafted,3Dim
+236,22,A,NRC A1 - A4,R1639,Napier Road Central,grafted,3Dim
+237,22,B,NRC B1 - B6,R1639,Napier Road Central,grafted,3Dim
+238,3,A5,Home,R1751,Huawhenua - Home,grafted,3Dim
+239,3,B1,HUA-B1,R1751,Huawhenua - Home,grafted,3Dim
+240,3,B2,HUA-B2,R1751,Huawhenua - Home,grafted,3Dim
+241,18,B1,RIV-B1,R1752,Riverside Orchard,grafted,3Dim
+242,18,B2,RIV-B2,R1752,Riverside Orchard,grafted,3Dim
+243,18,B3,Riverside,R1752,Riverside Orchard,grafted,3Dim
+244,18,B4,Riverside,R1752,Riverside Orchard,grafted,3Dim
+245,18,C1,RIV-C1,R1752,Riverside Orchard,grafted,3Dim
+246,18,C2,Riverside,R1752,Riverside Orchard,grafted,3Dim
+247,18,C3,Riverside,R1752,Riverside Orchard,grafted,3Dim
+248,18,D2,RIV-D2,R1752,Riverside Orchard,grafted,3Dim
+249,18,D3,Riverside,R1752,Riverside Orchard,grafted,3Dim
+250,18,D4,Riverside,R1752,Riverside Orchard,grafted,3Dim
+251,25,C1,CYP-C1 1,R2710,Cypress,grafted,3Dim
+252,25,A2,Cypress,R2710,Cypress,grafted,3Dim
+253,25,A3,Cypress,R2710,Cypress,grafted,3Dim
+254,25,A4,Cypress,R2710,Cypress,grafted,3Dim
+255,25,A5,Cypress,R2710,Cypress,grafted,3Dim
+256,15,A,NRS A1 - A3,R2712,Napier Road South,planted,3Dim
+257,24,A,NRN A1 - A4,R2775,Napier Road North,planted,3Dim
+258,34,KCR2,KOR-KCR2,R2850,Korokipo,planted,2Dim
+259,34,KCR3,KOR-KCR3,R2850,Korokipo,planted,2Dim
+260,34,KPR1,KOR-KPR1,R2850,Korokipo,planted,2Dim
+261,34,KPR2,KOR-KPR2,R2850,Korokipo,planted,2Dim
+262,43,KVR1,KOV-KVR1,R2872,Korokipo Verries,planted,2Dim
+263,43,KVR2,KOV-KVR2,R2872,Korokipo Verries,planted,2Dim
+264,43,KVR3,KOV-KVR3,R2872,Korokipo Verries,planted,2Dim
+265,43,KVR4,KOV-KVR4,R2872,Korokipo Verries,planted,2Dim
+266,44,WPR1,WAI-WPR1,R2873,Waipatu,planted,2Dim
+267,44,WPR2,WAI-WPR2,R2873,Waipatu,planted,2Dim
+268,44,WPR3,WAI-WPR3,R2873,Waipatu,planted,2Dim
+269,36,A1,MANZ A1,R2879,Manzana 1,planted,3Dim
+270,36,A2,MANZ A2,R2879,Manzana 1,planted,3Dim
+271,36,A3,MANZ A3,R2879,Manzana 1,planted,3Dim
+272,36,B1,MANZ B1,R2879,Manzana 1,planted,3Dim
+273,36,B2,MANZ B2,R2879,Manzana 1,planted,3Dim
+274,36,B3,MANZ B3,R2879,Manzana 1,planted,3Dim
+275,36,C1,MANZ C1,R2879,Manzana 1,planted,3Dim
+276,36,C2,MANZ C2,R2879,Manzana 1,planted,3Dim
+277,36,C3,MANZ C3,R2879,Manzana 1,planted,3Dim
+278,36,D1,MANZ D1,R2879,Manzana 1,planted,3Dim
+279,36,D2,MANZ D2,R2879,Manzana 1,planted,3Dim
+280,37,B,A2,R2880,Manahi,planted,3Dim
+281,37,D,MANAHI D,R2880,Manahi,planted,3Dim
+282,37,E,MANAHI E,R2880,Manahi,planted,3Dim
+283,37,F,B2,R2880,Manahi,planted,3Dim
+284,37,G,B3,R2880,Manahi,planted,3Dim
+285,37,H,C1,R2880,Manahi,planted,3Dim
+286,37,I,C2,R2880,Manahi,planted,3Dim
+287,45,A,LOBB A,R2899,Lobb,planted,3Dim
+288,45,B,LOBB B,R2899,Lobb,planted,3Dim
+289,46,A,A,R2900,SIM1,planted,3Dim
+290,46,B,B,R2900,SIM1,planted,3Dim
+291,46,C,C,R2900,SIM1,planted,3Dim
+292,46,D,D,R2900,SIM1,planted,3Dim
+293,46,E,E,R2900,SIM1,planted,3Dim
+294,46,F,F,R2900,SIM1,planted,3Dim
+295,46,G,G,R2900,SIM1,planted,3Dim
+296,46,H,H,R2900,SIM1,planted,3Dim
+297,46,I,I,R2900,SIM1,planted,3Dim
+298,47,A,RANGI2 A,R2901,Rangi2,planted,3Dim
+299,47,B,RANGI2 B,R2901,Rangi2,planted,3Dim
+300,47,C,RANGI2 C,R2901,Rangi2,planted,3Dim
+301,48,A,A,R2219,Longacre Orchard,planted,3Dim
+302,11,A2,MOT A2,R2636,Moteo,planted,3Dim
+303,11,B1,MOT B1,R2636,Moteo,planted,3Dim
+304,11,B2,MOT B2,R2636,Moteo,planted,3Dim
+305,2,J,RVA-TP3,R1021,Riverside Apples,planted,3Dim
+306,2,N,RVA-TD2,R1021,Riverside Apples,planted,3Dim
+307,5,E,HME E1 - E8,R1230,Home Block,planted,3Dim
+308,30,A,SWP-RDMAIN,R1369,Swamp Road,planted,3Dim
+309,30,B,SWP-RDSTH,R1369,Swamp Road,planted,3Dim
+310,30,C,SWP-NEWWIN,R1369,Swamp Road,planted,3Dim
+311,3,A3,HUA-A3,R1751,Huawhenua - Home,grafted,3Dim
+312,48,B,B,R2219,Longacre Orchard,planted,3Dim
+314,10,E,SRC,R2534,Stock Roads,planted,3Dim
+315,10,F,SRN,R2534,Stock Roads,planted,3Dim
+316,25,A1,CYP-A1 1,R2710,Cypress,grafted,3Dim
+317,49,A,COL-HOUSE,R2929,Colaghty Orchard,planted,3Dim
+318,50,A,CROWN A,R2924,Crown,planted,3Dim
+319,50,B,CROWN B,R2924,Crown,planted,3Dim
+320,50,C,CROWN C,R2924,Crown,planted,3Dim
+321,50,D,CROWN D,R2924,Crown,planted,3Dim
+322,51,A,MANZ2 A,R2925,Manzana 2,planted,3Dim
+323,51,B,MANZ2 B,R2925,Manzana 2,planted,3Dim
+324,51,C,MANZ2 C,R2925,Manzana 2,planted,3Dim
+325,52,1,Block 1,R2926,MANA1,planted,2Dim
+326,52,2,Block 2,R2926,MANA1,planted,2Dim
+327,52,3,Block 3,R2926,MANA1,planted,2Dim
+328,52,4,Block 4,R2926,MANA1,planted,2Dim
+329,53,1,Block 1,R2927,MANA2,planted,2Dim
+330,53,2,Block 2,R2927,MANA2,planted,2Dim
+331,53,3,Block 3,R2927,MANA2,planted,2Dim
+332,53,4,Block 4,R2927,MANA2,planted,2Dim
+333,5,E1-7,HME E1-7,R1230,Home Block,planted,3Dim
+334,5,E8,HME E8,R1230,Home Block,planted,3Dim
+335,5,F1,HME F1,R1230,Home Block,planted,3Dim
+336,5,F2,HME F2,R1230,Home Block,planted,FOPS
+337,7,A1,RRD A1,R1232,Raukawa,planted,FOPS
+338,7,A2,RRD A2,R1232,Raukawa,planted,FOPS
+339,7,A3,RRD A3,R1232,Raukawa,planted,FOPS
+340,7,A4,RRD A4,R1232,Raukawa,planted,FOPS
+341,7,B1,RRD B1,R1232,Raukawa,grafted,3Dim
+342,7,B2,RRD B2,R1232,Raukawa,grafted,3Dim
+343,7,B3,RRD B3,R1232,Raukawa,grafted,3Dim
+344,7,B4,RRD B4,R1232,Raukawa,grafted,3Dim
+345,7,C1,RRD C1,R1232,Raukawa,grafted,3Dim
+346,7,C2,RRD C2,R1232,Raukawa,grafted,3Dim
+347,7,C3,RRD C3,R1232,Raukawa,grafted,3Dim
+348,7,C4,RRD C4,R1232,Raukawa,grafted,3Dim
+349,8,A1,TRN A1,R1233,Te Aute Road North ,grafted,3Dim
+350,8,A2,TRN A2,R1233,Te Aute Road North ,grafted,3Dim
+351,8,B1,TRN B1,R1233,Te Aute Road North ,grafted,3Dim
+352,8,B2,TRN B2,R1233,Te Aute Road North ,grafted,3Dim
+353,55,P1,PIONEER 1,R1580,Pioneer Orchard,planted,2Dim
+354,55,P2,PIONEER 2,R1580,Pioneer Orchard,planted,2Dim
+355,55,P3,PIONEER 3,R1580,Pioneer Orchard,planted,2Dim
+356,55,P4,PIONEER 4,R1580,Pioneer Orchard,planted,2Dim
+357,55,P5,PIONEER 5,R1580,Pioneer Orchard,planted,2Dim
+358,55,P6,PIONEER 6,R1580,Pioneer Orchard,planted,2Dim
+359,55,P7,PIONEER 7,R1580,Pioneer Orchard,planted,2Dim
+360,16,C,MOA-NPC,R1626,Moa Apples,grafted,3Dim
+361,31,NTRK,ROC-ROCK,R1856,Norton,planted,3Dim
+362,39,SSRK,SIS-ROCKS,R1862,Sissons,planted,3Dim
+363,9,A1,WHAR A1,R1936,Wharerangi Orchard,grafted,3Dim
+364,9,A2,WHAR A2,R1936,Wharerangi Orchard,grafted,3Dim
+365,9,B1,WHAR B1,R1936,Wharerangi Orchard,grafted,3Dim
+366,9,B2,WHAR B2,R1936,Wharerangi Orchard,grafted,3Dim
+367,9,C1,WHAR C1,R1936,Wharerangi Orchard,grafted,3Dim
+368,9,C2,WHAR C2,R1936,Wharerangi Orchard,grafted,3Dim
+369,28,B,DTM B,R2150,Dartmoor,planted,3Dim
+370,28,C,DTM C,R2150,Dartmoor,planted,3Dim
+371,28,D,DTM D,R2150,Dartmoor,planted,3Dim
+372,48,L1,LONGACRE 1,R2219,Longacre Orchard,planted,3Dim
+373,48,L2,LONGACRE 2,R2219,Longacre Orchard,planted,3Dim
+374,48,L3,LONGACRE 3,R2219,Longacre Orchard,planted,2Dim
+375,48,L4,LONGACRE 4,R2219,Longacre Orchard,planted,2Dim
+376,48,L5,LONGACRE 5,R2219,Longacre Orchard,planted,2Dim
+377,48,L6,LONGACRE 6,R2219,Longacre Orchard,planted,2Dim
+378,10,B1,SRS B1,R2534,Stock Roads,planted,3Dim
+379,10,B2,SRS B2,R2534,Stock Roads,planted,3Dim
+380,10,D1,SRS D1,R2534,Stock Roads,planted,3Dim
+381,10,D2,SRS D2,R2534,Stock Roads,planted,3Dim
+382,10,D3,SRS D3,R2534,Stock Roads,planted,3Dim
+383,10,E1,SRS E1,R2534,Stock Roads,planted,3Dim
+384,10,E2,SRS E2,R2534,Stock Roads,planted,3Dim
+385,10,F1,SRS F1,R2534,Stock Roads,planted,3Dim
+386,10,F2,SRS F2,R2534,Stock Roads,planted,3Dim
+387,17,FB,OMAHU FB,R2724,Omahu,planted,FOPS
+388,17,E,OMAHU E,R2724,Omahu,planted,3Dim
+389,17,FD,OMAHU FD,R2724,Omahu,planted,FOPS
+390,17,FF,OMAHU FF,R2724,Omahu,planted,FOPS
+391,17,FG,OMAHU FG,R2724,Omahu,planted,FOPS
+392,20,EAST,SUN-EAST,R2732,Sunvalley Orchard,planted,3Dim
+393,20,NORTH,SUN-NORTH,R2732,Sunvalley Orchard,planted,3Dim
+394,20,WEST,SUN-WEST,R2732,Sunvalley Orchard,planted,3Dim
+395,32,PPRK1,PAK-RK1,R2786,Paki Paki,planted,3Dim
+396,32,PPRK2,PAK-RK2,R2786,Paki Paki,planted,3Dim
+397,40,PHRK,PAR-RK,R2841,Parkhill Orchard,planted,3Dim
+398,37,A1,MANAHI A1,R2880,Manahi,planted,3Dim
+399,37,A2,MANAHI A2,R2880,Manahi,planted,3Dim
+400,37,B1,MANAHI B1,R2880,Manahi,planted,3Dim
+401,37,B2,MANAHI B2,R2880,Manahi,planted,3Dim
+402,37,F1,MANAHI F1,R2880,Manahi,planted,3Dim
+403,37,F2,MANAHI F2,R2880,Manahi,planted,3Dim
+404,38,A1,SIM2 A1,R2886,SIM2,planted,3Dim
+405,38,A2,SIM2 A2,R2886,SIM2,planted,3Dim
+406,38,B1,SIM2 B1,R2886,SIM2,planted,3Dim
+407,38,B2,SIM2 B2,R2886,SIM2,planted,3Dim
+408,46,A1,SIM1 A1,R2900,SIM1,planted,3Dim
+409,46,A2,SIM1 A2,R2900,SIM1,planted,3Dim
+410,46,B1,SIM1 B1,R2900,SIM1,planted,3Dim
+411,46,B2,SIM1 B2,R2900,SIM1,planted,3Dim
+412,46,B3,SIM1 B3,R2900,SIM1,planted,3Dim
+413,46,C1,SIM1 C1,R2900,SIM1,planted,3Dim
+414,46,C2,SIM1 C2,R2900,SIM1,planted,3Dim
+415,46,D1,SIM1 D1,R2900,SIM1,planted,3Dim
+416,46,D2,SIM1 D2,R2900,SIM1,planted,3Dim
+417,56,A,NRL A,R2915,NRL,planted,2Dim
+418,56,B,NRL B,R2915,NRL,planted,2Dim
+419,54,A,LAWN A,R2917,Lawn Rd,planted,2Dim
+420,54,B,LAWN B,R2917,Lawn Rd,planted,2Dim
+421,54,C,LAWN C,R2917,Lawn Rd,planted,2Dim
+422,54,D,LAWN D,R2917,Lawn Rd,planted,2Dim
+423,54,E,LAWN E,R2917,Lawn Rd,planted,2Dim
+424,54,F,LAWN F,R2917,Lawn Rd,planted,2Dim
+425,52,M5,MANA 1 - 5,R2926,MANA1,planted,2Dim
+426,52,M6,MANA 1 - 6,R2926,MANA1,planted,2Dim
+427,52,M7,MANA 1 - 7,R2926,MANA1,planted,2Dim
+428,52,M8,MANA 1 - 8,R2926,MANA1,planted,2Dim
+429,53,M1,MANA 2 - 1,R2927,MANA2,planted,2Dim
+430,53,M2,MANA 2 - 2,R2927,MANA2,planted,2Dim
+431,53,M3,MANA 2 - 3,R2927,MANA2,planted,2Dim
+432,53,M4,MANA 2 - 4,R2927,MANA2,planted,2Dim
+433,49,B,COL-OFFICE,R2929,Colaghty Orchard,planted,3Dim
+434,57,ROCK2,KAR-ROCK2,R2934,Karaua,planted,2Dim
+435,57,ROCK4,KAR-ROCK4,R2934,Karaua,planted,2Dim
+436,57,ROCK7,KAR-ROCK7,R2934,Karaua,planted,2Dim
+437,57,ROCK9,KAR-ROCK9,R2934,Karaua,planted,2Dim
+438,57,ROCK10,KAR-ROCK10,R2934,Karaua,planted,2Dim
+439,57,ROCK8,KAR-ROCK8,R2934,Karaua,planted,2Dim
+440,57,ROCK1,KAR-ROCK1,R2934,Karaua,planted,2Dim
+441,57,ROCK3,KAR-ROCK3,R2934,Karaua,planted,2Dim
+442,57,ROCK5,KAR-ROCK5,R2934,Karaua,planted,2Dim
+443,57,ROCK6,KAR-ROCK6,R2934,Karaua,planted,2Dim
+444,58,A,CRO-BLOOM,R2936,Cronien Bun Orchard,planted,2Dim
+445,59,A,STR-CAITH,R2937,Stranadariff Orchard,planted,2Dim
+446,61,TA1,TA1,R2944,Te Arai,planted,2Dim
+447,61,TA2,TA2,R2944,Te Arai,planted,2Dim
+448,61,TA3,TA3,R2944,Te Arai,planted,2Dim
+449,61,TA4,TA4,R2944,Te Arai,planted,2Dim
+450,61,TA5,TA5,R2944,Te Arai,planted,2Dim
+451,61,TA6,TA6,R2944,Te Arai,planted,2Dim
+452,61,TA7,TA7,R2944,Te Arai,planted,2Dim
+453,61,TA8,TA8,R2944,Te Arai,planted,2Dim
+454,61,TA9,TA9,R2944,Te Arai,planted,2Dim
+455,62,A,ORM A,R2945,Ormond Rd,planted,FOPS
+456,62,B,ORM B,R2945,Ormond Rd,planted,FOPS
+457,62,C,ORM C,R2945,Ormond Rd,planted,FOPS
+458,62,D,ORM D,R2945,Ormond Rd,planted,FOPS
+459,63,4,HERE 4,R2946,Lowry Heretaunga,planted,3Dim
+460,63,8,HERE 8,R2946,Lowry Heretaunga,planted,3Dim
+461,63,10,HERE 10,R2946,Lowry Heretaunga,planted,3Dim
+462,64,A,SVL-A,R2947,Sun Valley,planted,3Dim
+463,66,3,LOWRY 3,R2918,LOWRY,planted,3Dim
+464,66,2,LOWRY 2,R2918,LOWRY,planted,3Dim
+465,66,1,LOWRY 1,R2918,LOWRY,planted,twin
+466,66,5A,LOWRY 5A,R2918,LOWRY,planted,3Dim
+467,66,5B,LOWRY 5B,R2918,LOWRY,planted,3Dim
+468,66,9A,LOWRY 9A,R2918,LOWRY,planted,2Dim
+469,66,9B,LOWRY 9B,R2918,LOWRY,planted,2Dim
+470,66,12A,LOWRY 12A,R2918,LOWRY,planted,FOPS
+471,66,12B,LOWRY 12B,R2918,LOWRY,planted,FOPS
+472,66,13,LOWRY 13,R2918,LOWRY,planted,3Dim
+473,67,A1,VALLEY A1,R2919,Valley Road,planted,2Dim 
+474,67,A2,VALLEY A2,R2919,Valley Road,planted,2Dim 
+475,67,B,VALLEY B,R2919,Valley Road,planted,2Dim 
+476,67,C,VALLEY C,R2919,Valley Road,planted,2Dim 
+477,67,D1,VALLEY D1,R2919,Valley Road,planted,2Dim 
+478,67,D2,VALLEY D2,R2919,Valley Road,planted,2Dim 
+479,67,E,VALLEY E,R2919,Valley Road,planted,2Dim 
+480,67,F,VALLEY F,R2919,Valley Road,planted,2Dim 
+481,67,G,VALLEY G,R2919,Valley Road,planted,2Dim 
+482,67,H,VALLEY H,R2919,Valley Road,planted,2Dim 
+483,67,I,VALLEY I,R2919,Valley Road,planted,2Dim 
+484,67,J1,VALLEY J1,R2919,Valley Road,planted,2Dim 
+485,67,J2,VALLEY J2,R2919,Valley Road,planted,2Dim 
+486,67,K,VALLEY K,R2919,Valley Road,planted,2Dim 
+487,67,L,VALLEY L,R2919,Valley Road,planted,2Dim 
+488,67,M,VALLEY M,R2919,Valley Road,planted,2Dim 
+489,67,N,VALLEY N,R2919,Valley Road,planted,2Dim 
+490,67,O,VALLEY O,R2919,Valley Road,planted,2Dim 
+491,67,P1,VALLEY P1,R2919,Valley Road,planted,2Dim 
+492,67,P2,VALLEY P2,R2919,Valley Road,planted,2Dim 
+493,67,Q,VALLEY Q,R2919,Valley Road,planted,2Dim 
+494,67,R,VALLEY R,R2919,Valley Road,planted,2Dim 
+495,67,S1,VALLEY S1,R2919,Valley Road,planted,2Dim 
+496,67,S2,VALLEY S2,R2919,Valley Road,planted,3Dim
+497,67,T,VALLEY T,R2919,Valley Road,planted,2Dim 
+498,2,Z,RVA-TO8,R1021,Riverside Apples,planted,3Dim
+499,65,S1ROC,WIP-S1ROC,R2954,Wi Pere Trust,planted,2Dim
+500,65,S2ROC,WIP-S2ROC,R2954,Wi Pere Trust,planted,2Dim
+501,68,ROCK,ARM-A,R1811,Crystall Road,planted,2Dim
+502,69,RK,SSL-A,R2779,SSL,planted,2Dim
+503,70,RKT1,BRAEMARK-A,R2933,Braemark,planted,2Dim
+504,70,RKT2,BRAEMARK-B,R2933,Braemark,planted,2Dim
+505,71,30,BLOCK 30,R2949,Springhill East,planted,2Dim
+506,71,31,BLOCK 31,R2949,Springhill East,planted,2Dim
+507,71,32,BLOCK 32,R2949,Springhill East,planted,2Dim
+508,71,36,BLOCK 36,R2949,Springhill East,planted,2Dim
+509,71,37,BLOCK 37,R2949,Springhill East,planted,2Dim
+510,72,P8RK,8RK1,R2920,Ngati Pahauwera Commercial Development Ltd,planted,2Dim
+511,72,P11RK,11RK1,R2920,Ngati Pahauwera Commercial Development Ltd,planted,2Dim
+512,72,P13RK,13RK1,R2920,Ngati Pahauwera Commercial Development Ltd,planted,2Dim
+513,72,P16RK,16RK1,R2920,Ngati Pahauwera Commercial Development Ltd,planted,2Dim
+514,72,P18RK,18RK1,R2920,Ngati Pahauwera Commercial Development Ltd,planted,2Dim

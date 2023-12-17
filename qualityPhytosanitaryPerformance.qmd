@@ -1,0 +1,584 @@
+# quality and phytosanitary performance
+
+Authors:  Stuart Dykes & Anna Duly
+
+```{r}
+#| label: initialisation
+#| echo: false
+#| message: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Introduction
+
+The 2022/2023 season was challenging not just because of cyclone Gabrielle in February but also the very warm and wet spring and early summer which led to high levels of pathogenic innoculum such as black spot (Venturia inaequalis) and botrytis (Botrytis cinerea).  Conditions were also favourable for apple leaf curling midge (Dasineura mali) and various forms of mealy bug (with long tail mealy bug [Pseudococcus longispinus] being the most prevalent). The wet spring also facilitated the proliferation of russet (non-pathogenic) which contributed x% of all rejects.
+
+Black Spot, ALCM and Mealy bug are a particular problem in that an entire batch can be excluded from a critical market (e.g. China, Taiwan, Japan) if  a single incidence is detected.  
+
+The aim of this report is not to analyse and evaluate all observed defects and disorders, but only those that impact the ability of Rockit^TM^ apples to enter key markets, most restrictive of all are Taiwan and China. Where possible, comparisons are made against previous years performance.
+
+## Phytosanitary regulation process
+
+Rockit Trading Company (RTC) exports to jurisdictions that have Official Assurance Programmes (OAPs).  These provide a prescriptive set of instructions to follow in order to be able to export to that particular jurisdiction.  The OAPs include the grower requirements, Pack-house requirements (including registration), packing requirements (including detailed inspection regimens [@thomson_peter_mpi_2015]), storage and export requirements (including active registration).  A specific register of excluded pests, diseases and disorders and their respective threshold are listed. OAPs exist for the following jurisdictions: 
+
+* Australia
+* West Australia 
+* China
+* Japan
+* Russia
+* Thailand
+* Taiwan  
+
+Of these seven areas, RTC actively exports to three (China, Japan and Taiwan). Of these three, Taiwan is the most restrictive and prescriptive and therefore is the OAP that is used to set the phytosanitary programme for Rockit Packing Company (RPC) [@olsen_shane_phytosanitary_2022-1]. 
+
+### Exclusion from OAP markets
+
+given the proportion of the fruit volume that is sent to Taiwan and China by RTC, the requirement to comply with the OAPs is critical for the ongoing success of Rockit^TM^ Apple. Market exclusion to China and/or Taiwan can occur for various reasons, most commonly is the interception of pests, diseases and disorders that appear on the pest register detailed in a document called the Importing Countries Phytosantiary Requirements (ICPR) which is specific for each jurisdiction and is referenced by the OAP. The identification of phytosanitary issues occurs during packing where a designated proportion of fruit is specifically inspected for the pests and diseases detailed in the ICPR [@ministry_for_primary_industries_importing_2000].  The ICPR also states the rejection threshold for each (e.g. < 2%).  If interceptions are encountered and the threshold is met, the batch will be excluded from the OAP market(s).  The sampling programme and the acceptance sampling criteria are detailed in The Technical Standard: Phytosanitary Inspection [@thomson_peter_mpi_2015]
+
+### Orchard and post harvest facility registration
+
+OAP market access can also be excluded if the particular production site has failed to register for export to the specific market.  Similarly the pack-house and cool-store also require official registration.  There are a number of criteria (e.g. good agricultural practice certification - Global GAP) required to be able to register.  Registration of orchards must be completed by the 1^st^ September; pack-houses and cool-stores registration by 1^st^ October.  In the case of China, export is only allowed when the Chinese authorities verify and publish the approved register which may be after the start of packing. If the initial registration has only been the year before the fruit is harvested.  For new orchards, it is therefore highly recommended to register the production sites the same year the block has been planted. 
+
+### Rockit imposed exclusion criteria for 2023
+
+In addition to the exclusion criteria mandated by the OAP, RTC has imposed additional rules to minimise the risk of a border interceptions in China and Taiwan, due to the increased sensitivity this year.  These include:
+
+* Remove the consignment from the market if more than three MPI lots are excluded for the same pest.
+* ...
+
+
+## Review of the 2022/2023 growing season
+
+The 2022 and 2023 growing seasons were characterised by relative cool wet weather.  @fig-cumrain and @fig-tempProfile show the cumulative rainfall, temperature profile for 2022, 2023 and the full bloom period of the 2024 season.  As can be seen from fig-cumrain, the rainfall was persistent over the 2023 growing season, compared to 2022 where the rain came later in the season with an extreme rain event from the 20-24th March (mid-harvest). While there has been some rain in late 2023 it has not been as extensive as 2023 growing season.  Note the extended full bloom window in 2022, which was driven by a very warm winter. contrast this with the relatively short full bloom window in 2023 on the back of 2785 additional Richardson chill units compared to 2022.  
+
+![cumulative rainfall over the growing seasons 2022 through 2024 (YTD). Full bloom and harvest windows are overlaid for each season as well as the two extreme weather events in 2022 and 2023](img/qualityPhytosanitaryPerformance/CumulativeRain.png){#fig-cumrain fig-align="center" width=90%}
+
+
+![temperature profile over the 2022 - 2024(YTD) growing seasons.  The solid line represents the mean daily temperature and the grey ribbon either side of the line is the diurnal variation.  The full bloom and harvest windows are overlaid  as well as the two extreme weather events the occurred in 2022 and 2023](img/qualityPhytosanitaryPerformance/temperatureProfile.png){#fig-tempProfile fig-align="center" width=90%}
+
+![Daily relative humidity readings 2022 - 2024 (YTD) growing seasons. The solid line represents mean daily humidity and the grey ribbons to either side show the maximum and minimum humidity readings respectively. The full bloom  and harvest windows are overlaid as well as the two extreme weather events in 2022 and 2023.](img/qualityPhytosanitaryPerformance/RHTemporalPlot.png){#fig-RHProfile fig-align="center" width=90%}
+
+## Post harvest pest interceptions
+
+In terms of pest interceptions, the 2023 season was prolific compared previous seasons.  @fig-pestInterceptions shows the temporal distribution of pest interceptions through the packing seasons (2021 through 2023).  The number of interception in 2023 was considerably greater than in either 2021 or 2022. The mix of pests and disorders was also quite different with three main disorders prevailing: ALCM, black spot and long tailed mealybug. 
+
+
+```{r}
+#| label: fig-pestInterceptions
+#| fig-cap: "number of pest interceptions during the post-harvest packing, 2021 through 2023 inclusive"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 1.2
+
+con <- DBI::dbConnect(odbc::odbc(),    
+                      Driver = "ODBC Driver 17 for SQL Server", #"SQLServer", #
+                      Server = "abcrepldb.database.windows.net",  
+                      Database = "ABCPackerRepl",   
+                      UID = "abcadmin",   
+                      PWD = "Trauts2018!",
+                      Port = 1433
+)
+
+phytoAss <- tbl(con, "qa_Assessment_DefectT") |>
+  dplyr::select(-c(CreatedByUserName, CreatedDateTime, TimeStamp)) |>
+  left_join(tbl(con, "qa_DefectT") |> dplyr::select(c(DefectID, Defect, MktDefectCode)),
+            by = "DefectID") |>
+  left_join(tbl(con, "qa_AssessmentT") |> 
+              dplyr::select(c(AssessmentID, GraderBatchID, TemplateID, SampleQty, SeasonID, GraderBatchMPILotID)),
+            by = "AssessmentID") |>
+  filter(TemplateID == 10,
+         !is.na(MktDefectCode)) |>
+  group_by(GraderBatchMPILotID, Defect, MktDefectCode) |>
+  summarise(SeasonID = max(SeasonID, na.rm=T),
+            DefectQty = sum(DefectQty, na.rm = T),
+            SampleQty = sum(SampleQty, na.rm = T),
+            .groups = "drop") |>
+  left_join(tbl(con, "ma_Grader_Batch_MPI_LotT") |> 
+              dplyr::select(c(GraderBatchMPILotID, GraderBatchID, MPILotNo)),
+            by = "GraderBatchMPILotID") |>
+  left_join(tbl(con, "ma_Grader_BatchT") |> dplyr::select(c(GraderBatchID, FarmID, BlockID, PackDate, HarvestDate)),
+            by = "GraderBatchID") |>
+  left_join(tbl(con, "sw_FarmT") |> dplyr::select(c(FarmID, FarmName, FarmCode)),
+            by = "FarmID") |>
+  left_join(tbl(con, "sw_Farm_BlockT") |> dplyr::select(c(BlockID, BlockName, BlockCode)),
+            by = "BlockID") |>
+  dplyr::select(-c(FarmID, BlockID)) |>
+  collect()
+
+PIPReq <- tbl(con, "ma_Grader_Batch_MPI_Lot_PIP_RequirementT") |> 
+  dplyr::select(c(GraderBatchMPILotPIPRequirementID, GraderBatchMPILotID, PIPReqID)) |>
+  left_join(tbl(con, "pip_RequirementT") |> dplyr::select(c(PIPReqID, DeclarationDesc, PIPGroup)),
+            by = "PIPReqID") |>
+  left_join(tbl(con, "pip_Requirement_PestT") |> dplyr::select(c(MktDefectCode, PIPReqID, PercentLimit, ThresholdQty)),
+            by = "PIPReqID") |>
+  collect()
+  
+
+DBI::dbDisconnect(con)
+
+temp <- phytoAss |>
+  filter(SeasonID %in% c(7,8,9)) |>
+  left_join(PIPReq, by = c("GraderBatchMPILotID", "MktDefectCode")) |>
+  filter(!is.na(PIPReqID)) |>
+  mutate(storageDays = as.integer(PackDate - HarvestDate))
+
+bugOutRate <- temp |>
+  filter(MktDefectCode != "LLT",
+         SeasonID %in% c(7,8,9)) |>
+  mutate(packingWeek = lubridate::isoweek(PackDate)) |>
+  group_by(SeasonID, packingWeek, Defect) |>
+  summarise(count = n(),
+            .groups = "drop")
+
+bugOutRate |>
+  mutate(Season = case_when(SeasonID == 7 ~ 2021,
+                            SeasonID == 8 ~ 2022,
+                            TRUE ~ 2023)) |> 
+  ggplot(aes(x=packingWeek, y=count, fill=Defect, colour=Defect)) +
+  geom_col(alpha = 0.6) +
+  labs(x = "iso week",
+       y = "No. of pest interceptions") +
+  facet_wrap(~Season, ncol=1) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 10),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 5),
+        legend.title = element_text(size = 7),
+        strip.text = element_text(margin = margin(b=10), size=10))  
+```
+
+### black spot
+
+The incidence of black spot could be predicted from:
+
+1. The weather, particularly the period from full bloom to the end of January.
+2. The prior levels of innoculum in the respective orchard.
+3. The visual incidence of disease during inspection in November/December (@drinnan_svetlana_pest_2023)
+
+The visual incidence during the November and December inspections was considered elevated with up to almost 3% in one orchard. Rockit^TM^ apple's black spot incidence across all blocks has almost doubled in 2023 harvest assessments compared to the previous season, mainly due to increased numbers of bin assessments at orchards with known disease presence from spring assessments. Assessing risk factors against spray programme is recommended for these blocks to see where errors might have happened, i.e. equipment (rates and calibration), timing with respect to weather conditions (coverage and drying times), product (resistance possibilities).
+
+While the integrated disease models are available through the Metris application, it is unclear whether these are being used systematically across all orchards.  This would give valuable assistance in identifying periods of high infection risk.
+
+The spatial distribution of black spot in both Hawkes Bay and Gisborne region is shown in @fig-blackspot.  This shows the infection is wide spread in the Hawkes Bay and significant infections isolated to three orchards in Gisborne.  
+
+
+::: {#fig-blackspot layout-nrow=2}
+
+![Hawkes Bay](img/qualityPhytosanitaryPerformance/hb_blackspot.png){#fig-HawkesBay fig-align="center" width=9cm}
+
+![Gisborne](img/qualityPhytosanitaryPerformance/gis_blackspot.png){#fig-Gisborne fig-align="center" width=9cm}
+
+regional spread of black spot detections in 2023
+
+:::
+
+
+### Blackspot infection modeling
+
+Given the prevalence of black spot (Venturia inaequalis), considerable research has been carried out in many apple growing areas around the world including extensive work that has been carried out in New Zealand (@machardy_apple_1996; @beresford_national_1992; @beresford_economics_1994; @beresford_new_2004; @beresford_climate_2012). The fungi overwinters in the dead and infected leaves which gather on the orchard floor beneath the trees.  In the spring the spores mature and there are three principal drivers: 
+
+1. the average temperature while the spores are maturing 
+2. the average temperature while the leaves are wet and 
+3. the length of the wetness period  
+
+The ascospores develop during the accumulation of the growing degree days.  It is assumed that all ascospores have matured at 534 degree days (@machardy_apple_1996).  The release of the ascospores is dependent on weather (specifically daylight and leaf wetness).  Once spores are released  and move onto the secondary phase of the infection which involve canidia that germinate on the fruit or leaf surface causing black lesions. The duration of the infection period, and average temperature are inversely related; that is the higher the temperature the shorter the duration required for an infection. Infections are rated: marginal, light, moderate and severe based on the wetness duration and temperature.  @fig-BlackSpotInfectionNumber shows the significant infection events (i.e. greater than marginal) for 2022 and 2023 broken down by region in Hawkes Bay. It clearly shows that the black spot presure was greater in 2023 than 2022, in terms of the primary infection. 
+
+```{r}
+#| label: fig-BlackSpotInfectionNumber
+#| fig-cap: "Comparison between 2022 and 2023 of the number of primary blackspot infections for the period between 1st Oct to 1st April"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+library(httr)
+library(jsonlite)
+library(repurrrsive)
+library(lubridate)
+library(tidyverse)
+
+api_key <- 'NF3Wbqrh95hwWw5eAsfhr75PFfxeLnGUNNxt1pNZ'
+api_path <- 'https://api.eagle.io/api/v1/'
+api_resource <- 'historic/?'
+
+get_node <- function(node_id='', start_time='', end_time='', parameters = '') {
+  
+  api_resource <- 'historic/?'
+  params <- paste0(node_id, parameters)
+  
+  if(start_time != '') {
+    req_uri <- paste0(api_path, api_resource, start_time, '&', end_time, '&', 'params=', params)
+  } else {
+    req_uri <- paste0(api_path, "nodes/")
+  }
+  
+  for(i in 0:60) {
+    testRes <- httr::GET(req_uri,
+                         add_headers('Content-Type' = 'application/json', 
+                                     'X-Api-Key' = api_key))
+    if(testRes$status_code == 200) {
+      break
+    } else {
+      print(paste0('status_code: ',testRes$status_code))
+    }
+  }
+  return(testRes)
+}
+
+node_data2 <- function(node_id, SD, ED, params) {
+  if (node_id == "61961453110b716a5e0c458b") {
+    params = '(aggregate:TOTAL;baseTime:D+12H;interval:1D)'
+  } else {
+    params = params
+  }
+  node_list <- get_node(node_id = node_id, 
+                        start_time = paste0("startTime=",SD,"T00:00:00.000Z"),
+                        end_time = paste0("endTime=",ED,"T00:00:00.000Z"),
+                        parameters = params)
+  
+  node_interim <- tibble(json = list(parse_json(node_list))) |>
+    unnest_wider(json) 
+  
+  if (!is.na(node_interim$data)) {
+    
+    node_rect <- node_interim |>
+      unnest_longer(data) |>
+      select(data) |>
+      unnest_wider(data) |>
+      unnest_wider(f) |>
+      unnest_wider(`0`) |>
+      select(c(ts, v)) |>
+      mutate(index = as.character(node_id))
+    
+    colnames(node_rect) <- c("date","rainfall", "index")
+    
+    return(node_rect)
+  }
+}
+
+#=============================BS Infections=========================================
+
+metrisLookup <- read_csv("data/qualityPhytosanitaryPerformance/metris_lookup.csv")
+
+sites <- c("HAU - Haumoana", "Steel", "RRD - Raukawa", "Manahi", "Pioneer", "Omahu")
+
+BSSites <- metrisLookup |>
+  filter(measuredParam == "Infection Percent",
+         region %in% sites) |>
+  pull(uniqueId)
+
+
+BSinfectionPct <- function(node_id, SD, ED, params) {
+
+  test <- get_node(node_id = node_id,
+                   start_time = paste0("startTime=",SD,"T00:00:00.000Z"),
+                   end_time = paste0("endTime=",ED,"T00:00:00.000Z"),
+                   parameters = params)
+
+  node_interim <- tibble(json = list(parse_json(test))) |>
+    unnest_wider(json) 
+
+  node_rect <- node_interim |>
+    unnest_longer(data) |>
+    select(data) |>
+    unnest_wider(data) |>
+    unnest_wider(f) |>
+    unnest_wider(`0`) |>
+    select(c(ts, v)) |>
+    mutate(dttm = as.POSIXct(ts, "%Y-%m-%dT%H:%M:%S", tz="UTC")) |>
+    filter(!is.na(v)) |>
+    select(-ts) |>
+    mutate(Season = case_when(dttm >= as.POSIXct("2021-10-01 00:00:00", tz="UTC") & 
+                              dttm < as.POSIXct("2022-04-01 00:00:00", tz = "UTC") ~ 2022,
+                            dttm >= as.POSIXct("2022-10-01 00:00:00", tz="UTC") & 
+                              dttm < as.POSIXct("2023-04-01 00:00:00", tz = "UTC") ~ 2023,
+                            TRUE ~ 1900),
+           id = node_id) |>
+    filter(Season != 1900) |>
+    relocate(id, .before = v)
+  
+  peaks <- gsignal::findpeaks(node_rect$v, DoubleSided = T) 
+  
+  temp <- tibble(pks = peaks$pks, loc = peaks$loc)
+  
+  node_rect2 <- node_rect |>
+    mutate(loc = seq(from = 1, to = nrow(node_rect),by = 1)) |>
+    left_join(temp, by = "loc") |>
+    dplyr::filter(!is.na(pks)) |>
+    relocate(Season, .after = pks)
+
+#===================================FILTER INFECTION START FINISH===================
+
+# Set up the start and finish of the period with the start and finish of an infection duration
+
+  j <- 1
+  while (node_rect2[j,5] > 0) {
+    node_rect2 <- node_rect2[-j,]
+  }
+
+  for (i in nrow(node_rect2):1 ) {
+    if (node_rect2[[i,5]] > 0 & node_rect2[[i-1,5]] == 0 |
+        node_rect2[[i,5]] == 0 & node_rect2[[i-1,5]] == 0) {
+      node_rect2 <- node_rect2[-i,]
+    } else {
+      break
+    }
+  }
+# gets rid of any spurious 0 peaks so there is only a peak at the start and a peak at the end 
+  node_rect2 <- node_rect2 |>
+    mutate(delete = if_else(pks == 0 & lead(pks) == 0,"yes", "no")) |>
+    filter(delete != "yes") |>
+    select(-delete)
+
+# initialise the duration dataframe
+  duration <- tibble(dur = numeric(), 
+                     infNo = integer(),
+                     infPct = numeric(),
+                     start = POSIXct(),
+                     Season = integer(),
+                     id = character())
+
+  for(i in 1:nrow(node_rect2)) {
+# defines the start of an infection period for all but the last row
+    if(node_rect2[i,5] == 0 & i < nrow(node_rect2)) {
+# if the following row is > 0 then index the infection event infNo 
+      if(node_rect2[i+1,5] > 0) {
+        duration[i,1] <- 0
+        duration[i,3] <- node_rect2[i,5]
+        duration[i,4] <- node_rect2[i,3]
+        duration[i,5] <- node_rect2[i,6]
+        duration[i,6] <- node_rect2[i,1]
+        if(i == 1) {
+          duration[i,2] <- 1
+        } else {
+          duration[i,2] <- duration[i-1,2]+1
+        }
+# where the current node is > 0 and the next node is zero (i.e. ramp down)
+      } else if(node_rect2[i,5] > 0 & node_rect2[[i+1,5]] == 0) {
+        duration[i,1] <- (as.numeric(node_rect2[[i,3]]) - as.numeric(node_rect2[[i-1,3]]))/3600
+        duration[i,2] <- duration[i-1,2]
+        duration[i,3] <- node_rect2[i,5]
+        duration[i,4] <- node_rect2[i,3]
+        duration[i,5] <- node_rect2[i,6]
+        duration[i,6] <- node_rect2[i,1]
+      }
+# case where the infection peak doesn't reach 100%
+    } else if(node_rect2[i,5] > 0 & node_rect2[i,5] < 100) {
+      duration[i,1] <- (as.numeric(node_rect2[[i,3]]) - as.numeric(node_rect2[[i-1,3]]))/3600
+      duration[i,2] <- duration[i-1,2]
+      duration[i,3] <- node_rect2[i,5]
+      duration[i,4] <- node_rect2[i,3]
+      duration[i,5] <- node_rect2[i,6]
+      duration[i,6] <- node_rect2[i,1]
+# Now the case where there is the last row
+    } else if(node_rect2[i,5] == 100 & i == nrow(node_rect2)) {
+      duration[i,1] <- (as.numeric(node_rect2[[i,3]]) - as.numeric(node_rect2[[i-1,3]]))/3600
+      duration[i,2] <- duration[i-1,2]
+      duration[i,3] <- node_rect2[i,5]
+      duration[i,4] <- node_rect2[i,3]
+      duration[i,5] <- node_rect2[i,6]
+      duration[i,6] <- node_rect2[i,1]
+# where the current node and the next node are both 100%
+    } else if(node_rect2[i,5] == 100 & node_rect2[i+1,5] == 100) {
+      duration[i,1] <- (as.numeric(node_rect2[[i,3]]) - as.numeric(node_rect2[[i-1,3]]))/3600
+      duration[i,2] <- duration[i-1,2]
+      duration[i,3] <- node_rect2[i,5]
+      duration[i,4] <- node_rect2[i,3]
+      duration[i,5] <- node_rect2[i,6]
+      duration[i,6] <- node_rect2[i,1]
+# where current node is zero and 
+    } else {
+      duration[i,1] <- (as.numeric(node_rect2[[i,3]]) - as.numeric(node_rect2[[i-1,3]]))/3600
+      duration[i,2] <- duration[i-1,2]
+      duration[i,3] <- node_rect2[i,5]
+      duration[i,4] <- node_rect2[i,3]
+      duration[i,5] <- node_rect2[i,6]
+      duration[i,6] <- node_rect2[i,1]
+    }
+  }
+  
+  return(duration)
+}
+
+regionLookup <- metrisLookup |>
+  filter(region %in% sites,
+         measuredParam == "Infection Percent") |>
+  dplyr::select(c(uniqueId, region))
+
+params = '(aggregate:TOTAL;baseTime:M;interval:3M)'
+SD <- "2021-10-01"
+ED <- "2023-04-01"
+
+test <- BSSites |>
+  map_df(~BSinfectionPct(., SD, ED, params)) |>
+  left_join(regionLookup, by = c("id" = "uniqueId")) |>
+  select(-id)
+
+# aggregate the infection periods together
+BSInfections <- test |>
+  group_by(region, Season, infNo) |>
+  summarise(infectDuration = sum(dur, na.rm=T),
+            maxInfPct = max(infPct, na.rm=T),
+            startDateTime = min(start)) |>
+  mutate(finishDateTime = startDateTime + infectDuration*60*60)
+
+regionalInfectionSummary <- BSInfections |>
+  filter(maxInfPct == 100) |>
+  summarise(NoOfInfections = n(),
+            meanDuration = mean(infectDuration, na.rm=T))
+           
+regionalInfectionSummary |>
+  mutate(StationLoc = case_when(region == "HAU - Haumoana" ~ "Haumoana",
+                                region == "Steel" ~ "Puketapu",
+                                region == "RRD - Raukawa" ~ "Bridge Pa",
+                                region == "Manahi" ~ "Havelock",
+                                region == "Pioneer" ~ "Ngatarawa",
+                                region == "Omahu" ~ "Omahu")) |>
+  ggplot(aes(StationLoc, NoOfInfections, fill=factor(Season))) +
+  geom_col(position = position_dodge(), alpha = 0.5) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  labs(y = "No. of significant infections",
+       x = "weather station location",
+       fill = "season") +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+```
+
+### apple leaf curling midge (ALCM)
+
+Apple Leaf Curling Midge (ALCM) is quarantine pest for China, Japan with Maximum Pest Limit (MPL) 0.5%. Access to Taiwan relies on nil detected ALCM.
+
+ALCM is a difficult pest to control. Effective control can only be achieved when several strategies are used collectively with each other: on orchard monitoring for tree vigour and new shoot damage, Movento applications and fruit assessments for ALCM pupae presence. Although, traditionally monitoring for ALCM is done in summer (post 3rd midge generation, G3), knowing ALCM presence on orchards from generations 1 (G1) and 2 (G2) can assist in control strategies with focus on G3 to minimise export risk. 
+
+Pre-harvest ALCM assessments predicted that despite significant incidence of ALCM infection, the risk of a "bug-out" during packing was unlikely. despite the analysis, ALCM interceptions during packing were prolific in 2023 (compared to 2021 and 2022) as shown in @tbl-bugOutTable.  The regional distribution of ALCM in 2023 is shown for both Hawkes Bay and Gisborne regions in @fig-ALCM.
+
+::: {#fig-ALCM layout-nrow=2}
+
+![Hawkes Bay](img/qualityPhytosanitaryPerformance/hb_ALCM.png){#fig-HawkesBay fig-align="center" width=9cm}
+
+![Gisborne](img/qualityPhytosanitaryPerformance/gis_ALCM.png){#fig-Gisborne fig-align="center" width=9cm}
+
+regional spread of ALCM detections in 2023
+
+:::
+
+
+```{r}
+#| label: tbl-bugOutTable
+#| tbl-cap: "Number of MPI lots facing market exclusion, by disorder, for 2021 through 2023"
+
+MPILotsAffected <- temp |>
+  filter(MktDefectCode != "LLT",
+         SeasonID %in% c(7,8,9)) |>
+  mutate(Season = case_when(SeasonID == 7 ~ 2021,
+                            SeasonID == 8 ~ 2022,
+                            SeasonID == 9 ~ 2023)) |>
+  group_by(GraderBatchMPILotID) |>
+  summarise(Defect = first(Defect),
+            DefectQty = first(DefectQty),
+            Season = first(Season)) |>
+  pivot_wider(id_cols = c(GraderBatchMPILotID, Season), names_from = Defect, values_from = DefectQty) |>
+  mutate(across(.cols = c(3:16), ~replace_na(., 0)))
+           
+
+disorderSummary <- function(disorder, MPILotsAffected) {
+  disorderSummary <- MPILotsAffected |>
+    dplyr::select(c(GraderBatchMPILotID, Season, {{disorder}})) |>
+    filter(.data[[disorder]] > 0) |>
+    group_by(Season) |>
+    summarise(disorder = n()) |>
+    pivot_wider(names_from = Season, values_from = disorder) |>
+    mutate(disorder = {{disorder}})
+  
+  return(disorderSummary)
+    
+}
+
+disorders <- MPILotsAffected |>
+  dplyr::select(-c(GraderBatchMPILotID, Season)) |>
+  colnames()
+
+disSum <- disorders |>
+  map(~disorderSummary(., MPILotsAffected)) |>
+  list_rbind() |>
+  mutate(across(.cols = c(`2021`:`2023`), ~replace_na(., 0))) |>
+  relocate(disorder, .before = `2021`)
+
+disSum |>
+  kableExtra::kable(col.names = c("disorder", "2021", "2022", "2023"),
+                    align=c(rep("l", 1),rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::add_header_above(c(" ","harvest year" = 3),
+                               escape = T) |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) 
+
+
+
+```
+
+## Process change in the pack-house
+
+In addition to the high pest pressure in the region, a change in process was applied in the pack-house that likely had an impact on the number of lots that were excluded from OAP markets.  The change involved nominating MPI lot sizes prior to packing to comply with the OAP.  These "MPI lots" were set nominally at 25 bins, hence the distribution of the number of MPI lots per batch has changed from 2022 to 2023 packing season.  The change can be visualised by bar chart in @fig-MPIlots
+
+```{r}
+#| label: fig-MPIlots
+#| fig-cap: "Comparison of number of MPI lots per grader batch for packing seasons 2022 and 2023"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+propLotting <- read_csv("data/qualityPhytosanitaryPerformance/propLotting.csv")
+
+temp |>
+  filter(SeasonID %in% c(8,9)) |>
+  mutate(Season = if_else(SeasonID == 8, 2022, 2023)) |>
+  group_by(Season, GraderBatchID) |>
+  summarise(MPILotNo = max(MPILotNo, na.rm=T)) |>
+  ggplot(aes(MPILotNo)) +
+  geom_bar(fill = "#a9342c", alpha = 0.6) +
+  facet_wrap(~Season, ncol=1) +
+  geom_text(data = propLotting, aes(x = MPILotNo, y = count, label = proportion), vjust = -.5, colour = "black") +
+  labs(x = "No. of MPI lots per grader batch",
+       y = "count of grader batches") +
+  ylim(0, 1100) +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 12),
+        axis.title.y = element_text(margin = margin(r = 10), size = 12),
+        axis.text.y = element_text(size = 12, hjust=1),
+        axis.text.x = element_text(size = 12),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 6),
+        legend.title = element_text(size = 6),
+        strip.text = element_text(margin = margin(b=10)))  
+```
+
+\newpage
+
+## Conclusion
+
+\newpage
+
+## Glossary
+
+
+
+ 

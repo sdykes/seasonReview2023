@@ -1,0 +1,19 @@
+sector,risk,value
+Puketapu,high  ,0
+Bridge Pa,high  ,0
+Havelock N,high  ,0
+Napier,high  ,0
+Omahu,high  ,0.17
+Valley,high  ,0
+Puketapu,medium,0.63
+Bridge Pa,medium,1
+Havelock N,medium,0.81
+Napier,medium,0.9
+Omahu,medium,0.83
+Valley,medium,1
+Puketapu,low,0.38
+Bridge Pa,low,0
+Havelock N,low,0.19
+Napier,low,0.1
+Omahu,low,0
+Valley,low,0

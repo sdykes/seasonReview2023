@@ -1,0 +1,1128 @@
+# pest and disease monitoring (pre-season)
+
+Author: Svetlana Drinnan - Fruition Technical Services Manager
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+
+## Introduction
+
+This report aims to look at presence of major market access pests and diseases (P&D) in RMS orchards in Season 2022-23 by sector as well as trends in the last five years. 
+
+This analysis may assist in:
+-	understanding differences between management areas
+-	tracking blocks season to season
+-	reviewing controls and understanding how effective they have been
+-	planning P&D management for future growing seasons. 
+
+This report will cover spring/summer field assessments, trapping and harvest assessments with the focus on the following P&D’s: Black Spot (BS), Codling Moth (CM), Light Brown Apple Moth (LBAM), Apple Leaf Curling Midge (ALCM), Woolly Apple Aphid (WAA) and Mealybug (MB). 
+
+## Season 2022-2023 pest and disease summary
+
+### Black spot
+
+BS control in 2022-23 has been a challenge because of persistent rain throughout the season. BS incidence across all blocks has almost doubled in 2023 harvest assessments compared to the previous season but this result needs to be seen in context of extremely high disease pressure. The establishment of early season infection was a problem at some orchards. 
+
+A number of suggestions for improved control are made including 1) maintaining a tighter protectant cover programme over ascospore release, 2) using the Integrated Disease Model to assist in identifying high risk infection periods, 3) considering combination of protectants to cover resistance risk and 4) hygiene measures during wintertime.
+
+### Codling Moth
+
+Almost no actionable thresholds throughout the trapping season and nil CM damage on fruit during the harvest confirms the company’s very successful CM management approach which results in maintained low CM pressure status for all managing areas. 
+
+### Light Brown Apple Moth
+
+This season recorded the lowest level of old LBAM damage (4.4%) on fruit at harvest, in the last 5 years.  However, slight increase in fresh damage and live larvae, 1.5% and 2.9% respectively, is not something to ignore. An insecticide application 3-5 weeks before harvest may be considered to eliminate the risk of larval presence in fruit at harvest.
+
+### Apple Leaf Curling Midge
+
+ALCM appear to be well controlled across the company in Season 2022-23 with nil interception during harvest assessments in the last 4 consecutive years, all while expanding in producing hectares with many new plantings. 
+
+### Woolly Apple Aphid
+
+For the first time in the last 5 years pre-harvest monitoring recorded WAA colonies on Rockit orchards. However, biocontrol of WAA appears to be assertive, as no unparasitized WAA was found at harvest. The incidence of A.Mali has also dropped across all blocks by 28%, but increased by 0.1% within affected blocks. It is important to remember that parasitised WAA is also considered a quarantine pest in sensitive markets.
+
+### Mealy bug & scale
+
+Both presence and incidence of mealy bug increased in 2023 harvest, by 6% and 0.1% respectively. Combined 0.5% of San Jose scale was also observed across all bin assessments. Both mealy bug and scale have the potential for rapid spread in the absence of appropriate control measures. 
+ 
+### Mites
+
+Fruition observed pest mites on quite a few Prem A96 orchards during spring/summer monitoring this season. Although, there were a couple of blow-outs of European Red mite, they did not translate into infestation of this pest on fruit at harvest. A combination of a good pest management and effective bio-control can take credit for it. 
+
+### Other Pests
+
+This season Rockit orchards have seen a decrease in % incidence of ‘non-critical’ pests like Bronze Beetle, Fullers and Noctuid damage. This is a pleasing reversal of the trend over the previous seasons where these pests were on the increase.
+
+## Season 2022-23 Sectors Summary
+
+### Napier Sector
+
+*	There was an increased incidence of Blackspot this season with most blocks in the sector showing the combined highest percentage, 7.6%, found at harvest. Blackspot was sighted at newly planted blocks during Nov-Dec monitoring, predominantly around the edges of the blocks. This may point to boundary coverage of helicopter applied sprays. Reviewing the impact of ‘on the ground’ issues such as equipment, spray application timing, methods may help determine the cause. 
+*	Codling moth control has been effective this season with no incidence during harvest assessments and no actionable CM thresholds. It was a slightly different picture with LBAM though. Despite low average trap catches per week, Napier sector was the only sector that recorded all types of LBAM damage during harvest assessments including a live larva at Lawn F.  However, the combined percentage was still very low at 0.3%.
+*	ALCM does not appear to be a critical pest for Napier sector this season. Percentage of damaged shoots increased from G2 to G3 monitoring by 20%, but no ALCM pupae was found at harvest.
+* There has been some detection across most of analysed P&D this season, but it is worth  mentioning that Mealybug incidence was the highest at Napier sector at 2.2%. This % does not include sooty mould which is indicative of internal mealy bug.
+
+### Havelock North Sector 
+
+*	Black spot was sighted at only one orchard during spring monitoring. This, unfortunately, resulted into 0.5% incidence during the harvest, which is a minimum pest limit for China. 
+*	Codling Moth and LBAM controls have been effective this season with no CM thresholds throughout the entire season or CM interceptions at harvest. Only one orchard exhibited LBAM pressure this season. One Block in particular had a several blowouts in Feb-March. 
+*	Spring/summer ALCM scouting recorded 8.1% of damaged shoots post G2, and that number jumped to 34.8% post-G3, which is the highest increase across the company. Movento applications review is recommended.
+*	Unparasitised WAA colonies were detected for the first time this season. As a result, the affected blocks fell into high and medium export risk for WAA sensitive markets.
+*	Combined ranking for sensitive market access, which includes risk factors from all assessed P&D’s, placed one orchard into a high-risk level; the rest of the blocks fell into medium risk. 
+
+### Bridge Pa Sector
+
+*	Season 2022-23 has been a good season for the Bridge Pa sector with relatively low P&D pressure. Longlands orchard was the only site with actionable CM and LBAM thresholds this season.  
+*	Similarly to Havelock Nth sector, WAA colonies were detected during field monitoring. Both affected blocks also saw a small percentage of A.Mali in their bins; the fruit was considered a high-risk line for sensitive markets based on all combined risk factors.
+
+### Puketapu Sector
+
+*	Black spot control was very effective in Puketapu orchards this season with no detection both during the season walks and at harvest. 
+*	Puketapu sector continues to show low pressure for CM and LBAM, recording lowest average weekly moth catch per trap, and no actionable thresholds as well as nil moths’ damage interception at harvest.
+*	Even though Puketapu sector saw more damaged shoots with ALCM, namely 15.1% post-G2 and 27.9% post-G3, compared to last season, it was the sector with the highest % of low-risk blocks for ALCM sensitive markets.
+*	Puketapu sector recorded the highest interception of parasitised WAA during harvest assessments at 2.1%. Unparasitised colonies of WAA during field assessments were also recorded. 
+
+### Omahu Sector
+
+*	Black spot has been an issue this season. The disease was detected late season only with a high 10.5%  and 1.2% at two adjacent blocks. Unavoidably, BS showed up at harvest assessments too. Spray programme review during the critical period (the beginning of bud growth until small fruitlet stage) is recommended.
+*	Omahu sector saw a reasonable LBAM pressure this season with the highest average trap catch per week, several actionable thresholds and a live larva at 9B in bin assessment. 
+*	The sector recorded the highest percentage of ALCM damaged shoots (new infestation and old damage) both post G2 and G3, 18% and 36% respectively. Midge infestation at two blocks were high enough in combination with vigour to place these blocks into high-risk post G3.
+*	WAA control was very effective – it was the only sector that was completely clean of any type of WAA. 
+
+### Valley Sector
+-	Valley Rd sector is a new Rockit sector this season with only one year of obtained P&D data. 
+-	Sector has showed a very good Blackspot and CM management. However, there have been some LBAM pressure with 2nd highest average trap catches per week, several thresholds and one fresh interception at harvest.
+-	The sector also recorded some detection of WAA during field monitoring, and combined 1.4% of A.Mali during bin assessments, however, it was below allowed maximum pest limit and did not entail any export risk.
+-	Bin assessments at Valley Rd and Pioneer also saw small % of other critical and non-critical P&D. 
+
+## Black spot
+
+![example of an apple with a black spot lesion](img/pestAndDiseaseMonitoring/blackspot.png){fig-align="center" width=50%}
+
+Black spot (BS) is a quarantine disease for Chinese market with Maximum Pest Limit (MPL) 0.5%. 
+
+It has been a very wet spring and summer in Hawke’s Bay with moderate to heavy rains every month which has created a lot of disease pressure this season. Black spot infection period risk graph below shows a number of high-risk events that occurred over the period of ascospore release (Sept-Nov) (@fig-blackSpotModel). Early spring infection period is determined by the number of ascospore available when it rains. Risk continues while wetness continues and accumulates each hour as more ascospores are released. It is critical to control this primary inoculum to minimise secondary infections as the magnitude of risk is many times greater over the primary spore release period until ascospore reaches its maturity (usually early November).
+
+::: {#fig-blackSpotModel layout-nrow=2}
+
+![Summary of primary infection periods for black spot](img/pestAndDiseaseMonitoring/bsPrimaryInfection.png){#fig-primaryBS fig-align="center" width=100%}
+
+![Summary of secondary infection periods for black spot](img/pestAndDiseaseMonitoring/bsSecondaryInfection.png){#fig-secondaryBS fig-align="center" width=100%}
+
+Black spot infection summary for 2022-2023 spring and summer in Hawke's Bay 
+
+:::
+
+Overall, black spot control in 2022-23 appears to have been a challenge. The establishment of early season infection was a problem in blocks at the following sectors shown in @tbl-NovDecBS.
+
+```{r}
+#| label: tbl-NovDecBS
+#| tbl-cap: "blocks with sighted black spot during November - December monitoring" 
+
+
+NovDecBS <- readr::read_csv("data/pestAndDiseaseMonitoring/NovDecBS.csv", show_col_types = FALSE) |>
+  dplyr::select(c(Sector, 
+                  `Average Leaves per shoot`,
+                  `Black spot - leaves`,
+                  `Black spot - fruit tops (250)`,
+                  `Black spot - fruit bottoms (750)`,
+                  `Overall (%)`,
+                  `Risk level`))
+
+NovDecBS |>
+  kableExtra::kable(col.names = c("sector",
+                                  "average leaves per shoot",
+                                  "leaves",
+                                  "fruit tops (250)",
+                                  "fruit bottoms (750)",
+                                  "overal (%)",
+                                  "risk level"
+                                  ),
+                    align=c("l",rep("r",5), "l"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::column_spec(c(2:5), width = "22mm") |>
+  kableExtra::add_header_above(c(" "=2, "black spot" = 5)) 
+```
+
+The following blocks are a good example of how a secondary infection can occur during the right conditions later in the season. Even though black spot was not observed there during spring assessments (primary infections may be very few in number and therefore escape detection), these blocks were reassessed in February on manager’s request, the resulting observations (@tbl-febBS) show quite prolific spread of black spot.
+
+```{r}
+#| label: tbl-febBS
+#| tbl-cap: "two blocks with observed secondary black spot infection during February monitoring.  No primary infectcion was detected during the November and December monitoring"
+
+FebBS <- readr::read_csv("data/pestAndDiseaseMonitoring/FebBS.csv", show_col_types = FALSE) |>
+  dplyr::select(-c(Date,
+                   `Orchard Name`,
+                   Block,
+                   Rpin,
+                   Comments))
+
+FebBS |>
+  kableExtra::kable(col.names = c("average leaves per shoot",
+                                  "leaves",
+                                  "fruit tops (250)",
+                                  "fruit bottoms (750)",
+                                  "overal (%)",
+                                  "risk level"
+                                  ),
+                    align=c(rep("r",5), "l"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::column_spec(c(1:4), width = "22mm") |>
+  kableExtra::add_header_above(c(" ", "black spot" = 5)) 
+```
+
+Disease levels in November was a good indicator of incidence at harvest. Black spot incidence across all blocks during harvest assessments increased by 11.4% compared to the last season. Black spot incidence within affected blocks jumped to 0.7%, which is a 0.4% increase from last season (@tbl-histNovIncidence and Graph 3). 
+
+```{r}
+#| label: tbl-histNovIncidence
+#| tbl-cap: "two blocks with observed secondary black spot infection during February monitoring.  No primary infectcion was detected during the November and December monitoring"
+
+histNovIncidence <- readr::read_csv("data/pestAndDiseaseMonitoring/histNovIncidence.csv", show_col_types = FALSE)
+
+histNovIncidence_wide <- histNovIncidence |>
+  pivot_wider(id_cols = year,
+              names_from = BSIncidence,
+              values_from = percentage) |>
+  mutate(`across all blocks` = scales::percent(`across all blocks`, accuracy = 0.01),
+         `within affected blocks` = scales::percent(`within affected blocks`, accuracy = 0.01),
+         `spring monitoring` = scales::percent(`spring monitoring`, accuracy = 0.01))
+         
+
+histNovIncidence_wide |>
+  kableExtra::kable(col.names = c("year",
+                                  "across all blocks",
+                                  "within affected blocks",
+                                  "spring monitoring"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::column_spec(c(2:4), width = "25mm") |>
+  kableExtra::add_header_above(c(" ", "monitoring" = 3)) 
+```
+
+```{r}
+#| label: fig-histNovIncidence
+#| fig-cap: "historical mean incidence of black spot across different monitoring scenarios from 2019 through 2023"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+histNovIncidence |>
+  mutate(BSIncidence = factor(BSIncidence, levels =c("across all blocks", 
+                                            "within affected blocks",
+                                            "spring monitoring"))) |>
+  ggplot(aes(x=year, y=percentage)) +
+  geom_line(aes(colour=BSIncidence)) +
+  facet_wrap(~BSIncidence, ncol=1, scales = "free_y") +
+  scale_y_continuous("incidence / %", label = scales::label_percent(accuracy = 0.01)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10),
+        legend.position = "none")
+
+
+
+
+```
+
+The Naier sector has recorded the highest combined percentage of black spot, 7.6%, found at harvest (@tbl-BSatHarvest), followed by Omahu, 4.1%, and Havelock Nth, 0.5%.
+
+```{r}
+#| label: tbl-BSatHarvest
+#| tbl-cap: "black spot percentage incidence detected at harvest 2023 by sector"
+
+BSAtHarvest <- tibble(sector = c("Napier", "Omahu", "Havelock North"),
+                      `black spot percent` = c(0.076, 0.041, 0.005)) 
+  
+
+BSAtHarvest |>
+  mutate(`black spot percent` = scales::percent(`black spot percent`, accuracy = 0.01)) |>
+  kableExtra::kable(col.names = c("sector", "percent"),
+                    align=c("l", "r"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "black spot")) 
+
+```
+
+### Conclusion/Recommendations
+
+*	Rockit’s black spot incidence across all blocks has almost doubled in 2023 harvest assessments compared to the previous season, mainly due to increased numbers of bin assessments at orchards with known disease presence from spring assessments. Assessing risk factors against spray programme is recommended for these blocks to see where errors might have happened, i.e. equipment (rates and calibration), timing with respect to weather conditions (coverage and drying times), product (resistance possibilities) etc. 
+*	Maintain a tight protectant cover programme over ascospore release. A few uncontrolled primary infections can set up an orchard for a major blackspot problem later if other favourable factors fall in place.
+*	Use the Integrated Disease Model which may assist in identifying high-risk infection periods especially if these events are not readily recognized. 
+*	Regardless of amount of BS found during spring assessments, it may still be advisable to apply a BS protectant fungicide throughout the season if an extended (>48 hours) wet period is forecasted to prevent conidial risk mid- to late-season. 
+* Winter is the perfect time to control the disease with hygiene measures, as often this disease originates from the last season’s spores. Overwintering spores are looking to infect, and more spores in the orchard means higher chance they will during the right conditions. Successful black spot management involves keeping the primary innoculum levels to a minimum.  
+
+## Codling moth
+
+### Overview
+
+![example of an apple with a black spot lesion](img/pestAndDiseaseMonitoring/codlingMoth.png){fig-align="center" width=50%}
+
+Codling Moth (CM) is quarantine pest for Taiwan, China and Japan markets with Maximum Pest Limit (MPL) 0%.
+
+During harvest assessments we look for three types of codling moth damage on fruit: Old damage, New/fresh damage, and codling moth larvae. Historically, Rockit^TM^ apple's harvest assessments have been free from any fresh codling moth damage or live larvae. This season CM control has improved even further with no codling moth damage to fruit being found at all, not even old chews or stings (@tbl-histCMNovIncidence, @fig-histCMNovIncidence).
+
+```{r}
+#| label: tbl-histCMNovIncidence
+#| tbl-cap: "two blocks with observed secondary black spot infection during February monitoring.  No primary infectcion was detected during the November and December monitoring"
+
+histCMNovIncidence <- readr::read_csv("data/pestAndDiseaseMonitoring/histCMNovIncidence.csv", show_col_types = FALSE)
+
+histCMNovIncidence_wide <- histCMNovIncidence |>
+  pivot_wider(id_cols = year,
+              names_from = measurement,
+              values_from = percent) |>
+  mutate(`across blocks` = scales::percent(`across blocks`, accuracy = 0.01),
+         `within affected blocks` = scales::percent(`within affected blocks`, accuracy = 0.01))
+         
+         
+
+histCMNovIncidence_wide |>
+  kableExtra::kable(col.names = c("year",
+                                  "across blocks",
+                                  "within affected blocks"),
+                    align=c("l", rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::column_spec(c(2:3), width = "30mm") |>
+  kableExtra::add_header_above(c(" ", "codling moth incidence" = 2)) 
+```
+
+```{r}
+#| label: fig-histCMNovIncidence
+#| fig-cap: "historical mean incidence of codling across different monitoring scenarios from 2019 through 2023"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+histCMNovIncidence |>
+  mutate(measurement = factor(measurement, levels =c("across blocks", 
+                                            "within affected blocks"))) |>
+  ggplot(aes(x=year, y=percent)) +
+  geom_line(aes(colour=measurement), linewidth = 1) +
+  facet_wrap(~measurement, ncol=1, scales = "free_y") +
+  scale_y_continuous("incidence / %", label = scales::label_percent(accuracy = 0.01)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10),
+        legend.position = "none")
+```
+
+### By Sector 2022-23
+
+Seasonal trapping records also indicate that codling moth pressure was very low (below 0.5 moths per trap per week on average) and well controlled through spraying programme and use of mating disruption across all management areas (@fig-meanWeeklyDetections). There was only one actionable threshold at a non-CMSM orchard throughout the entire season. 
+
+Statistical analysis  of trapping data showed that Bridge Pa sector has caught more moths per week on average this season followed by Havelock North, Omahu and Valley. Puketapu and Hastings sectors had the lowest codling moth pressure this season (@fig-CMPairwise).
+
+```{r}
+#| label: fig-CMPairwise
+#| fig-cap: "pairwise comparison of sectors using Tukey HSD post hoc test"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+codlingMothPressure <- read_csv("data/pestAndDiseaseMonitoring/codlingMothPressure.csv", show_col_types = FALSE)
+
+codlingMothPressure_long <- codlingMothPressure |>
+  pivot_longer(cols = c(`Bridge Pa`:Valley), names_to="sector", values_to = "weeklyDetections")
+
+cmpressure <- aov(data = codlingMothPressure_long, weeklyDetections~sector)
+  
+tky <- as.data.frame(TukeyHSD(cmpressure)$sector) |>
+  rownames_to_column(var = "pair")
+
+tky |>
+  ggplot(aes(colour=cut(`p adj`, c(0, 0.01, 0.05, 1), 
+                        label=c("p<0.01","p<0.05","Non-Sig")))) +
+  geom_hline(yintercept=0, lty="11", colour="grey30") +
+  geom_errorbar(aes(pair, ymin=lwr, ymax=upr), width=0.2) +
+  geom_point(aes(pair, diff)) +
+  labs(colour="",
+       x = "pairwise comparison",
+       y = "diference") +
+  coord_flip() +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+  
+```
+
+```{r}
+#| label: fig-meanWeeklyDetections
+#| fig-cap: "Average CM catch per trap/week in 2022-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.8
+
+pestTraps <- read_csv("data/pestAndDiseaseMonitoring/pestTraps.csv", show_col_types = FALSE)
+  
+pestTraps |>
+  group_by(Sector, `week from Biofix`) |>
+  summarise(`Codling Moth` = mean(`Codling Moth`, na.rm=T)) |>
+  ggplot(aes(x=`week from Biofix`, y=`Codling Moth`, fill=Sector)) +
+  geom_col(position = "dodge", alpha = 0.5) +
+  facet_wrap(~ Sector, ncol=2) +
+  labs(y = "mean of weekly codling moth detections") +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10),
+        axis.ticks.length.x = unit(0.25, "cm"))
+
+```
+### Recommendations
+
+Follow the same controls and spray programme next season as almost no actionable threshold throughout the trapping season and nil CM damage on fruit during the harvest confirms the company’s successful CM management approach which results in maintained low CM pressure status for all managing areas.  
+
+## Light brown apple moth
+
+![example of damage to fruit caused by light brown apple moth](img/pestAndDiseaseMonitoring/LBAM.png){fig-align="center" width=50%}
+
+
+
+Light brown apple moth (LBAM) is a quarantine pest for some key markets: Japan, USA with maximum pest limit (MPL) 0%, and Taiwan, China with MPL 0.5%.
+
+Same as with codling moth, during harvest assessments we look for three types of leaf roller damage on fruit: old damage, new damage, and codling moth larvae.
+
+Season 2022-23 has seen a slight drop in old light brown apple moth damage incidence during harvest assessments both across all blocks and within affected blocks. However, there was a small increase in both fresh damage and live larvae compared to last season (@fig-LBAMAcrossAllBlocks, @fig-LBAMWithinAffectedBlocks, @tbl-LBAMAcrossAllBlocks, @tbl-LBAMWithinAffectedBlocks). 
+
+Light brown apple moth flying activity generally picks up again in February, around the time when Prem A96 fruit matures. So, it is highly recommended that an insecticide is applied 3-5 weeks before harvest to eliminate the risk of larval presence in fruit at harvest.
+
+```{r}
+#| label: tbl-LBAMAcrossAllBlocks
+#| tbl-cap: "Average incidence of light brown apple moth across all blocks between 2019-23"
+
+LBAMAcrossAllBlocks <- read_csv("data/pestAndDiseaseMonitoring/LBAMAcrossAllBlocks.csv", show_col_types = FALSE) 
+
+LBAMAcrossAllBlocks |>
+  mutate(across(.cols = c(`LBAM old incidence`:`LBAM Larvae incidence`), ~scales::percent(., accuracy = 0.01))) |>
+  kableExtra::kable(col.names = c("year", "old", "fresh", "larvae"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  #kableExtra::column_spec(c(1:4), width = "25mm") |>
+  kableExtra::add_header_above(c(" ", "LBAM incidence" = 3)) 
+
+```
+
+```{r}
+#| label: fig-LBAMAcrossAllBlocks
+#| fig-cap: "Average incidence of LBAM across all blocks between 2019-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+LBAMAcrossAllBlocks |>
+  rename(old = `LBAM old incidence`,
+         fresh = `LBAM fresh incidence`,
+         larvae = `LBAM Larvae incidence`) |>
+  pivot_longer(cols = c(old:larvae),
+               names_to = "incidence",
+               values_to = "percent") |>
+  mutate(incidence = factor(incidence, levels = c("old", "fresh", "larvae"))) |>
+  ggplot(aes(x=year, y=percent, groups = incidence, colour=incidence)) +
+  geom_line(linewidth=0.75) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = scales::label_percent(accuracy=1.0)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 8))
+  
+```
+
+```{r}
+#| label: tbl-LBAMWithinAffectedBlocks
+#| tbl-cap: "Average incidence of LBAM within affected blocks between 2019-23"
+
+LBAMWithinAffectedBlocks <- read_csv("data/pestAndDiseaseMonitoring/LBAMWithinAllBlocks.csv", show_col_types = FALSE) 
+
+LBAMWithinAffectedBlocks |>
+  mutate(across(.cols = c(`LBAM old incidence`:`LBAM larvae incidence`), ~scales::percent(., accuracy = 0.01))) |>
+  kableExtra::kable(col.names = c("year", "old", "fresh", "larvae"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "LBAM incidence" = 3)) 
+
+```
+
+```{r}
+#| label: fig-LBAMWithinAffectedBlocks
+#| fig-cap: "Average incidence of LBAM within affected blocks between 2019-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+LBAMWithinAffectedBlocks |>
+  rename(old = `LBAM old incidence`,
+         fresh = `LBAM fresh incidence`,
+         larvae = `LBAM larvae incidence`) |>
+  pivot_longer(cols = c(old:larvae),
+               names_to = "incidence",
+               values_to = "percent") |>
+  mutate(incidence = factor(incidence, levels = c("old", "fresh", "larvae"))) |>
+  ggplot(aes(x=year, y=percent, groups = incidence, colour=incidence)) +
+  geom_line(linewidth=0.75) +
+  geom_jitter(width=0.01, height=0.0001, size=2) +
+  scale_y_continuous(labels = scales::label_percent(accuracy=1.0)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 8))
+
+
+```
+### By Sector 2022-23
+
+Napier sector was the only sector that recorded all types of LBAM damage during harvest assessments, however, the combined percentage was still very low at 0.3% (@tbl-LBAMatHarvest). 
+
+Trapping data analysis placed Omahu sector at most pressure with the highest average moth catch per week (@tbl-LBAMatHarvest, @fig-meanLBAMCatchPerWeek). Overall LBAM pressure on Rockit orchards was relatively low and mainly built up towards the end of the season with several blocks being the only management areas with actionable LBAM thresholds. 
+
+```{r}
+#| label: tbl-LBAMatHarvest
+#| tbl-cap: "Light brown apple moth percentage incidence detected at harvest 2023 by sector"
+
+LBAMAtHarvest <- tibble(sector = c("Havelock North", "Omahu", "Valley", "Napier"),
+                      `old LBAM` = c(0.001, 0, 0, 0.002),
+                      `fresh LBAM` = c(0,0,0.001,0),
+                      `LBAM larvae` = c(0,0.001,0,0.001)) 
+  
+
+LBAMAtHarvest |>
+  mutate(`old LBAM` = scales::percent(`old LBAM`, accuracy = 0.01),
+         `fresh LBAM` = scales::percent(`fresh LBAM`, accuracy = 0.01),
+         `LBAM larvae` = scales::percent(`LBAM larvae`, accuracy=0.01)) |>
+  kableExtra::kable(col.names = c("sector", "old", "fresh", "larvae"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::column_spec(c(2:4), width = "15mm") |>
+  kableExtra::add_header_above(c(" ", "LBAM, incidence %"=3)) 
+```
+
+```{r}
+#| label: fig-meanLBAMCatchPerWeek
+#| fig-cap: "Average LBAM catch per trap/week in 2022-23"
+
+LBAMTrappingData <- read_csv("data/pestAndDiseaseMonitoring/LBAMTrappingData2023.csv", show_col_types = F) |>
+  dplyr::select(-Month) |>
+  mutate(assessment_date = as.Date(visited_date, "%m/%d/%Y"),
+         assessment_month = as.Date(str_c(str_sub(as.character(assessment_date), 1, 8),"01")))
+
+LBAMTrappingData |>
+  group_by(Sector, assessment_month) |>
+  summarise(LBAM = mean(LBAM, na.rm=T),
+            .groups = "drop") |>
+  ggplot(aes(x=assessment_month, y=LBAM, colour=Sector)) +
+  geom_line(linewidth=0.75) +
+  geom_point() +
+  labs(x = "assessment month",
+       y = "mean monthly incidence",
+       colour = "sector") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 8))
+```
+
+```{r}
+#| label: fig-LBAMPairwise
+#| fig-cap: "pairwise comparison of sectors using Tukey HSD post hoc test"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+LBAMpressure <- aov(data = LBAMTrappingData, LBAM~Sector)
+  
+tkyLBAM <- as.data.frame(TukeyHSD(LBAMpressure)$Sector) |>
+  rownames_to_column(var = "pair")
+
+tkyLBAM |>
+  ggplot(aes(colour=cut(`p adj`, c(0, 0.01, 0.05, 1), 
+                        label=c("p<0.01","p<0.05","Non-Sig")))) +
+  geom_hline(yintercept=0, lty="11", colour="grey30") +
+  geom_errorbar(aes(pair, ymin=lwr, ymax=upr), width=0.2) +
+  geom_point(aes(pair, diff)) +
+  labs(colour="",
+       x = "pairwise comparison",
+       y = "diference") +
+  coord_flip() +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+```
+
+### Conclusion/recommendation
+
+* Overall LBAM control in 2022-23 was similar to the previous season. 
+* Fresh damage and larval finds during harvest as well as an increase in moths catches towards the end of the season, once again confirms that LBAM are most active in autumn.  A cover around mid-February on blocks with known LBAM pressure could be beneficial to keep moths’ numbers and fresh damage minimal before harvest.
+
+## Apple leaf curling midge
+
+Apple Leaf Curling Midge (ALCM) is quarantine pest for China, Japan with Maximum Pest Limit (MPL) 0.5%. Access to Taiwan relies on nil detected apple leaf curling midge.
+
+![example of damage to fruit caused by apple leaf curling midge ](img/pestAndDiseaseMonitoring/ALCM.png){fig-align="center" width=50%}
+
+ALCM is a difficult pest to control. Effective control can only be achieved when several strategies are used in combination with each other: on orchard monitoring for tree vigour and new shoots damage, Movento^TM^ applications and fruit assessments for ALCM pupae presence. Although, traditionally monitoring for ALCM is done in summer (post 3rd midge generation, G3), knowing ALCM presence on orchards from generations 1 (G1) and 2 (G2) can assist in control strategies with focus on G3 to minimise export risk.  
+
+On orchard monitoring post G2 and G3 returned the following average results shown in @tbl-g2andg3 : 
+
+```{r}
+#| label: tbl-g2andg3
+#| tbl-cap: "mean results for post G2 and G3 assessments for 2023 harvest season"
+
+
+tibble(generation = c("G2", "G3"),
+                  vigour = c(0.62, 0.45),
+                  `new midge damage` = c(0.006, 0.006),
+                  `old midge damage` = c(0.007, 0.028),
+                  `overall risk` = c("high", "medium")) |>
+  mutate(vigour = scales::percent(vigour, accuracy = 1.0),
+         `new midge damage` = scales::percent(`new midge damage`, accuracy = 0.1),
+         `old midge damage` = scales::percent(`old midge damage`, accuracy = 0.1)) |>
+  mutate(across(.cols = c(vigour, `new midge damage`, `old midge damage`), ~gsub("%", "\\\\%", .))) |>
+  kableExtra::kable(col.names = c("generation", "vigour$^{12}$", "old$^{1}$", "fresh$^{1}$", "overall risk"),
+                    align=c("l", rep("r",3), "l"), 
+                    booktabs=TRUE, 
+                    escape = F,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" " = 2, "midge damage %" = 2, " ")) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{Average \\\\% is calculated across all assessed blocks, individual results vary};", "\\\\footnotesize{actively growing shoots \\\\%}"),
+                       escape=F,
+                       footnote_as_chunk=F,
+                       threeparttable=T)
+  
+
+
+```
+
+Overall risk calculations are based on tree’s active growth and new midge damage. Tree growth is obviously important in young orchards and a high risk ALCM rating has to be taken in context with canopy development objectives. Quite often a block falls into a high risk due to high vigour while midge infestation stays relatively low. These results are useful as a guidance in “on the ground” decision making and in planning for lower risk lines of fruit. However, they are not a complete and final ruling on export risk for ALCM sensitive markets, finds at harvest bin assessment are. 
+
+The following data analysis shows that despite a 22% increase in infected shoots post G3 (new, old or broken leaves), ALCM presence on orchards did not translate into an export risk during harvest as there was nil % of ALCM detection in bin assessments (@tbl-ALCMtemporalHA, @fig-ALCMTemporal). 
+
+```{r}
+#| label: tbl-ALCMtemporalHA
+#| tbl-cap: "Average incidence of ALCM between 2019-23"
+
+ALCMTimeSeries <- read_csv("data/pestAndDiseaseMonitoring/ALCMTimeSeries.csv", show_col_types = F)
+
+ALCMTimeSeries |>
+  mutate(across(.col = c(`across all blocks`:`summer infected shoots`), ~scales::percent(., accuracy=0.1))) |>
+  kableExtra::kable(col.names = c("year", "across all blocks", "within affected block", "summer infected shoots"),
+                    align=c("l", rep("r",3)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "ALCM incidence %" = 3)) 
+
+```
+
+```{r}
+#| label: fig-ALCMTemporal
+#| fig-cap: "incidence of ALCM taken at harvest assessment from 2019 through 2023"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+ALCMTimeSeries |>
+  pivot_longer(
+    cols = c(`across all blocks`:`summer infected shoots`),
+    names_to = "incidence type",
+    values_to = "incidence percent"
+  ) |>
+  mutate(`incidence type` = factor(`incidence type`, levels=c("across all blocks", "within affected blocks", "summer infected shoots"))) |>
+  ggplot(aes(x=year, y=`incidence percent`, colour = `incidence type`)) +
+  geom_line(linewidth=0.75) +
+  facet_wrap(~`incidence type`, ncol=1, scales = "free_y" ) +
+  scale_y_continuous(label = scales::label_percent(accuracy=0.01)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 7, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 7),
+        legend.title = element_text(size = 8),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+
+```
+### By sector 2022-2023
+
+Below charts show how number of damaged shoots increased across all sectors during post G3 assessments. Omahu sector recorded the highest percentage of damaged shoots (new infestation and old damage) both post G2 and G3, 18% and 36% respectively (@fig-ALCMBySector). It was also the only sector with midge infestation high enough to place some blocks into high-risk post G3 (@fig-ALCMRisk).  
+
+```{r}
+#| label: fig-ALCMBySector
+#| fig-cap: "Damaged shoots post G2 and G3 by Sector for 2023 harvest"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+ALCMBySector <- read_csv("data/pestAndDiseaseMonitoring/ALCMBySectorG2G3.csv", show_col_types = F)
+
+ALCMBySector |>
+  ggplot(aes(x=Generation, y=`percent shoot infected`, fill=Sector, colour=Sector)) +
+  geom_col(position="dodge", alpha=0.5) +
+  scale_y_continuous(label = scales::label_percent(accuracy=1.0)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+```
+
+
+```{r}
+#| label: fig-ALCMRisk
+#| fig-cap: "ALCM risk factor for 2023 summer shoots assessments"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+ALCMRisk <- read_csv("data/pestAndDiseaseMonitoring/ALCMSectorRisk.csv", show_col_types = F)
+
+ALCMRisk |>
+  mutate(risk = factor(risk, levels=c("low", "medium", "high"))) |>
+  ggplot(aes(x=sector, y=value, colour=risk, fill=risk)) +
+  geom_col(position="dodge", alpha=0.5) +
+  coord_flip() +
+  scale_y_continuous(label = scales::label_percent(accuracy=1.0)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+
+
+
+```
+### Conclusion / recommendations
+
+* ALCM appears to be well controlled across the company with nil interception during harvest assessments in the last 4 consecutive years, all while continue expanding in producing hectares with many new plantings.
+*	ALCM is a hard pest to tackle, and there is not a silver bullet for its control. A combination of strategies including tree vigour control, on orchard monitoring, Movento^TM^ applications at right timing is recommended as the most efficient way for ALCM management.
+*	The NZAPI ALCM population regional graphs is the best available guide to go off for Movento^TM^ applications’ timing for better ALCM control. 
+
+## Wooly apple aphid
+
+Woolly Apple Aphid (WAA) is quarantine pest for markets such as China and Taiwan with Maximum Pest Limit (MPL) 0.5%.
+
+![example of damage to fruit caused by wooly apple aphid](img/pestAndDiseaseMonitoring/WAA.png){fig-align="center" width=50%}
+
+Successful control of WAA is achieved by maintaining high populations of its natural predator, parasitoid wasp Aphelinus mali (A.Mali). During both on orchard monitoring and harvest assessments we distinguish the two. We look for unparasitized WAA (WAA) and WAA parasitised with the wasp (A.Mali). If incidence of A.Mali prevails, this indicates effective bio-control. However, both types are recognised as quarantine pests.
+
+For the first time in the last 5 years pre-harvest monitoring recorded WAA colonies on Rockit^TM^ apple orchards. Below is the list of blocks that were placed in either medium or high risk during on orchard assessments:
+
+```{r}
+#| label: tbl-WAASectorRisk
+#| tbl-cap: "medium and high risk blocks from the 2023 harvest season"
+
+WAAHighRisk <- read_csv("data/pestAndDiseaseMonitoring/WAAHighRisk.csv", show_col_types = F) |>
+  filter(!is.na(Sector))
+
+WAAHighRisk |>
+  mutate(across(.col = c("% Infested shoots", "% parasitised") , ~scales::percent(., accuracy=1.0))) |>
+  kableExtra::kable(col.names = c("date", "sector", "% infested shoots", "live", "parasitised", "% parasitised", "risk"),
+                    align=c(rep("l", 2), rep("r",4), "l"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" "=2, "woolly apple aphid" = 4, " ")) 
+
+```
+```{r}
+#| label: tbl-WAAParameters
+#| tbl-cap: "Definition of WAA risk parameters"
+
+WAARiskParameters <- tibble(key = c("% infested shoots", "% parasitism"),
+                            low = c("<2%", ">25% (effective control)"),
+                            medium = c("2-5%", " "),
+                            high = c(">5%", "<25%"),
+                            timing = c("mid-season & pre-harvest", "mid-season"))
+
+WAARiskParameters |>
+  kableExtra::kable(col.names = c("key", "low", "medium", "high", "timing"),
+                    align=c("l", rep("c",3), "l"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "WAA risk" = 3, " ")) 
+
+```
+
+More than 5% shoot infestation of WAA means that a block is higher risk for fruit infestation at harvest (live WAA or parasitised), and therefore, is a higher risk in export market. Pre-harvest assessments certainly were a good indicator of what to expect at harvest. Same orchards recorded parasitised WAA during harvest assessments. Overall, the incidence of unparasitised WAA both across all blocks and within affected blocks was non-existent this season, which suggests that the parasitoid wasp caught up with the WAA population towards the end of the season despite the cooler spring/summer. The incidence of A.Mali has dropped across all blocks by 28%, but increased by 0.1% within affected blocks (@tbl-meanWAAIncidence, @fig-WAATemporal). 
+
+```{r}
+#| label: tbl-meanWAAIncidence
+#| tbl-cap: "Average incidence of WAA and A.Mali in Rockit harvest assessment between 2019-23"
+
+WAATemporal <- read_csv("data/pestAndDiseaseMonitoring/WAATemporal.csv", show_col_types = F)
+
+WAATemporal |>
+  pivot_wider(names_from="incidence", values_from=c("WAA", "A.Mali")) |>
+  relocate(`A.Mali_across all blocks`, .after=`WAA_across all blocks`) |>
+  mutate(across(.col=c(`WAA_across all blocks`:`A.Mali_within affected blocks`), ~scales::percent(., accuracy=0.1))) |>
+  kableExtra::kable(col.names = c("year", "WAA", "A.Mali", "WAA", "A.Mali"),
+                    align=c("l", rep("r",4)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "across all blocks" = 2, "within affected blocks"=2)) 
+  
+```
+
+```{r}
+#| label: fig-WAATemporal
+#| fig-cap: "Average incidence of WAA and A.Mali in Rockit harvest assessment between 2019-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+WAATemporal |>
+  pivot_longer(cols = c("WAA", "A.Mali"), names_to = "pest", values_to = "value") |>
+  ggplot(aes(x=year, y=value, colour=pest)) +
+  geom_line() +
+  facet_wrap(~incidence, ncol = 1, scales = "free_y") +
+  scale_y_continuous(name = "incidence / %", label = scales::label_percent(accuracy=0.01)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  labs(x = "year",
+       colour = "") +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+
+```
+### By Sector 2022-23
+
+Puketapu sector recorded the highest interception of parasitised WAA during harvest assessments at 2.1%, followed by Valley, Havelock Nth, Napier and Bridge PA. Omahu was the only sector that was completely clean of any type of WAA. 
+
+```{r}
+#| label: tbl-AMaliBySector
+#| tbl-cap: "A.Mali finds at harvest by Sector"
+
+
+AMaliBySector <- read_csv("data/pestAndDiseaseMonitoring/AMaliBySector.csv", show_col_types = F)
+
+AMaliBySector |>
+  mutate(`A.Mali` = scales::percent(`A.Mali`, accuracy=0.1)) |>
+  kableExtra::kable(col.names = c("sector", "A.Mali incidence"),
+                    align=c("l", "r"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position"))
+  
+```
+
+
+### Conclusion/Recommendations
+
+*	A. Mali wasp is still the best (and free) control of WAA but emerges later than WAA crawlers and is also conditional on spring temperatures. 
+* Early seasons cover sprays are best as colonies are small and crawlers are more vulnerable, as well as a good way to protect the overwintering wasp. 
+* To archive “zero” fruit infestation, there needs to be close to zero shoot infestation from mid-January onwards. 
+* Continue with mid-season WAA and A.Mali population monitoring to assess the level of risk for market access at harvest. Pre-harvest monitoring for WAA infestation can either reassure or confirm the problem. 
+* To lower the risk of WAA, tree structure management is recommended, i.e. open canopy, removal of suckers, summer prune and thinned fruit bunches to singles or doubles. 
+
+## Mealy bug
+
+Mealy bug (MB) is quarantine pest for Taiwan, Thailand, Japan USA markets with Maximum Pest Limit (MPL) 0.5%, and Australia with 0% tolerance. 
+
+![example of damage to fruit caused mealybug](img/pestAndDiseaseMonitoring/MB.png){fig-align="center" width=50%}
+
+Season 2022-23 continued a trend of increased percentage of blocks recording MB and the severity of the incidences during harvest assessment. There were 6% increase in incidence across all blocks compared to last season, and 0.1% increase in incidences within affected blocks (@tbl-MBTemporal, @fig-MBTemporal). Below data analysis does not include sooty mould, though it is indicative of internal MB.
+
+```{r}
+#| label: tbl-MBTemporal
+#| tbl-cap: "Average incidence of Mealy bug in Rockit harvest assessment between 2019-23"
+
+MBTemporal <- read_csv("data/pestAndDiseaseMonitoring/MBTemporal.csv", show_col_types = F)
+
+MBTemporal |>
+  mutate(across(.col=c(`across all blocks`:`within affected blocks`), ~scales::percent(., accuracy=0.1))) |>
+  kableExtra::kable(col.names = c("year", "across all blocks", "within affected blocks"),
+                    align=c("l", rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" ", "mealy bug incidence" = 2)) 
+  
+  
+
+```
+
+```{r}
+#| label: fig-MBTemporal
+#| fig-cap: "Average incidence of Mealy Bug in Rockit harvest assessment between 2019-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.6
+
+MBTemporal |>
+  pivot_longer(cols = c("across all blocks", "within affected blocks"), names_to = "type", values_to = "incidence") |>
+  ggplot(aes(x=Year, y=incidence, colour=type)) +
+  geom_line() +
+  facet_wrap(~type, ncol=1, scales = "free_y") +
+  scale_y_continuous(name = "incidence / %", label = scales::label_percent(accuracy=0.01)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  labs(x = "year",
+       colour = "") +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+```
+### By Sector 2022-23
+
+Napier sector recorded the highest combined incidence of MB, 2.2% followed by Havelock Nth, 0.6%, Valley, 0.3% and Omahu at 0.1% (@tbl-MBBySector). Puketapu and Bridge Pa were two sectors with nil MB interceptions during harvest assessments. 
+
+```{r}
+#| label: tbl-MBBySector
+#| tbl-cap: "Mealy bug finds at harvest by Sector"
+
+MBBySector <- read_csv("data/pestAndDiseaseMonitoring/MBBySector.csv", show_col_types = F)
+
+MBBySector |>
+  mutate(Mealybug = scales::percent(Mealybug, accuracy=0.1)) |>
+  kableExtra::kable(col.names = c("sector", "mealy bug incidence"),
+                    align=c("l", "r"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position"))
+  
+```
+
+## Scale
+
+Scale monitoring is carried out in summer (early February) over 500 fruit per block. Pre-harvest on-fruit scale assessments on Rockit blocks did not record any pest’s sighting this season. On fruit inspection can be difficult: fruit should be checked with paying special attention to the calyx at the same time as a great care is taken not to knock it off the branch.  
+
+Despite the clean pre-harvest results, the following blocks recorded non-zero levels of San Jose scale during harvest assessments:
+
+```{r}
+#| label: tbl-SJSBlocks
+#| tbl-cap: "blocks (anonymised) with San Jose scale observations during the harvest assessment 2023"
+
+scaleIncidence <- read_csv("data/pestAndDiseaseMonitoring/ScaleIncidence.csv", show_col_types = F) |>
+  dplyr::select(-c(Orchard, `Rpin#`, `Block`)) 
+
+scaleIncidence |>
+  mutate(`San Jose scale` = scales::percent(`San Jose scale`, accuracy=0.1)) |>
+  kableExtra::kable(col.names = c("sector", "San Jose scale"),
+                    align=c("l", "r"), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position"))
+```
+
+Both Mealy bug and scales have the potential for rapid spread in the absence of appropriate control measures. 
+
+## Mites
+
+Mites’ monitoring is recommended to carry out at least twice during a growing season: in late spring and late summer. At each assessment Fruition team checks 50 leaves per blocks for two pest mites: European red mite (ERM) and two-spotted spider mite, as well as any predator (beneficial) mites. Season 2022-23 saw quite a lot of ERM on Rockit orchards, however, only one block in the Puketapu sector reached a threshold set at 30% during spring assessment, and a block in the Omahu sector was near a threshold set at 75% during summer assessment. Many predator mites were also observed, which speaks of a good bio-control on Rockit orchards. 
+
+## Other pests
+
+In recent years we have noticed a worrying trend of increased incidence of several ‘non-critical pests’ during harvest assessments: Bronze Beetle, Fuller’s Rose Weevil and Noctuid moth. Even though these pests are considered ‘non-critical’, their damage on fruit still causes rejects on a packing line and are worth of keeping an eye on. 
+
+It is pleasing to see that these pests’ numbers have declined in 2022-23 compared to last two season. However, incidence of Fullers’ and Noctuid’s presence on Rockit orchards has not yet reached lower levels observed in 2020. 
+
+```{r}
+#| label: fig-otherPests
+#| fig-cap: "Average incidence of Bronze Beetle, Fuller’s Rose Weevil and Noctuid moth in Rockit harvest assessment between 2019-23"
+#| fig-align: center
+#| out-width: 90%
+#| fig-asp: 0.8
+
+otherPests <- read_csv("data/pestAndDiseaseMonitoring/otherPests.csv", show_col_types = F) |>
+  mutate(Year = as.integer(Year))
+
+otherPests |>
+  pivot_longer(cols = c("Bronze Beetle", "Fullers", "Noctuid"), names_to = "pest", values_to = "incidence") |>
+  ggplot(aes(x=factor(Year), y=incidence, fill=pest, colour=pest)) +
+  geom_col(position = "dodge", alpha = 0.5) +
+  facet_wrap(~type, ncol=1, scale="free_y") +
+  scale_y_continuous(name = "mean incidence", label=scales::label_percent(accuracy=0.1)) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f")) +
+  labs(x = "year",
+       colour = "",
+       fill = "") +
+  ggthemes::theme_economist() +
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+  
+
+```
+
+
+## Glossary
+
+[incidence]{#glossary-incidence}
+
+:   a measure of presence or absence of a pest and disease
+
+[% Incidence]{#glossary-percincidence}
+
+:  % Incidence - the percentage of blocks having a known P&D in their bin assessments
+
+[P&D]{#glossary-PandD}
+
+:  Pest and disease
+
+[P&D incidence within affected blocks]{#glossary-PandDwithinAffBlock}
+
+:  a measure of how bad P&D presence was within affected blocks
+
+[average Incidence across all blocks]{#glossary-PandDacrossAllBlocks}
+
+:  a measure of how widespread P&D presence was across all assessed blocks
+
+[NZAPI]{#glossary-NZAPI}
+
+:  New Zealand apple and pears institute  
+
+[Movento]{#glossary-Movento}
+
+:  Chemical solution for controlling a range of sucking pests including ALCM, WAA and scale.
+

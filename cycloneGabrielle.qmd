@@ -1,0 +1,363 @@
+# Cyclone Gabrielle and resilience {#sec-cycloneGabrielle}
+
+Author:  Stuart Dykes and Matt Saunders
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Introduction 
+
+### Hawkes Bay regional context
+
+On 14^th^ February 2023 Cyclone Gabrielle hit New Zealand with record rainfall and flooding. Hawke’s Bay was one of the hardest hit regions leaving many communities and businesses damaged or destroyed.
+
+16% of the Hastings District was flooded. Initial estimates (@selvaraj_sadhvi_cyclone_2023) suggest approximately 1,600 homes were flooded across Hawke’s Bay, some with up to seven metres of water. Across the region over 1,000 properties were stickered (i.e. unable to be either temporarily or permanently inhabited). Homeowners in severely impacted areas had to wait several months for central and local government to make decisions around the future use of their land.
+
+28 days after Cyclone Gabrielle, the State of Emergency was lifted in Hawke’s Bay. The region then entered a phase of recovery and rebuilding, which required a significant investment from industry, iwi, central and local government. Estimates put the final expected national rebuild cost in excess of NZD13 billion. Fundamental to the recovery is the need for regionally-led leadership and direction. Local leaders have worked together to develop a Hawke’s Bay Cyclone Gabrielle Regional Recovery Framework to provide a structure for recovery efforts. Cyclone Gabrielle has exposed the fragility of the region’s critical infrastructure, so underpinning the recovery activities will be the need to ensure future resilience against catastrophic events at every level.
+
+### Environment
+
+Cyclone Gabrielle is the most significant weather event on record with between 250 – 400mm rainfall recorded across the region. Slash, debris and soil slowed the flow of rivers which in turn breached stop banks, inundating surrounding areas with flood waters. It is only the third time in New Zealand’s history a national state of emergency has been declared. Climate change and the resulting warming oceans intensified the cyclone and increase the likelihood of future catastrophic weather events. As a region, a better understanding of the environmental impacts of climate change and what skills are needed to deliver sustainable solutions and risk mitigations need to be explored. Environmental resilience will be a key focus of the recovery.
+
+### Horticulture
+
+Horticulture remains vital to the Hawke’s Bay economy. Initial estimates put orchard losses from the cyclone at approximately 30% for all apple orchards and other crops, but with other organisms and disorders latently affecting non-damaged trees, this number has risen beyond those trees directly impacted. The supply of replacement trees is estimated to be below the required numbers, with commercial nurseries predicting it may take up to five years to meet demand caused by damage due to cyclone. 
+
+## Cyclone Gabrielle impact on Rockit^TM^ apple orchards
+
+In January 2023 the total canopy hectares of productive (i.e. producing) Rockit^TM^ orchards was xxxx hectares with an additional yyyy hectares of new orchards yet to produce a commercial crop. When cyclone Gabrielle arrived on the 13th February the flood and consequential silt inundation caused extensive damage to a number of orchards that were close to rivers and low lying areas.  @fig-GabrielleMap shows a map of Hawke's Bay immediately after cyclone Gabrielle with areas of flooding and silt inundation; overlaid is all the productive Prem A96 orchards at the time of the cyclone.
+
+@fig-GabrielleMap shows a map of Hawkes Bay including the post cyclone Gabrielle distribution of silt and flooding. Overlaid are the locations of all producing Rockit™ apple orchards. The most striking feature of the map is the silt inundation between between the Ngaruroro and Tutaekuri rivers. This was a result of the northern and southern stop banks failing for the Ngaruroro and Tutaekuri rivers respectively, affecting a large area between those two rivers, most significantly: Pakowhai, Waiohiki and Korokipo.  There are four large Rockit^TM^ apple orchards in the Korokipo catchment.
+
+The Tutaekuri river stop banks also failed further upstream in the Puketapu and Moteo Pa areas causing extensive damage to four Rockit^TM^ apple orchards.  A subsequent decision was made not to replant one of hose orchards which was catastrophically damaged.
+
+Extensive damage also occurred in the Omahu sector where flooding destroyed more than 60% of a single  block with less than 34% remaining from the pre-cyclone canopy area.  In total 
+
+As can be seen from @fig-GabrielleMap, apart from the aforementioned damage the  block standing, however production was affected as only apple 30cm above the flood line were harvested to avoid any ongoing issues with food safety (predominantly Listeria).
+
+![Post cyclone Gabrielle map showing: flooding, silt inundation and all productive Prem A96 orchards overlaid](img/cycloneGabrielle/hbFloodMap.png){#fig-GabrielleMap fig-align="center" width=90%}
+
+### Weather
+
+To give the cyclone some perspective the rainfall and wind data is reviewed below for the weather stations that are installed on Rockit^TM^ apple orchards. The exception being the Puketapu data which was sourced from the Met Services weather station available through the NZ Apple and Pears database.  The cumulative and hourly rainfall are shown graphically for Rockit^TM^ apple orchard sectors in @fig-regionalRain and @tbl-maxRainfall.  Over the duration of the cyclone the most rain fell in the Pukehamoamoa, Puketapu and Omahu in-land areas (refer to @fig-GabrielleMap) with cumulative rainfalls of 269, 248 and 226mm respectively.  South of Hastings the rainfall was less in volume with Ngatarawa, Bridge Pa and Whakatu delivering 145, 118 and 117mm of rain respectively over the same period. Gisborne saw 184mm of rain fall over the same cyclone duration which was above the Hawke's Bay mean cumulative rainfall of 178mm.
+
+
+```{r}
+#| label: fig-regionalRain
+#| fig-cap: "Cumulative and hourly rainfall over the 36 hours of cyclone Gabrielle for 10 weather stations located on Rockit^TM^ apple orchards.  The Puketapu site data is obtained from an independent MetService site accessed through NZAPI website"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 1.0
+
+api_key <- 'NF3Wbqrh95hwWw5eAsfhr75PFfxeLnGUNNxt1pNZ'
+api_path <- 'https://api.eagle.io/api/v1/'
+api_resource <- 'historic/?'
+
+get_node <- function(node_id='', start_time='', end_time='', parameters = '') {
+  
+  api_resource <- 'historic/?'
+  params <- paste0(node_id, parameters)
+  
+  if(start_time != '') {
+    req_uri <- paste0(api_path, api_resource, start_time, '&', end_time, '&', 'params=', params)
+  } else {
+    req_uri <- paste0(api_path, "nodes/")
+  }
+  
+  for(i in 0:60) {
+    testRes <- httr::GET(req_uri,
+                         httr::add_headers('Content-Type' = 'application/json', 
+                                     'X-Api-Key' = api_key))
+    if(testRes$status_code == 200) {
+      break
+    } else {
+      print(paste0('status_code: ',testRes$status_code))
+    }
+  }
+  return(testRes)
+}
+
+#=========================Rain over Monday 13th 08:00 to Wednesday 08:00=============================
+
+metrisLookup <- read_csv("data/cycloneGabrielle/metris_lookup.csv", show_col_types = F) |>
+  mutate(sector = case_when(region == "Crown" ~ "Pukehamoamoa",
+                            region == "Gisborne" ~ "Gisborne",
+                            region == "HAU - Haumoana" ~ "Haumoana",
+                            region == "LROL - Lawn Road" ~ "Whakatu",
+                            region == "Manahi" ~ "Paki Paki",
+                            region == "NRC" ~ "Mangatere",
+                            region == "Omahu" ~ "Omahu",
+                            region == "Pioneer" ~ "Ngatarawa",
+                            region == "RRD - Raukawa" ~ "Bridge Pa",
+                            region == "Valley Road 1" ~ "Maraekakho",
+                            region == "Steel" ~ "Puketapu"))
+
+rainIDs <- metrisLookup |>
+  filter(measuredParam %in% c("Rain - Total", "Rain - Last Reading"),
+         !region %in% c("Steel", "Mana", "Valley Road 3")) |>
+  pull(uniqueId)
+
+SD <- "2023-02-12T12"
+ED <- "2023-02-14T12"
+params <- '(aggregate:DELTA;baseTime:H;interval:1H)'
+
+cycloneRain <- function(node_id, SD, ED, params) {
+  if (node_id == "61961453110b716a5e0c458b") {
+    params = '(aggregate:TOTAL;baseTime:H;interval:1H)'
+  } else {
+    params = params
+  }
+  test <- get_node(node_id = node_id,
+                   start_time = paste0("startTime=",SD,":00:00.000Z"),
+                   end_time = paste0("endTime=",ED,":00:00.000Z"),
+                   parameters = params)
+  
+  node_interim <- tibble(json = list(jsonlite::parse_json(test))) |>
+    unnest_wider(json) 
+  
+  node_rect <- node_interim |>
+    unnest_longer(data) |>
+    select(data) |>
+    unnest_wider(data) |>
+    unnest_wider(f) |>
+    unnest_wider(`0`) |>
+    select(c(ts, v)) |>
+    mutate(dttmi = as.POSIXct(ts, "%Y-%m-%dT%H:%M:%S", tz="UTC")) |>
+    mutate(dttm = as.POSIXct(dttmi, tz="NZ")) |>
+    filter(!is.na(v)) |>
+    select(-c(ts, dttmi)) |>
+    rename(rainfall = v) |>
+    mutate(node = node_id)
+  
+  return(node_rect)
+}
+
+cycloneRainfall <- rainIDs |>
+  map(~cycloneRain(., SD, ED, params)) |>
+  bind_rows()
+
+#========================Read and convert MetWatch Puketapu data=====================
+
+puketapu <- read_csv("data/cycloneGabrielle/MetWatchPuketapu.csv", show_col_types = F) |>
+  mutate(time2 = as.numeric(str_squish(str_sub(Time,-4,-3))),
+         tod = str_sub(Time, -2, -1),
+         time3 = case_when(tod == "PM" & time2 != 12 ~ time2+12,
+                           tod == "PM" & time2 == 12 ~ time2,
+                           tod == "AM" ~ time2),
+         time4 = case_when(time3 == 12 & tod == "AM" ~ "00",
+                           time3 < 10 ~ str_c("0", time3),
+                           time3 >= 10 ~ as.character(time3)),
+         day = as.integer(str_sub(Date, -8,-7)),
+         day = if_else(time4 == "00", day+1, day),
+         dayMonth = str_sub(Date, 1,-9),
+         dttm = as.POSIXct(str_c(dayMonth,as.character(day),", 2023 ",time4,":00:00"), 
+                           format = "%a, %b %d, %Y %H:%M:%S", tz="NZ"),
+         node = "Puketapu",
+         `Rainfall (mm)` = if_else(`Rainfall (mm)` == "-", "0", `Rainfall (mm)`),
+         `Rainfall (mm)` = as.numeric(`Rainfall (mm)`)) |>
+  dplyr::select(c(`Rainfall (mm)`, dttm, node)) |>
+  rename(rainfall = `Rainfall (mm)`) 
+
+#=======================plot result==================================================
+
+cycloneRainfall |>
+  bind_rows(puketapu) |>
+  group_by(node) |>
+  mutate(cumrf = cumsum(rainfall)) |>
+  left_join(metrisLookup |> dplyr::select(c(uniqueId, sector)),
+            by = c("node" = "uniqueId")) |>
+  mutate(sector = replace_na(sector, "Puketapu")) |>
+  ggplot(aes(x=dttm)) +
+  geom_col(aes(y=rainfall), fill="#a9342c", colour="#a9342c", alpha=0.5) +
+  geom_line(aes(y=cumrf), colour="#48762e", linewidth=0.75) +
+  facet_wrap(~sector) +
+  labs(x = "date and time",
+       y = "rainfall / mm") +
+  scale_x_datetime(breaks = scales::breaks_width("12 hours"), date_labels = "%b %d %H:%M") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
+        axis.ticks.length.x = unit(0.1, "cm"),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+```
+```{r}
+#| label: tbl-maxRainfall
+#| tbl-cap: "Maximum cumulative and amximum hourly rainfall for 11 regional Rockit^TM^ apple growing sites during cyclone Gabrielle"
+
+cycloneRainfall |>
+  bind_rows(puketapu) |>
+  group_by(node) |>
+  mutate(cumrf = cumsum(rainfall)) |>
+  left_join(metrisLookup |> dplyr::select(c(uniqueId, sector)),
+            by = c("node" = "uniqueId")) |>
+  mutate(sector = replace_na(sector, "Puketapu")) |>
+  ungroup() |>
+  group_by(sector) |>
+  summarise(maxCumRainfall = max(cumrf),
+            maxHourlyRainfall = max(rainfall)) |>
+  arrange(desc(maxCumRainfall)) |>
+  kableExtra::kable(col.names = c("weather station site", "cumulative", "hourly"),
+                    align=c(rep("l", 1),rep("r",2)), 
+                    booktabs=TRUE, 
+                    escape = T,
+                    linesep = "") |>
+  kableExtra::add_header_above(c(" ","rainfall / mm" = 2),
+                               escape = T) |>
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = c("HOLD_position")) 
+```
+
+Wind is typically measured by looking at both wind speed and the azimuthal direction.  A convenient way to visualise the distribution of windspeed and direction over a period is through a windrose diagram.  This is presented in @fig-windrose for the five weather stations with wind sensors installed. The prevailing wind direction was easterly for Gisborne and south-east easterly for the Hawke's Bay region.  The rose indicates that there was very little variation in the wind direction over the cyclone duration.
+
+
+```{r}
+#| label: fig-windrose
+#| fig-cap: "Windrose showing the distribution of wind-speed and direction over the duration of cyclone Gabrielle.  The wind-speed is given in km/h units"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 1.0
+
+cycloneWindData <- function(node_id, SD, ED, measure) {
+  params = '(aggregate:AVERAGE;baseTime:H;interval:1H)'
+  
+  node_list <- get_node(node_id = node_id, 
+                        start_time = paste0('startTime=',SD,':00:00.000Z'),
+                        end_time = paste0('endTime=',ED,':00:00.000Z'),
+                        parameters = params)
+  
+  node_interim <- tibble(json = list(jsonlite::parse_json(node_list))) |>
+    unnest_wider(json) 
+  
+  if (!is.na(node_interim$data)) {
+    
+    node_rect <- node_interim |>
+      unnest_longer(data) |>
+      select(data) |>
+      unnest_wider(data) |>
+      unnest_wider(f) |>
+      unnest_wider(`0`) |>
+      select(c(ts, v)) |>
+      mutate(index = as.character(node_id))
+    
+    colnames(node_rect) <- c("date",measure , "index")
+    
+    return(node_rect)
+  }
+}
+
+SD <- "2023-02-12T12"
+ED <- "2023-02-14T12"
+
+wind_final <- metrisLookup |>
+  filter(measuredParam == "Wind Direction") |>
+  pull(uniqueId) |>
+  map_df(~cycloneWindData(., SD, ED, "Wind Direction")) |>
+  left_join(metrisLookup |> 
+              select(c(uniqueId, sector)), 
+            by = c("index" = "uniqueId")) |>
+  select(-index) |>
+  mutate(date = as.POSIXct(date, format="%Y-%m-%dT%H:%M:%OSZ", tz="UTC"),
+         date = as.POSIXct(date, tz="NZ"))
+
+wind_speed_final <- metrisLookup |>
+  filter(measuredParam == "Wind Speed") |>
+  pull(uniqueId) |>
+  map_df(~cycloneWindData(., SD, ED, "Wind Speed")) |>
+  left_join(metrisLookup |> 
+              select(c(uniqueId, sector)), 
+            by = c("index" = "uniqueId")) |>
+  select(-index) |>
+  mutate(date = as.POSIXct(date, format="%Y-%m-%dT%H:%M:%OSZ", tz="UTC"),
+         date = as.POSIXct(date, tz="NZ"))
+
+wind_gust_final <- metrisLookup |>
+  filter(measuredParam == "Wind Gust") |>
+  pull(uniqueId) |>
+  map_df(~cycloneWindData(., SD, ED, "Wind Gust")) |>
+  left_join(metrisLookup |> 
+              select(c(uniqueId, sector)), 
+            by = c("index" = "uniqueId")) |>
+  select(-index) |>
+  mutate(date = as.POSIXct(date, format="%Y-%m-%dT%H:%M:%OSZ", tz="UTC"),
+         date = as.POSIXct(date, tz="NZ"))
+
+wind <- wind_final %>%
+  bind_cols(wind_speed_final |> select(`Wind Speed`)) |>
+  bind_cols(wind_gust_final |> select(`Wind Gust`)) |>
+  relocate(sector, .after = date) |>
+  mutate(`Wind Speed` = `Wind Speed`*3.6,
+         `Wind Gust` = `Wind Gust`*3.6)
+
+library(clifro)
+
+
+with(wind, clifro::windrose(`Wind Speed`, 
+                   `Wind Direction`,
+                   facet = sector,
+                   n_col=3,
+                   speed_cuts = c(12, 24, 36, 48),
+                   legend_title = "wind speed / km/h",
+                   axis.text.y = element_text(size = 7, hjust=1)))
+
+```
+
+@fig-regionalWind shows that the wind sensor in Gisborne failed just after 22:00 on the evening of 13th February. Winds were blowing around 60 and gusting above 100 km/hr.  At the peak of the cyclone (estimated to be around 22:00 on Monday 13th February), wind-speeds of 80 gusting to 132 km/hr were recorded at the Mangatere station. In all cases the wind gusts were approximately double the measured wind speeds.  
+
+```{r}
+#| label: fig-regionalWind
+#| fig-cap: "Wind and gust speeds as a function of time over the duration of cyclone Gabrielle.  The wind-speed is given in km/hr units"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+wind |>
+  filter(!is.na(`Wind Speed`)) |>
+  select(-`Wind Direction`) |>
+  pivot_longer(cols=c(`Wind Speed`, `Wind Gust`), names_to = "measure", values_to = "speed") |>
+  mutate(speedKPH = speed) |>
+  ggplot(aes(x = date, y = speedKPH, colour = measure)) +
+  geom_line(alpha = 0.3, linewidth=.25) +
+  geom_smooth(method = "loess", se=F) +
+  facet_wrap(~sector) +
+  labs(x = "date",
+       y= "wind speed km/hr",
+       colour = "wind measure") +
+  scale_x_datetime(breaks = scales::breaks_width("12 hours"), date_labels = "%b %d %H:%M") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_fill_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 6, angle = 45, hjust = 1, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10), size = 10))
+
+```
+
+### Immediate actions post cyclone
+
+The initial triage began on the afternoon of 14th February by contacting all staff and verifying access to orchards. Initially no access was available for a number of blocks predominantly around the Moteo Pa, Swamp Road, Puketapu and Puketitiri Road areas.  A number of bridges had been destroyed including main bridge between Moteo Pa and Puketapu, restricting all access between these sites that were, hitherto, part of the same sector.  
+
+Where river stop banks had failed (this happened on both the Ngaruroro and Tutaekuri rivers), the water flowed into adjacent land areas with considerable momentum carrying silt and debris through orchards and vineyards.  The effect was to knock over the infrastructure (posts and wires) and trees. Moreover equipment such as filed bins and reflective mulch were picked up and taken down stream.  Rockit^TM^ apple bins were collected more than four kilometres from the nearest orchard.  What remained after the flood waters subsided was a thick layer of silt (more than one metre in some cases), debris brought from upstream (often termed slash) and debris from the orchard (posts, wires, reflective mulch field bins and also orchard mobile plant).  
+
+For affected orchards where access was possible the immediate and urgent remediation was to remove the flood water where 
+

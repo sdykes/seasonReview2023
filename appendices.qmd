@@ -1,0 +1,103 @@
+# Appendices 
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Growing degree days {#sec-GDD}
+
+```{=tex}
+\begin{equation}
+GDD = \sum_{i}^{K} \frac{T_{i}^{max}+T_{i}^{min}}{2}-T^{base}
+(\#eq-GDD)
+\end{equation}
+```
+Where: $i =$ ith day\
+$K =$ total number of days summing over\
+$T_i^{max} =$ the maximum daily temperature on the ith days\
+$T_i^{min} =$ the minimum daily temperature on the ith day\
+$T^{base} =$ the base temperature for the model (in our case 10°C)
+
+## Chill units {#sec-chillUnits}
+
+The models used to predict chill requirement are empirically based and difficult to validate. Rockit tracks two models: Chilling hours and the Utah model (also known as Richardson Chill units). These are best described mathematically in equations @eq-CH and @eq-RCU respectively.
+
+```{=tex}
+\begin{equation}
+CH_i = \sum_{i}^{t} T_{7.2} \; \text{where} \: T_{7.2} = 
+        \begin{cases}
+        0^{\circ}C < T < 7.2^{\circ}C & :1,\\
+        \text{else.} & :0
+        \end{cases}
+(\#eq-CH)
+\end{equation}
+```
+Where:\
+$i =$ ith hour\
+$t =$ total number of hours summing over
+
+```{=tex}
+\begin{equation}
+\begin{aligned}
+RCU_i &= \sum_{i=1}^{t} T_U \\ \text{where} \: T_U &= 
+   \begin{cases}
+        T \leq 1.4^{\circ}C & :0,\\
+        1.4^{\circ}C < T \leq 2.4^{\circ}C & :0.5,\\
+        2.4^{\circ}C < T \leq 9.1^{\circ}C & :1.0,\\
+        9.1^{\circ}C < T \leq 12.4^{\circ}C & :0.5,\\
+        12.4^{\circ}C < T \leq 15.9^{\circ}C & :0,\\
+        15.9^{\circ}C < T \leq 18.0^{\circ}C & :-0.5,\\
+        T > 18.0^{\circ}C & :-1.0
+   \end{cases}
+\end{aligned}
+(\#eq-RCU)
+\end{equation}
+```
+Where:\
+$i =$ ith hour\
+$t =$ total number of hours summing over
+
+The chilling hours model takes the average temperature every hour and assigns an index of either one if the temperature is between $0^{\circ}C$ and $7.2^{\circ}C$ and zero if the temperature is outside that range. Daily totals are aggregated and the cumulative chill units over the dormant period are tallied. The Utah (Richardson) model uses a similar approach but provides weightings to various temperature ranges. These are detailed in equation \@ref(eq:RCU). Note that the weightings for the higher temperature ranges are negative which means that cumulative chill units can decrease as well increase; this reflects the reversible nature of the hormone accumulation in the apple buds [@sheard_andrew_g_measuring_2001].
+
+## Yield modeling {#sec-yieldModelling}
+
+### Modeling of 3D Spindle yields
+
+Yield for many biological systems can be described by a logistic growth model, slow to begin, a period of rapid growth then a period where the growth asymptotes to a steady state maximum value.  A mathematical description of the logistic model is given in [@dykes_stuart_orchard_2021].  yield as a function of orchard age for planted, 3D spindle trees can be given @eq-yield:
+
+$$
+f(t) = \frac{L}{(1 + e^{-\alpha(x - x_0)})}
+$$ {#eq-yield}
+
+where:  
+
+$f(t)$ = yield as a function of orchard age  
+$L$ = maximum asymptotic yield  
+$\alpha$ = rate constant  
+$x$ = orchard age  
+$x_0$ = growth midpoint
+
+Yield can be affected by a number of different influences, _inter alia_: the age of the trees, growing system, root-stock choice, seasonal effects and management decisions. In the analysis below yield is treated as a response, or outcome variable with orchard age as the principal predictor variable. The effects of growing system is accounted for by performing a separate analysis for the 2D and 3D canopies.  The effect of top-grafted blocks has also been removed by only including planted orchards in the analysis.  
+
+### Methodology
+
+Yield is calculated simply by taking the total mass of fruit harvested (in tonnes) and dividing by the canopy hectares.  No attempt has been made to correct for the effect of pick-out (the fruit that is left on the orchard floor or on the tree after harvest).  Two analyses are carried out:  
+
+1.  yield by individual block
+2.  yield by total orchard (RPIN)
+
+The modeling was carried out using the non-linear least squares regression function as part or R's **stats** package [@R-base]. The regression parameters and confidence intervals were calculated using non-parametric bootstraping through R's **nlsBoot** function from the **nlstools** package.  All analysis code is contained within this markdown document. 
+
+The approach was to analyse the last three years of harvest data, 2020 through 2022. The first analysis was to examine block data (i.e. the sub-block of an orchard) which provide a greater data set but more variability, given block areas can be less that one hectare.  The second analysis was to aggregate the blocks within an orchard together and calculate the orchard yield for the total orchard.  This provides a more robust yield measurement as the orchard area will be larger than the block area, however, the inter-block variation is masked.
+
+The final activity is an examination of the 2D canopy yield.  There are currently four productive PremA96 orchards on a 2D canopy (planted in 2018 and 2019) and in 2021 only two data points were available making any prediction of terminal yield difficult.  
+
+The data used for all analysis was taken directly from the **ABCpacker** SQL Server tables using R's **odbc** and **DBI** packages. The data manipulation was carried out using the **tidyverse** package. 

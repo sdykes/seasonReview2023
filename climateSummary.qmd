@@ -1,0 +1,657 @@
+# seasonal climate summary
+
+Authors:  Stuart Dykes & Tim Channing Pearce
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+
+## Introduction
+
+Rainfall, temperature, and solar radiation are the major climatic factors affecting apple growth and yield [@li_identifying_2018; @fujisawa_climate_2011]. As stated in [Chapter -@sec-introduction]  the 2022/2023 growing season has been challenging in terms of the effects of the climate, culminating in the devastating effects of cyclone Gabrielle. 
+
+In general, seasonal performance can be attributed to a number of factors such as:
+
+- climate (e.g. rainfall, temperature, wind)
+- management decisions (e.g. pruning, spray programme, thinning philosophy/execution and harvest manipulations)
+- disease pressure (e.g. black spot, ALCM)
+- Fruit maturity at harvest
+- post-harvest conditions (storage) and management decisions
+
+In terms of the climate, the effects can be categorised in two ways: long term trends and major events. The first part of this chapter will review some of the long term trends and the second part, which focuses on cyclone Gabrielle, is covered in [Chapter -@sec-cycloneGabrielle].
+
+## Sources of climate data
+
+In 2020 Rockit began a project to place climate station in close proximity to orchards. To date 13 stations have been deployed and are active (one station was destoryed with the orchard), which gives RGL unique and local insight into the micro-climates and their influence on the growth of Rockit^TM^ apple trees. The oldest stations have only been in place for three years at the time of this report in some cases it is difficult to compare the 2022/2023 with prior seasons and assess trends. To anonymise the exact location of the weather stations, the geographic region will be stated rather than the orchard name.  @fig-weatherStations shows the location of the Rockit^TM^ apple Metris weather stations which are used for analyses in this chapter.
+
+::: {#fig-weatherStations layout-nrow=2}
+
+![Hawkes Bay](img/climateSummary/HBmetrisWeatherStationMap.png){#fig-HBweatherStations fig-align="center" width=9.5cm}
+
+![Gisborne](img/climateSummary/GISmetrisWeatherStationMap.png){#fig-HBweatherStations fig-align="center" width=9.5cm}
+
+Active Metris weather station locations providing data for the following analysis
+
+:::
+
+A number of key climate metrics are ubiquitous in the literature [@logan_predictive_2016; @li_identifying_2018] these include:   
+- rain 
+- air temperature (minimum, maximum and mean) 
+- ground temperature (minimum, maximum and mean) 
+- growing degree days 
+- sunshine hours  
+
+The above parameters will be evaluated for the growing areas where PremA96 is currently commercially harvested. Comparison with previous seasons is useful in understanding the trends and potential cause and effects with respect to yield and fruit quality. 
+
+## Rainfall {#rainfall}
+
+the 2022/2023 growing season saw high precipitation even compared to 2021/2022. The extent of rainfall can be measured in two ways: total cumulative and number of days with significant rain (arbitrarily defined as 25mm). @tbl-annualRain and @fig-annualRain displays the daily evolution and total rainfall for each sector and @fig-bigRainDays the number of days where the rainfall is greater than 25mm respectively.  The analysis covers the growing season defined as the period from 1^st^ September through 1^st^ May.
+
+As can be seen from @@fig-annualRain and @tbl-annualRain The total rainfall over the growing season was consistently greater than 
+
+```{r}
+#| label: fig-annualRain
+#| fig-cap: "Annual rainfall for the growing season (1-September through 1-May) on Rockit^TM^ apple orchard based weather stations.  The rainfall is plotted as cumulative daily rain"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+#========================define Metris API input data=========================================
+
+api_key <- 'NF3Wbqrh95hwWw5eAsfhr75PFfxeLnGUNNxt1pNZ'
+api_path <- 'https://api.eagle.io/api/v1/'
+api_resource <- 'historic/?'
+
+#========================basic metris call function==========================================
+
+get_node <- function(node_id='', start_time='', end_time='', parameters = '') {
+  
+  api_resource <- 'historic/?'
+  params <- paste0(node_id, parameters)
+  
+  if(start_time != '') {
+    req_uri <- paste0(api_path, api_resource, start_time, '&', end_time, '&', 'params=', params)
+  } else {
+    req_uri <- paste0(api_path, "nodes/")
+  }
+  
+  for(i in 0:60) {
+    testRes <- httr::GET(req_uri,
+                         httr::add_headers('Content-Type' = 'application/json', 
+                                           'X-Api-Key' = api_key))
+    if(testRes$status_code == 200) {
+      break
+    } else {
+      print(paste0('status_code: ',testRes$status_code))
+    }
+  }
+  return(testRes)
+}
+
+
+metrisLookup <- read_csv("data/climateSummary/metris_lookup.csv", show_col_types = F) |>
+  mutate(sector = case_when(region == "Crown" ~ "Pukehamoamoa",
+                            region == "Gisborne" ~ "Gisborne",
+                            region == "HAU - Haumoana" ~ "Haumoana",
+                            region == "LROL - Lawn Road" ~ "Whakatu",
+                            region == "Manahi" ~ "Paki Paki",
+                            region == "NRC" ~ "Mangatere",
+                            region == "Omahu" ~ "Omahu",
+                            region == "Pioneer" ~ "Ngatarawa",
+                            region == "RRD - Raukawa" ~ "Bridge Pa",
+                            region == "Valley Road 1" ~ "Maraekakaho-1",
+                            region == "Valley Road 2" ~ "Maraekakaho-2",
+                            region == "Valley Road 3" ~ "Maraekakaho-3",
+                            region == "Steel" ~ "Puketapu",
+                            region == "Mana" ~ "Flaxmere"))
+
+rainIDs <- metrisLookup |>
+  filter(measuredParam %in% c("Rain - Total", "Rain - Last Reading")) |>
+  pull(uniqueId)
+
+SD <- "2020-09-01"
+ED <- "2023-12-10"
+params <- '(aggregate:DELTA;baseTime:D+12H;interval:1D)'
+
+node_id <- '615e14abfef2ff327eecb6fb'
+
+rainFall <- function(node_id, SD, ED, params) {
+  if (node_id == "61961453110b716a5e0c458b") {
+    params = '(aggregate:TOTAL;baseTime:D+12H;interval:1D)'
+  } else {
+    params = params
+  }
+  test <- get_node(node_id = node_id,
+                   start_time = paste0("startTime=",SD,"T00:00:00.000Z"),
+                   end_time = paste0("endTime=",ED,"T00:00:00.000Z"),
+                   parameters = params)
+  
+  node_interim <- tibble(json = list(jsonlite::parse_json(test))) |>
+    unnest_wider(json) 
+  
+  node_rect <- node_interim |>
+    unnest_longer(data) |>
+    select(data) |>
+    unnest_wider(data) |>
+    unnest_wider(f) |>
+    unnest_wider(`0`) |>
+    select(c(ts, v)) |>
+    mutate(dttmi = as.POSIXct(ts, "%Y-%m-%dT%H:%M:%S", tz="UTC")) |>
+    mutate(dttm = as.POSIXct(dttmi, tz="NZ")) |>
+    filter(!is.na(v)) |>
+    select(-c(ts, dttmi)) |>
+    rename(rainfall = v) |>
+    mutate(node = node_id)
+  
+  return(node_rect)
+}
+
+rainfall <- rainIDs |>
+  map(~rainFall(., SD, ED, params)) |>
+  bind_rows() |>
+  left_join(metrisLookup |> dplyr::select(c(uniqueId, sector)),
+            by = c("node" = "uniqueId")) |>
+  rename(date = dttm) |>
+  mutate(date = as.POSIXct(date, tz="NZ"),
+         season = case_when(date >= as.POSIXct("2020-09-01 00:00:00") &
+                              date < as.POSIXct("2021-05-01 00:00:00") ~ "2021",
+                            date >= as.POSIXct("2021-09-01 00:00:00") &
+                              date < as.POSIXct("2022-05-01 00:00:00") ~ "2022",
+                            date >= as.POSIXct("2022-09-01 00:00:00") &
+                              date < as.POSIXct("2023-05-01 00:00:00") ~ "2023",
+                            date >= as.POSIXct("2023-09-01 00:00:00") &
+                              date < as.POSIXct("2024-05-01 00:00:00") ~ "2024 (YTD)")) |>
+  filter(!is.na(season)) |>
+  mutate(dttmPlot = as.character(date),
+         datePlot = case_when(dttmPlot >= as.POSIXct("2020-09-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2021-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2021-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2021-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2021-09-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2022-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2022-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2022-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2022-09-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2023-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2023-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2023-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2023-09-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2024-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2024-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2024-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1)))),
+         date = as.Date(date, "%Y-%m-%d", tz="NZ")) |>
+dplyr::select(c(date, datePlot, sector, season, rainfall))
+
+#========================Read and convert MetWatch Puketapu data=====================
+
+puketapu <- read_csv("data/climateSummary/MetWatchPuketapu.csv", show_col_types = F) |>
+  mutate(`Start Date` = as.Date(`Start Date`, "%a, %b %d, %Y"), 
+         `Rainfall (mm)` = if_else(`Rainfall (mm)` == "-", "0.0", `Rainfall (mm)`),
+         `Rainfall (mm)` = as.numeric(`Rainfall (mm)`)) |>
+  rename(rainfall = `Rainfall (mm)`,
+         date = `Start Date`) |>
+  mutate(season = case_when(date >= as.POSIXct("2020-09-01 00:00:00") &
+                              date < as.POSIXct("2021-05-01 00:00:00") ~ "2021",
+                            date >= as.POSIXct("2021-09-01 00:00:00") &
+                              date < as.POSIXct("2022-05-01 00:00:00") ~ "2022",
+                            date >= as.POSIXct("2022-09-01 00:00:00") &
+                              date < as.POSIXct("2023-05-01 00:00:00") ~ "2023",
+                            date >= as.POSIXct("2023-09-01 00:00:00") &
+                              date < as.POSIXct("2024-05-01 00:00:00") ~ "2024 (YTD)")) |>
+  filter(!is.na(season)) |>
+  mutate(dateTemp = as.character(date),
+         datePlot = case_when(dateTemp >= as.POSIXct("2020-09-01 00:00:00") &
+                                dateTemp < as.POSIXct("2021-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2021-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2021-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2021-09-01 00:00:00") &
+                                dateTemp < as.POSIXct("2022-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2022-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2022-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2022-09-01 00:00:00") &
+                                dateTemp < as.POSIXct("2023-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2023-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2023-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2023-09-01 00:00:00") &
+                                dateTemp < as.POSIXct("2024-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2024-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2024-05-01 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1)))),
+         sector = "Puketapu") |>
+  dplyr::select(c(date, datePlot, sector, season, rainfall)) 
+
+#=======================plot result==================================================
+
+rainfall |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  group_by(sector, season) |>
+  mutate(cumrf = cumsum(rainfall)) |>
+  ggplot(aes(x=datePlot, y=cumrf, colour = season)) +
+  geom_line() +
+  facet_wrap(~sector) +
+  labs(x = "growing month",
+       y = "cumulative rainfall / mm",
+       colour = "season") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 8),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+  
+```
+
+```{r}
+#| label: tbl-annualRain
+#| tbl-cap: "Annual rainfall for the growing season (1-September through 1-May) Rockit^TM^ apple orchard based weather stations"
+
+rainfall |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  group_by(sector, season) |>
+  summarise(annualRain = sum(rainfall, na.rm=T),
+            .groups = "drop") |>
+  mutate(sector = if_else(sector == "Gisborne", "Gisborne$^{2}$", sector)) |>
+  pivot_wider(id_cols = sector, names_from = season, values_from = annualRain) |>
+  kableExtra::kable(col.names = c("season", "2022", "2023", "2024 YTD$^{1}$"),
+                    align=c("l",rep("r",5)),
+                    booktabs=TRUE,
+                    linesep = "",
+                    escape = F)  %>%
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c("", "annual rainfall / mm" = 3)) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{the last reading were taken on 13th December 2023}",
+                                  "\\\\footnotesize{the weather station in Gisborne was only established in 2023}"),
+                       threeparttable = T,
+                       escape = F)
+
+```
+
+```{r}
+#| label: fig-bigRainDays
+#| fig-cap: "Number of days with rainfall greater than 25mm 2022, 2023 and 2024 (YTD).  Data taken from weather station on Rockit^TM^ apple orchards"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+rainfall |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  mutate(bigRainDays = if_else(rainfall >= 25, 1, 0)) |>
+  group_by(sector, season) |>
+  summarise(bigRainDays = sum(bigRainDays, na.rm=T),
+            .groups = "drop") |>
+  ggplot(aes(x=season, y=bigRainDays)) +
+  geom_col(colour = "#48762e", fill = "#48762e", alpha = 0.5) +
+  geom_text(aes(label=bigRainDays, y=bigRainDays+0.3), vjust=0, size = 2.5, nudge_y = 0.4, colour="#48762e") +
+  facet_wrap(~sector) +
+  ylim(0,16) +
+  labs(x = "season",
+       y = "no of days with rainfall > 25 mm") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 9),
+        axis.title.y = element_text(margin = margin(r = 10), size = 9),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 45, hjust = 1, vjust = 1),
+        axis.ticks.length.x = unit(.1, "cm"),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 8),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+
+
+```
+## Growing degree days
+
+A common measure of heat accumulation in agriculture (and particularly horticulture) is growing degree days (GDD). 
+
+Plants generate biomass through photosynthesis. Photosynthetic activity depends to a large extent on sunlight which is typically measured in terms of radiative exposure through sunshine hours. Temperature is another important factor as it triggers and sustains changes in the apple through phyto-hormone regulation [@karami_phenological_2017]. While all stages are important to the development of the fruit the first 42 days after full-bloom (DAFB) appears to be a particularly important measure [@beaudry_apple_1993; @bergh_effect_1990]. Temperature over this period is a major predictor final fruit size and yield [@bergh_effect_1990]. Productive heat, in horticulture, is measured through growing degree days. This is a simple measure, which subtracts a base temperature (in Rockit^TM^ apple's case 10°C) from the average daily temperature, the difference being the number of GDD accumulated in that day. Generally the daily GDDs are summed to give a cumulative GDD over a period (The convention is to begin the accumulation at June 1st through to May 30^th^ the following year).  The mathematical calculation of GDD is given in [Appendix -@sec-GDD].
+
+As can be seen in @fig-GDDBySector the accumulation of GDD over the 2022/2023 growing season was relatively consistent across the Hawke's Bay and Gisborne with annual totals given in @tbl-annGDD. Annual totals range from 1,621$^{\circ}$C at the Maraekakaho sector to 1,904$^{\circ}$C at Puketapu. The 2023/2024 YTD accumulated GDDs are tracking a very similar trajectory to 2022/2023 with the exception of Gisborne which is tracking slightly lower.   
+
+```{r}
+#| label: fig-GDDBySector
+#| fig-cap: "GDD for 2022/2023 and 2024 YTD growing season"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+tempIDs <- metrisLookup |>
+  filter(measuredParam %in% c("Air Temperature")) |>
+  pull(uniqueId)
+
+SD <- "2022-06-01"
+ED <- as.character(Sys.Date())
+paramsMIN <- '(aggregate:MIN;baseTime:D+12H;interval:1D)'
+paramsMAX <- '(aggregate:MAX;baseTime:D+12H;interval:1D)'
+
+node_id <- "61556c5e81bc4463c3a09158"
+
+temp <- function(node_id, SD, ED, params, vname) {
+  if (node_id == "61961453110b716a5e0c458b") {
+    params = '(aggregate:TOTAL;baseTime:D+12H;interval:1D)'
+  } else {
+    params = params
+  }
+  test <- get_node(node_id = node_id,
+                   start_time = paste0("startTime=",SD,"T00:00:00.000Z"),
+                   end_time = paste0("endTime=",ED,"T00:00:00.000Z"),
+                   parameters = params)
+  
+  node_interim <- tibble(json = list(jsonlite::parse_json(test))) |>
+    unnest_wider(json) 
+  
+  node_rect <- node_interim |>
+    unnest_longer(data) |>
+    select(data) |>
+    unnest_wider(data) |>
+    unnest_wider(f) |>
+    unnest_wider(`0`) |>
+    select(c(ts, v)) |>
+    mutate(dttmi = as.POSIXct(ts, "%Y-%m-%dT%H:%M:%S", tz="UTC")) |>
+    mutate(dttm = as.POSIXct(dttmi, tz="NZ")) |>
+    filter(!is.na(v)) |>
+    select(-c(ts, dttmi)) |>
+    rename({{vname}} := v) |>
+    mutate(node = node_id)
+  
+  return(node_rect)
+}
+
+#====================================tidy up the metris data and calculate GDD================================
+
+maxTemp <- tempIDs |>
+  map(~temp(., SD, ED, paramsMAX, "tempMax")) |>
+  bind_rows() 
+
+GDD <- tempIDs |>
+  map(~temp(., SD, ED, paramsMIN, "tempMin")) |>
+  bind_rows() |>
+  inner_join(maxTemp, by = c("node", "dttm")) |>
+  left_join(metrisLookup |> dplyr::select(c(uniqueId, sector)),
+            by = c("node" = "uniqueId")) |>
+  rename(date = dttm) |>
+  mutate(date = as.POSIXct(date, tz="NZ"),
+         season = case_when(date >= as.POSIXct("2020-06-01 00:00:00") &
+                              date < as.POSIXct("2021-05-31 00:00:00") ~ "2021",
+                            date >= as.POSIXct("2021-06-01 00:00:00") &
+                              date < as.POSIXct("2022-05-31 00:00:00") ~ "2022",
+                            date >= as.POSIXct("2022-06-01 00:00:00") &
+                              date < as.POSIXct("2023-05-31 00:00:00") ~ "2023",
+                            date >= as.POSIXct("2023-06-01 00:00:00") &
+                              date < as.POSIXct("2024-05-31 00:00:00") ~ "2024 (YTD)")) |>
+  filter(!is.na(season)) |>
+  mutate(dttmPlot = as.character(date),
+         datePlot = case_when(dttmPlot >= as.POSIXct("2020-06-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2021-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2021-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2021-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2021-06-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2022-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2022-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2022-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2022-06-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2023-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2023-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2023-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2023-06-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2024-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dttmPlot, 5,-1))),
+                               dttmPlot >= as.POSIXct("2024-01-01 00:00:00") &
+                                 dttmPlot < as.POSIXct("2024-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dttmPlot, 5,-1)))),
+         date = as.Date(date, "%Y-%m-%d", tz="NZ"),
+         tempMean = (tempMax + tempMin)/2,
+         dailyGDD = if_else(tempMean >= 10, tempMean - 10, 0)) |>
+dplyr::select(c(date, datePlot, sector, season, dailyGDD))
+
+#===========================================Get Puketapu data from MetService data from NZAPI==================================
+
+puketapu <- read_csv("data/climateSummary/MetWatchPuketapuGDD.csv", show_col_types = F) |>
+  filter(!is.na(`Mean Air Temp. (°C)`),
+         `Mean Air Temp. (°C)` != "-") |>
+  mutate(`Start Date` = as.Date(`Start Date`, "%a, %b %d, %Y"), 
+         `Mean Air Temp. (°C)` = as.numeric(`Mean Air Temp. (°C)`)) |>
+  rename(meanTemp = `Mean Air Temp. (°C)`,
+         date = `Start Date`) |>
+  mutate(season = case_when(date >= as.POSIXct("2020-06-01 00:00:00") &
+                              date < as.POSIXct("2021-05-31 00:00:00") ~ "2021",
+                            date >= as.POSIXct("2021-06-01 00:00:00") &
+                              date < as.POSIXct("2022-05-31 00:00:00") ~ "2022",
+                            date >= as.POSIXct("2022-06-01 00:00:00") &
+                              date < as.POSIXct("2023-05-31 00:00:00") ~ "2023",
+                            date >= as.POSIXct("2023-06-01 00:00:00") &
+                              date < as.POSIXct("2024-05-31 00:00:00") ~ "2024 (YTD)")) |>
+  filter(!is.na(season)) |>
+  mutate(dateTemp = as.character(date),
+         datePlot = case_when(dateTemp >= as.POSIXct("2020-06-01 00:00:00") &
+                                dateTemp < as.POSIXct("2021-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2021-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2021-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2021-06-01 00:00:00") &
+                                dateTemp < as.POSIXct("2022-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2022-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2022-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2022-06-01 00:00:00") &
+                                dateTemp < as.POSIXct("2023-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2023-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2023-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2023-06-01 00:00:00") &
+                                dateTemp < as.POSIXct("2024-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dateTemp >= as.POSIXct("2024-01-01 00:00:00") &
+                                dateTemp < as.POSIXct("2024-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1)))),
+         dailyGDD = if_else(meanTemp - 10 >= 0,meanTemp - 10,0),
+         sector = "Puketapu") |>
+  dplyr::select(c(date, datePlot, sector, season, dailyGDD)) 
+
+#==========================================Plot the results==============================================================
+
+GDD |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  group_by(sector, season) |>
+  mutate(cumGDD = cumsum(dailyGDD)) |>
+  ggplot(aes(x=datePlot, y=cumGDD, colour = season)) +
+  geom_line() +
+  facet_wrap(~sector) +
+  labs(x = "growing month",
+       y = "cumulative GDD / \u00b0C",
+       colour = "season") +
+  scale_x_date(breaks = scales::breaks_width("3 months"),
+               labels = scales::label_date("%b")) +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 9),
+        axis.title.y = element_text(margin = margin(r = 10), size = 9),
+        axis.text.y = element_text(size = 7, hjust=1),
+        axis.text.x = element_text(size = 7, angle = 0, hjust = 0.5, vjust = 1),
+        axis.ticks.length.x = unit(0.1, "cm"),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 9),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 7),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+
+```
+
+
+```{r}
+#| label: tbl-annGDD
+#| tbl-cap: "Regional distribution of annual GDD across Rockit^TM^ apple growing sites"
+
+meanGDD <- GDD |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  group_by(sector, season) |>
+  mutate(cumGDD = cumsum(dailyGDD)) |>
+  summarise(annGDD = max(cumGDD),
+            .groups = "drop") |>
+  ungroup() |>
+  pivot_wider(id_cols = sector, names_from = season, values_from = annGDD) |>
+  summarise(`2023` = mean(`2023`, na.rm=T),
+            `2024 (YTD)` = mean(`2024 (YTD)`, na.rm=T)) |>
+  mutate(sector = "mean GGDs") |>
+  relocate(sector, .before = `2023`)
+
+GDD |>
+  filter(!sector %in% c("Flaxmere", "Puketapu")) |>
+  bind_rows(puketapu) |>
+  group_by(sector, season) |>
+  mutate(cumGDD = cumsum(dailyGDD)) |>
+  summarise(annGDD = max(cumGDD),
+            .groups = "drop") |>
+  pivot_wider(id_cols = sector, names_from = season, values_from = annGDD) |>
+  bind_rows(meanGDD) |>
+  mutate(across(.col = c(`2023`, `2024 (YTD)`), ~scales::comma(.,accuracy=0.1))) |>
+  kableExtra::kable(col.names = c("sector", "2023", "2024 (YTD)$^{1}$"),
+                    align=c("l",rep("r",2)),
+                    booktabs=TRUE,
+                    linesep = "",
+                    escape = F)  %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c("", "annual GDD / $^{\\\\circ}$C" = 2),
+                               escape = F) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{the last reading were taken on 13th December 2023}"),
+                       threeparttable = T,
+                       escape = F) |>
+  kableExtra::row_spec(13, hline_after=T)
+
+```
+
+
+
+```{r}
+#| label: fig-historicalGDD
+#| fig-cap: "Historical annual GDD for Gisborne and Hawkes Bay from 1940 to 2022"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+longTermGDD <- read_csv("data/climateSummary/growing-degree-days-1972-2022.csv", show_col_types = F) |>
+  filter(base_temperature == 10,
+         site %in% c("Napier (Hawke's Bay)", "Gisborne (Gisborne)"))
+
+longTermGDD |>
+  ggplot(aes(x=year, y=growing_degrees)) +
+  geom_point(colour = "#48762e") +
+  geom_line(colour="grey70") +
+  geom_smooth(method = "lm", colour = "#526280") +
+  facet_wrap(~site) +
+  labs(x = "year",
+       y = "annual growing degree days / \u00b0C") +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 10),
+        axis.title.y = element_text(margin = margin(r = 10), size = 10),
+        axis.text.y = element_text(size = 9, hjust=1),
+        axis.text.x = element_text(size = 9, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        legend.title = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=5, t=5), size = 10),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+
+
+
+```
+
+
+```{r}
+#| label: tbl-longTermGDDModel
+#| tbl-cap: "mean annual increase in GDD for Hawkes Bay and Gisborne regions"
+
+HBGDDGrowth <- longTermGDD |>
+  filter(site == "Napier (Hawke's Bay)") %>%
+  lm(growing_degrees~year, data=.) 
+
+GisGDDGrowth <- longTermGDD |>
+  filter(site == "Gisborne (Gisborne)") %>%
+  lm(growing_degrees~year, data=.) 
+
+growthTable <- tibble(region = c("hawke's Bay", "Gisborne"),
+                      growthRate = c(coefficients(HBGDDGrowth)[[2]], coefficients(GisGDDGrowth)[[2]]),
+                      lwrCI = c(confint(HBGDDGrowth)[[2,1]], confint(GisGDDGrowth)[[2,1]]),
+                      uprCI = c(confint(HBGDDGrowth)[[2,2]], confint(GisGDDGrowth)[[2,2]])) 
+
+growthTable |> 
+  mutate(across(.col = growthRate:uprCI, ~round(.,1))) |>
+  kableExtra::kable(col.names = c("region", rep("$^{\\circ}$C/year", 3)),
+                    align=c("l",rep("r",3)),
+                    booktabs=TRUE,
+                    linesep = "",
+                    escape = F)  %>%
+  kableExtra::kable_styling(full_width=F,
+                            latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c("", "growth rate", "lower", "upper")) |>
+  kableExtra::add_header_above(c(" "=2, "95% confidence interval"=2)) |>
+  kableExtra::column_spec(3:4, width = "1in")
+  
+    
+```
+
+The long term trend is increasing GDD for both the Hawke's Bay and Gisborne regions.  @fig-historicalGDD shows the annual GDD values for Gisborne and Hawke's Bay from 1940 through 2022 [@stats_nz_frost_2023]. Linear trend lines are modeled and overlaid which give an estimate of the mean growth in GDD per year since 1940. The growth rates and associated confidence intervals are presented in @tbl-longTermGDDModel.  The Hawke's Bay and Gisborne's long term trend mean growth rates are `r round(coefficients(HBGDDGrowth)[[2]],1)`$^{\circ}$C/year and `r round(coefficients(GisGDDGrowth)[[2]],1)`$^{\circ}$C/year respectively.  As can be see from the spread of the historical data, however, there is considerable year-to-year variability.  the mean annual GDDs for the last 10 years (2012 through 2022) are `r scales::comma(longTermGDD |> filter(site == "Napier (Hawke's Bay)", year >= 2012) |> summarise(meanGDD = mean(growing_degrees)) |> pull(meanGDD),accuaracy=0.1)`$^{\circ}$C and `r scales::comma(longTermGDD |> filter(site == "Gisborne (Gisborne)", year >= 2012) |> summarise(meanGDD = mean(growing_degrees)) |> pull(meanGDD),accuracy=0.1)`$^{\circ}$C for Hawke's Bay and Gisborne respectively. This compares with a mean annual GDD for the two regions of 1,761.5$^{\circ}$C for 2023 (@tbl-annGDD) which is almost 8% lower that the 10 year average. 
+
+## Chill units
+
+Dormancy is a phase of the annual cycle of the apple tree that allows it to survive unfavourably cold winter conditions. Three stages of dormancy have been defined based on the source of dormancy control: paradormancy (controlled by conditions within the tree but external to the bud, such as apical dominance), endodormancy (controlled by conditions within the bud itself) and ecodormancy (controlled by environmental conditions external to the tree such as temperature) [@parkes_chilling_2020]. Progression through these phases is dependent on seasonal temperatures, and the length and depth of bud dormancy phases for a particular cultivar can vary between seasons and locations. The minimum accumulation of winter chill needed to break bud endodormancy and enable the shift into ecodormancy is defined as the chilling requirement (CR) [@luedeling_global_2011]. Chilling requirements for particular cultivars are poorly understood and the range for apples has been loosely defined and is given in table @tbl-safeChill and is adapted from [@luedeling_global_2011]. In terms of apple physiology recent studies have identified specific genes that play a direct role in the up- and down- regulation of phytohormones in the dormant bud such as: abscisic acid, gibberellic acid, ethylene, auxin and cytokinin [@kumar_chilling_2017].
+
+```{r}
+#| label: tbl-safeChill
+#| tbl-cap: "Chill requirement range from Luedeling and Brown (2011)"
+
+tibble("safe winter chill"=c("high", "intermediate", "low"),
+                      "range min"=c(2000,700,-1000),
+                      "range max"=c(NA, 2000, 700)) |>
+  kableExtra::kable(col.names = (c("safe winter chill", "min", "max")),
+        align=c("l",rep("r",2)), 
+        booktabs=TRUE,
+        linesep="",
+        escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c("", "RCU range" = 2))
+
+```
+
+Insufficient chilling over the dormant months (i.e. the chilling requirements are not met) delays the onset of flowering and subsequent irregular breaking of bud dormancy is often observed; this can eventually effect the fruit yield and quality . Monitoring chill units is, therefore, an important tool in predicting bud break and flowering and establishing the optimum management strategy through the growing season.
+
+### Winter chill models
+
+Two winter chill model are widely used throughout the pip fruit industry: chilling hours and richardson chill units (also known as the Utah model). These models are formally defined in the glossary below and mathematically in [Appendix -@sec-chillUnits].  Both are presented in figures xxx and figure yyy 
+
+##  Glossary
+
+[DAFB]{#glossary-DAFB} 
+
+: days after full bloom - The number of days after the "full bloom" phenological stage of apple development
+
+[GDD]{#glossary-GDD} 
+
+: growing degree days - GDD are the total number of degrees Celsius above a base threshold temperature for each day.  The base threshold used is 10$^{\circ}$C. GDD are calculated on a daily basis and typically reported on an annual cumulative measure (referred to as annual GDDs). GDD are defined mathematically in [Appendix -@sec-GDD]
+
+[Chilling hours model]{#glossary-Chillinghours}
+
+: The Chilling Hours Model is the oldest method to quantify winter chill (Chandler, 1942). According to  this model,  temperatures between  0°C  and 7.2°C  are  assumed to  have a chilling effect,  with each  hour  at temperatures  between  these thresholds  contributing one chilling hour. Chilling hours  are thus accumulated throughout the  dormant season and then summed up.  Chilling hours are defined mathematically in [Appendix -@sec-chillUnits].
+
+[RCU]{#glossary-RCU} 
+
+: Richardson chill units - also known as the "Utah model".  It contains a weight function assigning different chilling efficiencies to different temperature  ranges, including negative contributions by high temperatures. This model of chill units (CU) defines a CU as the permanence of the buds for a period of 1 hour in a temperature range considered optimum (2.5-12.5°C) to accumulate chill. The Utah model is more complex because it introduces the concept of relative chilling effectiveness and negative chilling accumulation (or chilling negation). According to Richardson et al. (1974) temperatures between 0 and 16˚C promote the breaking of rest, whereas temperatures > 16$^{\circ}$C negate such effects. Maximum promotion occurs at 7˚C (1 h at 7˚C = 1 chill unit); higher and lower temperatures within the 0-16˚C range are less effective. RCU are defined mathematically in [Appendix -@sec-chillUnits]
