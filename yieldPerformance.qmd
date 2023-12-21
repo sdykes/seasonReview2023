@@ -360,11 +360,11 @@ imYields |>
 
 The 3D spindle system is the traditional canopy that was adopted for PremA96.  The management of this growing system is challenging due to the basitonic habits of PremA96 [@johnston_j_compilation_2023] making the early development of the trees more labour intensive. From 2020 a decision was taken to only plant new PremA96 orchard developments in either 2D planar or FOPS canopy systems.  The decision was made principally to facilitate the use of automation and orchard assist technology such as platforms. 
 
-Due to the relative ubiquity of the 3D spindle system for PremA96 there are several orchards that can be included in the analysis with a range of orchard ages.  This allows a high quality curve to be modeled over the data.  The details of the modeling are given in @sec-appendixOne and this approach is applied to all own-planted 3D spindle analysis. The model is based on fitting a logistic curve to the data using non linear least squares regression.  
+Due to the relative ubiquity of the 3D spindle system for PremA96 there are several orchards that can be included in the analysis with a range of orchard ages.  This allows a high quality curve to be modeled over the data.  The details of the modeling are given in @sec-yieldModelling and this approach is applied to all own-planted 3D spindle analysis. The model is based on fitting a logistic curve to the data using non linear least squares regression.  
 
 ### 2023 by block
 
-After removing all flood affected blocks, yields (mass of fruit harvested divided by canopy area) were calculated and plotted (@fig-yield2023Blocks). A curve was then estimated using the methodology outlined in @sec-appendixOne.  The modeled result is overlaid as a curve in @fig-yield2023Blocks.   
+After removing all flood affected blocks, yields (mass of fruit harvested divided by canopy area) were calculated and plotted (@fig-yield2023Blocks). A curve was then estimated using the methodology outlined in @sec-yieldModelling.  The modeled result is overlaid as a curve in @fig-yield2023Blocks.   
 
 ```{r}
 #| label: fig-yield2023Blocks

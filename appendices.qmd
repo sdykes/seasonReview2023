@@ -14,12 +14,10 @@ knitr::opts_chunk$set(echo = F, message = F, warning = F)
 
 ## Growing degree days {#sec-GDD}
 
-```{=tex}
-\begin{equation}
+$$
 GDD = \sum_{i}^{K} \frac{T_{i}^{max}+T_{i}^{min}}{2}-T^{base}
-(\#eq-GDD)
-\end{equation}
-```
+$$ {#eq-GDD}
+
 Where: $i =$ ith day\
 $K =$ total number of days summing over\
 $T_i^{max} =$ the maximum daily temperature on the ith days\
@@ -30,22 +28,19 @@ $T^{base} =$ the base temperature for the model (in our case 10°C)
 
 The models used to predict chill requirement are empirically based and difficult to validate. Rockit tracks two models: Chilling hours and the Utah model (also known as Richardson Chill units). These are best described mathematically in equations @eq-CH and @eq-RCU respectively.
 
-```{=tex}
-\begin{equation}
+$$
 CH_i = \sum_{i}^{t} T_{7.2} \; \text{where} \: T_{7.2} = 
         \begin{cases}
         0^{\circ}C < T < 7.2^{\circ}C & :1,\\
         \text{else.} & :0
         \end{cases}
-(\#eq-CH)
-\end{equation}
-```
+$$ {#eq-CH}
+
 Where:\
 $i =$ ith hour\
 $t =$ total number of hours summing over
 
-```{=tex}
-\begin{equation}
+$$
 \begin{aligned}
 RCU_i &= \sum_{i=1}^{t} T_U \\ \text{where} \: T_U &= 
    \begin{cases}
@@ -58,14 +53,13 @@ RCU_i &= \sum_{i=1}^{t} T_U \\ \text{where} \: T_U &=
         T > 18.0^{\circ}C & :-1.0
    \end{cases}
 \end{aligned}
-(\#eq-RCU)
-\end{equation}
-```
+$$ {#eq-RCU}
+
 Where:\
 $i =$ ith hour\
 $t =$ total number of hours summing over
 
-The chilling hours model takes the average temperature every hour and assigns an index of either one if the temperature is between $0^{\circ}C$ and $7.2^{\circ}C$ and zero if the temperature is outside that range. Daily totals are aggregated and the cumulative chill units over the dormant period are tallied. The Utah (Richardson) model uses a similar approach but provides weightings to various temperature ranges. These are detailed in equation \@ref(eq:RCU). Note that the weightings for the higher temperature ranges are negative which means that cumulative chill units can decrease as well increase; this reflects the reversible nature of the hormone accumulation in the apple buds [@sheard_andrew_g_measuring_2001].
+The chilling hours model takes the average temperature every hour and assigns an index of either one if the temperature is between $0^{\circ}C$ and $7.2^{\circ}C$ and zero if the temperature is outside that range. Daily totals are aggregated and the cumulative chill units over the dormant period are tallied. The Utah (Richardson) model uses a similar approach but provides weightings to various temperature ranges. These are detailed in equation @eq-RCU. Note that the weightings for the higher temperature ranges are negative which means that cumulative chill units can decrease as well increase; this reflects the reversible nature of the hormone accumulation in the apple buds [@sheard_andrew_g_measuring_2001].
 
 ## Yield modeling {#sec-yieldModelling}
 

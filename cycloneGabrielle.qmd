@@ -333,7 +333,7 @@ wind |>
   mutate(speedKPH = speed) |>
   ggplot(aes(x = date, y = speedKPH, colour = measure)) +
   geom_line(alpha = 0.3, linewidth=.25) +
-  geom_smooth(method = "loess", se=F) +
+  geom_smooth(method = "loess", se=F, linewidth = 0.5) +
   facet_wrap(~sector) +
   labs(x = "date",
        y= "wind speed km/hr",

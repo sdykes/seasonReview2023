@@ -533,7 +533,8 @@ GDD |>
   kableExtra::footnote(number = c("\\\\footnotesize{the last reading were taken on 13th December 2023}"),
                        threeparttable = T,
                        escape = F) |>
-  kableExtra::row_spec(13, hline_after=T)
+  kableExtra::row_spec(13, hline_after=T) |>
+  kableExtra::row_spec(14, bold = T)
 
 ```
 
@@ -632,11 +633,197 @@ tibble("safe winter chill"=c("high", "intermediate", "low"),
 
 ```
 
-Insufficient chilling over the dormant months (i.e. the chilling requirements are not met) delays the onset of flowering and subsequent irregular breaking of bud dormancy is often observed; this can eventually effect the fruit yield and quality . Monitoring chill units is, therefore, an important tool in predicting bud break and flowering and establishing the optimum management strategy through the growing season.
+Insufficient chilling over the dormant months (i.e. the chilling requirements are not met) delays the onset of flowering and subsequent irregular breaking of bud dormancy is often observed; this can eventually effect the fruit yield and quality. Monitoring chill units is, therefore, an important tool in predicting bud break and flowering and establishing the optimum management strategy through the growing season.
 
 ### Winter chill models
 
-Two winter chill model are widely used throughout the pip fruit industry: chilling hours and richardson chill units (also known as the Utah model). These models are formally defined in the glossary below and mathematically in [Appendix -@sec-chillUnits].  Both are presented in figures xxx and figure yyy 
+Two winter chill model are widely used throughout the pip fruit industry: chilling hours and richardson chill units (also known as the Utah model). The chill units are accumulated from 1^st^ June through 1^st^ October. The individual models are formally defined in the glossary below and mathematically in [Appendix -@sec-chillUnits].  Both are presented in @fig-chillhours and figure @fig-RCU.  A summary for the 2023 and 2024 seasons for each sector is given in @tbl-chillUnitsTable.
+
+The accumulation of chilling hours for 2023 (i.e. the winter of 2022) was, for most sectors lower than what was observed for the 2024 harvest season. The exception being two stations at Maraekakaho.  The divergence between 2023 and 2024 season is most pronounced at: Mangatere, Whakatu and Haumoana (@fig-chillhours). The comparison of RCU and chilling hours highlight the difference between the two models.  RCU gives the ability to accumulate negative chill units (refer to @eq-RCU) when temperature get above 15.9$^{\circ}$C. Mid august 2022 saw a particularly warm period which saw a decrease in accumulated RCUs.  the second half of September 2023 (i.e. affecting the 2024 season) was also relatively warm also and a decrease in RCU was observed in several of the blocks. The effect of the later warm weather in 2023 (i.e. 2024 harvest season) was that late September is very close to the end of dormancy and hence the warm conditions aided in compressing the bloom **(reference the phenology)**. 
+
+The mean difference between the 2023 and 2024 season was 73.6 (12.1%) chill hours and 57 (5.6%) RCUs; the reason for the relative difference between the two units being due to the warm months in August and September for 2023 and 2024 respectively.  Based on the aforementioned guidelines (@tbl-safeChill) the amount of chilling was at the lower end of the intermediate level of the safe winter chill. 
+
+
+
+```{r}
+#| label: fig-chillhours
+#| fig-cap: "winter chill hours between the period from 1^st^ June through 31^st^ October" 
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+SD <- "2022-05-01"
+ED <- "2023-10-01"
+params <- '(aggregate:AVERAGE;baseTime:M;interval:1H)'
+
+tempIDs <- metrisLookup |>
+  filter(measuredParam %in% c("Air Temperature")) |>
+  pull(uniqueId)
+
+meanAirTemp <- function(node_id, SD, ED, params, vname) {
+  
+  params = params
+  
+  test <- get_node(node_id = node_id,
+                   start_time = paste0("startTime=",SD,"T00:00:00.000Z"),
+                   end_time = paste0("endTime=",ED,"T00:00:00.000Z"),
+                   parameters = params)
+  
+  node_interim <- tibble(json = list(jsonlite::parse_json(test))) |>
+    unnest_wider(json) 
+  
+  node_rect <- node_interim |>
+    unnest_longer(data) |>
+    select(data) |>
+    unnest_wider(data) |>
+    unnest_wider(f) |>
+    unnest_wider(`0`) |>
+    select(c(ts, v)) |>
+    mutate(dttmi = as.POSIXct(ts, "%Y-%m-%dT%H:%M:%S", tz="UTC")) |>
+    mutate(dttm = as.POSIXct(dttmi, tz="NZ")) |>
+    filter(!is.na(v)) |>
+    select(-c(ts, dttmi)) |>
+    rename({{vname}} := v) |>
+    mutate(node = node_id)
+  
+  return(node_rect)
+}
+
+meanHourlyTemp <- tempIDs |>
+  map(~meanAirTemp(., SD, ED, params, "meanTemp")) |>
+  bind_rows() 
+
+CUCalcs <- meanHourlyTemp |>
+  filter(lubridate::month(dttm) >=6 & lubridate::month(dttm) <= 9) |>
+  mutate(CUSeason = lubridate::year(dttm)+1,
+         dateTemp = as.character(dttm),
+         datePlot = case_when(dttm >= as.POSIXct("2020-06-01 00:00:00") &
+                                dttm < as.POSIXct("2021-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2021-01-01 00:00:00") &
+                                dttm < as.POSIXct("2021-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2021-06-01 00:00:00") &
+                                dttm < as.POSIXct("2022-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2022-01-01 00:00:00") &
+                                dttm < as.POSIXct("2022-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2022-06-01 00:00:00") &
+                                dttm < as.POSIXct("2023-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2023-01-01 00:00:00") &
+                                dttm < as.POSIXct("2023-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2023-06-01 00:00:00") &
+                                dttm < as.POSIXct("2024-01-01 00:00:00") ~ as.Date(str_c("2021", str_sub(dateTemp, 5,-1))),
+                              dttm >= as.POSIXct("2024-01-01 00:00:00") &
+                                dttm < as.POSIXct("2024-05-31 00:00:00") ~ as.Date(str_c("2022", str_sub(dateTemp, 5,-1)))),
+         CH = if_else(meanTemp >= 0.0 & meanTemp < 7.2, 1, 0),
+         RCURaw = case_when(meanTemp <= 1.4 ~ 0,
+                            meanTemp <= 2.4 & meanTemp > 1.4 ~ 0.5,
+                            meanTemp <= 9.1 & meanTemp > 2.4 ~ 1.0,
+                            meanTemp <= 12.4 & meanTemp > 9.1 ~ 0.5,
+                            meanTemp <= 15.9 & meanTemp > 12.4 ~ 0,
+                            meanTemp <= 18.0 & meanTemp > 15.9 ~ -0.5,
+                            TRUE ~ -1.0)) |>
+  left_join(metrisLookup |> dplyr::select(c(uniqueId, sector)),
+            by = c("node" = "uniqueId")) |>
+  group_by(sector, CUSeason, dttm) |>
+  summarise(CHD = sum(CH, na.rm=T),
+            RCUD = sum(RCURaw, na.rm=T),
+            datePlot = first(datePlot),
+            .groups = "drop") |>
+  group_by(sector, CUSeason) |>
+  mutate(CCHD = cumsum(CHD),
+         CRCUD = cumsum(RCUD))
+
+CUCalcs |>
+  ggplot(aes(x=datePlot, y=CCHD, colour=factor(CUSeason))) +
+  geom_line(linewidth=0.5) +
+  facet_wrap(~sector) +
+  labs(x="month",
+       y = "cumulative chilling hours / dimensionless",
+       colour = "affected season") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_y_continuous(labels = scales::label_comma(accuracy=1.0)) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 9),
+        axis.title.y = element_text(margin = margin(r = 10), size = 9),
+        axis.text.y = element_text(size = 7, hjust=1),
+        axis.text.x = element_text(size = 7, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 8),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+```
+```{r}
+#| label: fig-RCU
+#| fig-cap: "Richardson chill units between the period from 1^st^ June through 31^st^ October" 
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.8
+
+CUCalcs |>
+  ggplot(aes(x=datePlot, y=CRCUD, colour=factor(CUSeason))) +
+  geom_line(linewidth=0.5) +
+  facet_wrap(~sector) +
+  labs(x="month",
+       y = "cumulative richardson chill units / dimensionless",
+       colour = "affected season") +
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_y_continuous(labels = scales::label_comma(accuracy=1.0)) +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 9),
+        axis.title.y = element_text(margin = margin(r = 10), size = 9),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 8),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+
+```
+```{r}
+#| label: tbl-chillUnitsTable
+#| tbl-cap: "total accumulated chilling hours and RCU for the 2023 and 2024 seasons.  Note the chilling period was in the year before the harvest date (i.e. the chilling for 2023 season occured in 2022)"
+
+meanCUCalcs <- CUCalcs |>
+  group_by(sector, CUSeason) |>
+  summarise(CCHD = max(CCHD),
+            CRCUD = max(CRCUD),
+            .groups = "drop") |>
+  ungroup() |>
+  group_by(CUSeason) |>
+  summarise(CCHD = mean(CCHD),
+            CRCUD = mean(CRCUD),
+            .groups = "drop") |>
+  pivot_wider(names_from = CUSeason, values_from = c(CCHD, CRCUD)) |>
+  mutate(across(.col = everything(), ~scales::comma(., accuracy=0.1)),
+       sector = "mean") |>
+  relocate(sector, .before=CCHD_2023)
+  
+
+
+CUCalcs |>
+  group_by(sector, CUSeason) |>
+  summarise(CCHD = max(CCHD),
+            CRCUD = max(CRCUD)) |>
+  pivot_wider(id_cols = sector, names_from = c(CUSeason), values_from = c(CCHD, CRCUD)) |>
+  mutate(across(.col = c(CCHD_2023:CRCUD_2024), ~scales::comma(., accuracy=0.1))) |>
+  bind_rows(meanCUCalcs) |>
+  kableExtra::kable(col.names = (c("sector", "2023", "2024", "2023", "2024")),
+        align=c("l",rep("r",4)), 
+        booktabs=TRUE,
+        linesep="",
+        escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c("", "chilling hours" = 2, "RCU" = 2)) |>
+  kableExtra::row_spec(14, hline_after = T) |>
+  kableExtra::row_spec(15, bold=T)
+```
+## Frost days in 2023
+
+Frost is a significant risk in the Hawke's Bay region and 
 
 ##  Glossary
 
