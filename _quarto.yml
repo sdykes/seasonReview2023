@@ -13,7 +13,8 @@ book:
     - seasonalPhenology.qmd
     - pestAndDiseaseMonitoring.qmd
     - yieldAndFruitSizePrediction.qmd
-    - harvestMaturityManagement.qmd
+    - MaturityManagement.qmd
+    - Harvest.qmd
     - yieldPerformance.qmd
     - storage.qmd
     - qualityPhytosanitaryPerformance.qmd

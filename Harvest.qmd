@@ -1,0 +1,327 @@
+# Harvest {#sec-harvest}
+
+Authors: Stuart Dykes
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Introduction
+
+Harvest commenced on 10^th^ February 2023 and continued through to the 14^th^ April spanning 63 days.  A comparison of the of the 2022 and the 2023 season is given in @tbl-harvestStats.  The major difference between the 2022 and 2023 season is the impact of cyclone Gabrielle which occurred over the 13 - 14^th^ February 2023.  Three days of apple picking were achieved before the cyclone struck and 414 bins were harvested.  Harvesting resumed six days after the cyclone on 18^th^ February.  The gap can be seen clearly in @fig-dailyBins.  
+
+One (albeit crude) measure of harvest performance is the rate the fruit is harvested from the orchard.  The curve follows a logistic shape where rate of bins delivered to the cool store begins slowly, accelerates and then declines when most of the fruit has been picked.  
+
+The harvest rate curves for the Rockit^TM^ apple pool for 2019 through 2023 are shown in @fig-cumDailyBins.  This shows clearly that the harvest performance in 2023 was better than previous years in terms of rate of fruit picked and consistency over the harvest period
+
+```{r}
+#| label: tbl-harvestStats
+#| tbl-cap: "Summary statistics for 2022 and 2023 harvest timing"
+
+binsHarvested <- rockitHelperFunctions::binsHarvested(c(2019:2023), 'Trauts2018!')
+
+#=============================calculate the days to peak======================================
+
+MDB <- binsHarvested %>%
+  group_by(Season, HarvestDate ) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(Season) |>
+  summarise(maxDailyBins = max(dailyBins)) |>
+  pull(maxDailyBins)
+
+BHD <- binsHarvested |>
+  group_by(Season, HarvestDate ) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  filter(dailyBins %in% MDB) |>
+  dplyr::select(-dailyBins)
+
+daysToPeakBins <- binsHarvested |>
+  group_by(Season, HarvestDate) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(Season) |>
+  mutate(daysTo = as.numeric(HarvestDate - min(HarvestDate))) |>
+  inner_join(BHD, by = c("Season", "HarvestDate")) |>
+  dplyr::select(-c(HarvestDate, dailyBins))
+  
+
+#================================calculate peak daily bins=======================================
+
+peakDailyBins <- binsHarvested |>
+  group_by(Season, HarvestDate) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(Season) |>
+  summarise(peakDailyBins = max(dailyBins))
+
+#=====================Number of days with daily bin tallies > 1000 bins=========================
+
+daysWithGreaterThan1000Bins <- binsHarvested |>
+  group_by(Season, HarvestDate) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(Season) |>
+  mutate(bins1000 = if_else(dailyBins >= 1000, 1, 0)) |>
+  summarise(NoOfDayGr1000Bins = sum(bins1000))
+
+#============================number of bins in a given season====================================
+
+seasonBins <- binsHarvested |>
+  group_by(Season) |>
+  summarise(NoOfBins = sum(NoOfBins, na.rm=T))
+
+#==========================aggregate it all together and put in a table=========================
+
+binsHarvested |>
+  group_by(Season) |>
+  summarise(minHD = min(HarvestDate), 
+            maxHD = max(HarvestDate)) |> 
+  mutate(seasonLength = maxHD-minHD) |>
+  left_join(seasonBins, by="Season") |>
+  left_join(peakDailyBins, by="Season") |>
+  left_join(daysToPeakBins, by="Season") |>
+  left_join(daysWithGreaterThan1000Bins, by="Season") |>
+  mutate(across(.col=c(NoOfBins:NoOfDayGr1000Bins), ~scales::comma(., accuracy=1.0))) |>
+  kableExtra::kable(col.names = c("season", "start", "finish", "length$^{1}$", "total", "peak daily", "days to peak", "days with > 1,000"),
+                    align=c("l",rep("r",7)), 
+                    booktabs=TRUE,
+                    linesep="",
+                    escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position", "scale_down")) |>
+  kableExtra::add_header_above(c("", "harvest date" = 3, "bins"=4)) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{This also includes the six day gap in harvest cause by cyclone Gabrielle in 2023}"),
+                       threeparttable = T,
+                       escape = F) 
+  
+
+```
+
+
+
+```{r}
+#| label: fig-dailyBins
+#| fig-cap: "histogram of daily bins through the 2022 and 2023 harvest"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.9
+
+binsHarvested |>
+  filter(Season >= 2022) |>
+  group_by(Season, HarvestDate) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  mutate(plotDate = as.Date(str_c("2022-", as.character(month(HarvestDate)), "-", as.character(day(HarvestDate))))) |>
+  ggplot(aes(x=plotDate, y=dailyBins)) +
+  geom_col(colour="#48762e", fill="#48762e", alpha=0.5, linewidth=0.15) +
+  facet_wrap(~Season, ncol=1) +
+  geom_hline(yintercept = 1000, linetype=3) +
+  annotate("text", x=as.Date("2022-03-30"), y=1050, label = "1,000 bins per day", size=2.5, vjust=0) +
+  labs(x="harvest date",
+       y = "daily bins") +
+  ggthemes::theme_economist() + 
+  theme(axis.title.x = element_text(margin = margin(t = 10), size = 9),
+        axis.title.y = element_text(margin = margin(r = 10), size = 9),
+        axis.text.y = element_text(size = 7, hjust=1),
+        axis.text.x = element_text(size = 7, angle = 0, hjust = 0.5, vjust = 1),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8),
+        strip.text = element_text(margin = margin(b=2, t=2), size = 8),
+        strip.background = element_rect(fill="#fbf4af"),
+        legend.position = "top")
+  
+```
+
+
+```{r}
+#| label: fig-cumDailyBins
+#| fig-cap: "Comparison of cumulative daily bins since 2019"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.6
+
+binsHarvested |>
+  group_by(Season, HarvestDate) |>
+  summarise(dailyBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(Season) |>
+  mutate(cumSumDailyBins = cumsum(dailyBins),
+         day=mday(HarvestDate),
+         month=month(HarvestDate),
+         plotDate = as.Date(paste0("2019-",month,"-", day))) |>
+  ggplot(aes(plotDate, cumSumDailyBins)) +
+  geom_line(aes(colour=factor(Season)), linewidth=0.5) +
+  geom_rect(aes(xmin = as.Date("2019-02-13"), xmax = as.Date("2019-02-15"), ymin = -Inf, ymax = Inf),
+            fill = "grey", colour = "grey", alpha = 0.05) +
+  annotate("text", x=as.Date("2019-02-14"), y=8000, label="cyclone Gabrielle", angle=90, hjust=0, vjust = 0.5, size=2) + 
+  labs(x = "date",
+       colour = "season") +
+  scale_y_continuous("cumulative daily bin tally", labels = scales::label_comma(accuracy=1.)) +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 7)),
+        axis.title.y = element_text(margin = margin(r = 7)),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        plot.title = element_text(margin = margin(b = 10)),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8))
+```
+## Number of picks
+
+Historically, Rockit^TM^ apple orchards have been harvested multiple times during a season and multiple picks of an orchard is a relatively common practice, particularly with the 3D spindle growing system due to maturity differences within the tree. Reducing orchard picks A secondary reason was to allow the future estimation of pick numbers and to allow the optimisation of orchard picks to maximise productivity and quality.
+
+Table @tbl-pickNoTable1 shows the number of blocks harvested in one, two or three picks.  The same table also lists the bins harvested for each pick, depending on how many picks were required for the given block. Only 50 (of 313) blocks were harvested once.  This is likely due to orchard age and the small crop load.  123 and 140 blocks were harvested two and three (or more) times respectively.  In terms of the number of bins per pick, these are given in absolute and relative terms in table @tbl-blockByPick.
+
+::: {.callout-tip}
+## INSIGHT:
+
+44% of orchard blocks are harvested more than three times (24% in terms of bins harvested on the third or greater pick). Only 16% of blocks are harvested in only one pick (3% in terms of bins).  This is only marginally better than 2022 and needs to be a focus to lift harvest productivity in 2024.
+:::
+
+Each time a block is picked, resources (labour, platforms, trucking) need to be deployed to take in the crop. An obvious way of improving productivity is to minimise the number of times a block is harvested.  The focus in 2024 is to identify three-pick blocks that could be reduced to two-pick blocks by removing more fruit in the first pick. As the proportion of trees shifts from 3D to 2D canopy the within-tree maturity variance should reduce allowing a reduced number of picks. 2D growing systems make up 43.2% of planted canopy area (refer to [Chapter @sec-yieldPerf] for further discussion on the mix of growing systems).  
+
+```{r}
+#| label: tbl-pickNoTable1
+#| tbl-cap: "Summary of blocks by number of picks, 2023 Harvest"
+
+TotalBinsPerBlock <- binsHarvested |>  
+  group_by(FarmName, BlockCode) |>
+  summarise(BlockBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop")
+
+pickData <- binsHarvested |>  
+  group_by(FarmName, BlockCode, PickNoDesc) |>
+  summarise(NoOfBins = sum(NoOfBins, na.rm=T),
+            .groups = "keep") |>
+  left_join(TotalBinsPerBlock, by = c("FarmName", "BlockCode")) |>
+  mutate(propPick = NoOfBins/BlockBins) |>
+  ungroup()
+
+thirdPick <- pickData |>
+  filter(PickNoDesc == "3rd Pick") |>
+  select(c(FarmName, BlockCode)) |>
+  mutate(NoOfPicks = 3)
+
+secondPick <- pickData |>
+  left_join(thirdPick, by = c("FarmName", "BlockCode")) |>
+  filter(is.na(NoOfPicks)) |>
+  filter(PickNoDesc == "2nd Pick") |>
+  select(c(FarmName, BlockCode)) |>
+  mutate(NoOfPicks = 2) |>
+  bind_rows(thirdPick)
+
+binsPerPick <- pickData |>
+  left_join(secondPick, by = c("FarmName", "BlockCode")) |> 
+  filter(!is.na(PickNoDesc)) |>
+  mutate(NoOfPicks = replace_na(NoOfPicks, 1)) |>
+  group_by(NoOfPicks, PickNoDesc) |>
+  summarise(NoOfBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  pivot_wider(id_cols = NoOfPicks, names_from = PickNoDesc, values_from = NoOfBins) 
+
+pickData |>
+  left_join(secondPick, by = c("FarmName", "BlockCode")) |>
+  filter(!is.na(PickNoDesc)) |>
+  mutate(NoOfPicks = replace_na(NoOfPicks, 1)) |>
+  group_by(NoOfPicks, FarmName, BlockCode) |>
+  summarise(NoOfBins = sum(NoOfBins, na.rm=T),
+            .groups = "drop") |>
+  group_by(NoOfPicks) |>
+  summarise(count = n(),
+            .groups = "drop") |>
+  left_join(binsPerPick, by="NoOfPicks") |>
+  mutate(across(`1st Pick`:`3rd Pick`, ~replace_na(. ,0))) |>
+  mutate(`1st Pick` = scales::comma(`1st Pick`, accuracy = 1),
+         `2nd Pick` = scales::comma(`2nd Pick`, accuracy = 1),
+         `3rd Pick` = scales::comma(`3rd Pick`, accuracy = 1)) |>
+  kableExtra::kable(col.names = c("No. of picks$^{1}$", "No. of blocks", "1st Pick", "2nd Pick", "3rd Pick"),
+                    align=c("l",rep("r",4)), 
+                    booktabs=TRUE, 
+                    escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position") |>
+  kableExtra::add_header_above(c(" " = 2, "No. of bins in each pick" = 3)) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{3rd pick actually denotes 3 picks or greater.  This will be changed in 2024}"),
+                       threeparttable = T,
+                       escape = F) 
+
+```
+
+
+```{r}
+#| label: tbl-blockByPick
+#| tbl-cap: "Summary of bins by pick number, 2022 and 2023 Harvest"
+
+
+
+binsHarvested |>
+  filter(Season %in% c(2022, 2023)) |>
+  group_by(Season, PickNoDesc) |>
+  summarise(NoOfBins = sum(NoOfBins),
+            .groups = "drop") |>
+  pivot_wider(id_cols = Season, names_from = PickNoDesc, values_from = NoOfBins) |>
+  inner_join(seasonBins, by="Season") |>
+  mutate(pick1Perc = scales::percent(`1st Pick`/NoOfBins, accuracy=0.1), 
+         pick2Perc = scales::percent(`2nd Pick`/NoOfBins, accuracy=0.1),
+         pick3Perc = scales::percent(`3rd Pick`/NoOfBins, accuracy=0.1),
+         across(.cols = c(`1st Pick`, `2nd Pick`, `3rd Pick`, NoOfBins), ~scales::comma(., accuracy=1))) |>
+  relocate(pick1Perc, .after = `1st Pick`) |>
+  relocate(pick2Perc, .after = `2nd Pick`) |>
+  relocate(pick3Perc, .after = `3rd Pick`) |>
+  kableExtra::kable(col.names = c("season", rep(c("bins", "% total bins"), 3), "total bins"),
+                    align=c("l",rep("r",7)), 
+                    booktabs=TRUE,
+                    linesep="",
+                    escape = T)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position", "scale_down")) |>
+  kableExtra::add_header_above(c("", "1st Pick" = 2, "2nd Pick"=2, "3rd Pick$^{1}$"=2, " "=1),
+                               escape = F) |>
+  kableExtra::footnote(number = c("\\\\footnotesize{3rd pick actually denotes 3 picks or greater.  This will be changed in 2024}"),
+                       threeparttable = T,
+                       escape = F) 
+
+```
+
+## Labour and orchard productivity
+
+Check with Chris when he gets back from leave on the labour data
+
+
+## Conclusion
+
+Despite the challenges of Cyclone Gabrielle, at the start of the harvest period, performance was considerably better than 2022 on a number of metrics. In 2023, a total 28,734 bins were picked over 63 days giving an average bins per day of 456, despite a six day delay due to the cyclone.  This contrasts with a mean daily bins of just 371 in 2022.  The improvement in the harvest productivity can be largely attributed to:
+
+* Better maturity management and timely communication to growers
+* For RMS, more centralised decision making around the allocation of resources 
+* Better use of ethylene regulating sprays (Harvista^TM^ and Ethrel^TM^)
+* More focused use of platforms and bins trailers, improving harvest productivity
+* Less labour pressure due to availability of contract seasonal labour
+
+## Recommendations
+
+Tow factors: centralised decision making and maturity management, arguably, contributed most significantly to the improved harvest performance (relative to 2022), i.e. resources were allocated to the most appropriate blocks ensuring the fruit was harvested at optimum maturity profile.  This approach is being repeated in 2024 with several refinements, namely:
+
+* Improved maturity progression sampling
+* Modeling of maturity to better predict the optimum harvest window
+* Better planning and allocation of resources with the RMS managed blocks
+* Improved, daily communication with growers both RMS and independent
+
+[Chapter @sec-maturity] cover maturity management in some detail, in terms of insights from 2023, lessons learned and recommendations.  2024 brings the prospect of more than 60,000 bins.  This represents a bin increase of more than 110%.  This represents a significant challenge in getting the fruit picked with optimal maturity as well as storage and packing capacity. 
+
+## Glossary
+
+
