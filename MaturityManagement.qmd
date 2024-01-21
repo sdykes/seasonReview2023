@@ -51,11 +51,11 @@ tibble(RSP = c("A", "B", "C", "D", "I", "X", "N"),
        
 ```
 
-The submission profile classification for 2023 was considerably different from previous years and is designed to better reflect the maturity of PremA96.  The most obvious changes is the name, going from the industry standard Enza submission profile (ESP) to the more specific Rockit submission profile (RSP).  The thresholds for the main maturity criteria have not changed (e.g. SPI, Firmness and TSS), however there are now seven classifications (A, B, C, D, I, X and N) instead of three (A, B, C).  The C classification in the ESP system included fruit that was out of specification (i.e. SPI > 5.5 and/or firmness < 7.0).  With the RSP classification, out-of-specification fruit are given the designation D, I and X which indicate out-of-specification SPI, firmness and both measurements respectively. Additionally and N classification (for "not ready") has been introduced for completeness.  The RSP classification allow storage and packing decisions to be made more precisely than with the ESP classification
+The submission profile classification for 2023 was considerably different from previous years and was designed to better reflect the maturity of PremA96.  The most obvious changes is the name, going from the industry standard ENZA submission profile (ESP) to the more specific Rockit submission profile (RSP).  The thresholds for the main maturity criteria remain unchanged (e.g. SPI, Firmness and TSS), however there are now seven classifications (A, B, C, D, I, X and N) instead of three (A, B, C).  The C classification in the ESP system included fruit that was out of specification (i.e. SPI > 5.5 and/or firmness < 7.0).  With the RSP classification, out-of-specification fruit are given the designation D, I and X which indicate respectively, out-of-specification SPI, firmness and both measurements simultaneously. Additionally and N classification (for "not ready") has been introduced for completeness.  The RSP classification allow storage and packing decisions to be made more precisely than with the ESP classification.
 
 ## Starch Pattern Index 
 
-The Starch pattern index directly measures the hydrolysis of starch in the apple to simple sugars (glucose, fructose and sucrose). The rate or kinetics of this transformation can be described using a logistic growth model characterised by a lag, growth and saturation phase [@peirs_uncertainty_2002].  This type of model is applied to many constrained biological systems and can be described mathematically using the same equation used to describe yield refer to [Section @sec-yieldModelling]. 
+The Starch pattern index directly measures the enzymatic hydrolysis of starch in the apple to simple sugars (glucose, fructose and sucrose). The rate or kinetics of this transformation can be understood using a logistic growth model characterised by a lag, growth and saturation phase [@peirs_uncertainty_2002].  This type of model is applied to many constrained biological systems and can be described mathematically using the same equation used to describe yield refer to [Section @sec-yieldModelling]. 
 
 An example of the SPI progression is given in @fig-SPIMaturityExample for a Rockit^TM^ apple production site in 2023.  Overlaid is the modeled (continuous) SPI progression and the harvest window for this particular sample. The points represent SPI assessments from individual fruit and the vertical lines represent the dates when the block was harvested. The background plot colours represents the RSP classification (based on SPI). @fig-SPIMaturityExample shows clearly the first pick on the 10th February was in the middle of the A and B RSP profile.  The first pick was significant (69% of the total bins harvested for the block).  The remaining harvest dates all occurred when the SPI was out of specification (31% of the total bins harvested).  In mitigation it should be realised that the initial pick took place before Cyclone Gabrielle.  Logistical difficulties meant that this particular orchard could not be accessed for picking until
 
@@ -71,7 +71,7 @@ An example of the SPI progression is given in @fig-SPIMaturityExample for a Rock
 con <- DBI::dbConnect(odbc::odbc(),    
                  Driver = "ODBC Driver 17 for SQL Server", 
                  Server = "abcrepldb.database.windows.net",  
-                 Database = "ABCPackerRepl",   
+                 Database = "ABCPacker2023Repl",   
                  UID = "abcadmin",   
                  PWD = "Trauts2018!",
                  Port = 1433
@@ -311,7 +311,7 @@ mean_curve %>%
 ```
 ## Flesh Firmness
 
-Flesh firmness (FF) or pressure, is measured at the same time as SPI measurements are taken.  Two measurements are taken on the cheek of the apple, one sample diametrically opposed to the other.  In preparation the skin is sliced leaving a flat surface approximately 25mm in diameter.  The penetrometer measurement is taken by displacing the tip of the device into the centre of the flat section.  The apple is rotated and the measurement repeated on the other side.  Flesh firmness is defined as the maximum force required to traverse a rod a pre-determined distance into the apple.  The probe moves the cortical cells either rupture or slip aside relative to each other [@mowatt_factors_1997]. As the fruit continues to senesce the inter-cellular bond strength decreases and the cell-walls become weaker, reducing the overall force requires to penetrate the flesh of the apple.
+Flesh firmness (FF) or pressure as it is alternatively known, is measured at the same time as SPI measurements are taken.  Two measurements are taken on the cheek of the apple, one sample diametrically opposed to the other.  In preparation the skin is sliced leaving a flat surface approximately 25mm in diameter.  The penetrometer measurement is taken by displacing the tip of the device into the centre of the flat section.  The apple is rotated and the measurement repeated on the other side.  Flesh firmness is defined as the maximum force required to traverse a rod a pre-determined distance into the apple.  The probe moves the cortical cells either rupture or slip aside relative to each other [@mowatt_factors_1997]. As the fruit continues to senesce the inter-cellular bond strength decreases and the cell-walls become weaker, reducing the overall force requires to penetrate the flesh of the apple.
 
 ```{r}
 #| label: fig-firmnessMaturityExample
@@ -382,7 +382,7 @@ meanCurvePress |>
 
 ```
 
-Flesh firmness tends to reduce as a linear function of time (as compared to the non-linear behaviour of SPI).  @fig-firmnessMaturityExample presents the same block as in  @fig-SPIMaturityExample plotting flesh firmness as a function of assessment date. Note that the predicted firmness does not intersect with the minimum threshold of 7.0 kgf until `r CDate`. This is typical of most blocks and firmness is a second order predictor for maturity compared to SPI.  While this is the case firmness remains an important measurement in fruit quality.  As discussed in chapter defects Chapter xxxx the relatively strong and stable inter-cellular bonding observed in PremA96 means that firmness does not deteriorate as rapidly as other apples [@segonne_multiscale_2014].  
+Flesh firmness tends to reduce as a linear function of time (as compared to the non-linear behaviour of SPI).  @fig-firmnessMaturityExample presents the same block as in  @fig-SPIMaturityExample plotting flesh firmness as a function of assessment date. Note that the predicted firmness does not intersect with the minimum threshold of 7.0 kgf until `r CDate`. This is typical of most blocks and firmness is a second order predictor for maturity compared to SPI.  While this is the case firmness remains an important measurement in fruit quality.  As discussed in [chapter @sec-defects] the relatively strong and stable inter-cellular bonding observed in PremA96 means that firmness does not deteriorate as rapidly as other apples [@segonne_multiscale_2014].  
 
 Comparing the RSP threshold dates for SPI and firmness shown in @fig-SPIMaturityExample and @fig-firmnessMaturityExample the behaviour is typical of most production sites and for most seasons. @tbl-SPIFirmnessComparison presents the dates and by every measure the RSP classification is driven by the changes in SPI which are more dynamic than firmness over the ripening period.  The exception being for classification I and X which are driven by pressure and both pressure and SPI by definition.
 
@@ -466,7 +466,7 @@ meanCurveBrix |>
 
 ## Maturity performance
 
-Maturity management performance can be measured a number of ways.  One way is to plot each consignment by RSP classification and measure the proportion of each class.  As a very broad measure, the bins (or consignments) that were harvested within specification as a proportion of the total bins (or consignments).  This is visualised in figure xxx
+Maturity management performance can be measured a number of ways.  One way is to plot each consignment by RSP classification and measure the proportion of each class.  As a very broad measure, the bins (or consignments) that were harvested within specification as a proportion of the total bins (or consignments).  This is visualised in @fig-SPISubmissions and @fig-pressureSubmissions
 
 ```{r}
 #| label: fig-SPISubmissions
@@ -479,7 +479,7 @@ Maturity management performance can be measured a number of ways.  One way is to
 con <- DBI::dbConnect(odbc::odbc(),    
                       Driver = "ODBC Driver 17 for SQL Server", #"SQLServer", #
                       Server = "abcrepldb.database.windows.net",  
-                      Database = "ABCPackerRepl",   
+                      Database = "ABCPacker2023Repl",   
                       UID = "abcadmin",   
                       PWD = "Trauts2018!",
                       Port = 1433
@@ -583,7 +583,7 @@ SubmissionAss <- labAss |>
 SubmissionAss |>
   filter(AssessmentDate >= as.Date("2022-01-01")) |>
   ggplot(aes(x=plotDate, y = SPI, colour = index)) +
-  geom_jitter(size = 1, alpha = 0.3) +
+  geom_jitter(size = 1.5, alpha = 0.3) +
   facet_wrap(~Season, ncol=1) +
   geom_hline(yintercept = 5.5, colour = "grey40", linewidth = .5, linetype = "dashed") +
   scale_x_datetime(expand = expansion(mult = 0, add = 0)) +
@@ -613,7 +613,7 @@ SubmissionAss |>
 SubmissionAss |>
   filter(AssessmentDate >= as.Date("2022-01-01")) |>
   ggplot(aes(x=plotDate, y = Firmness, colour = index)) +
-  geom_jitter(size = 1, alpha = 0.3) +
+  geom_jitter(size = 1.5, alpha = 0.3) +
   facet_wrap(~Season, ncol=1) +
   geom_hline(yintercept = 7.0, colour = "grey40", linewidth = .5, linetype = "dashed") +
   scale_x_datetime(expand = expansion(mult = 0, add = 0)) +
@@ -656,12 +656,17 @@ SubmissionAss |>
 
 ## Application of growth regulators
 
-One of the tools for managing harvest timing is the application of growth regulators to either delay or accelerate maturity. Three chemicals are currently widely used in the New Zealand pip fruit sector. Rockit^TM^ apple orchards typically utilise Ethrel^TM^ and Harvista^TM^. 
+One of the principal tools for managing harvest timing is the application of growth regulators to either delay or accelerate maturity. Three chemicals are currently widely used in the New Zealand pip fruit sector. Rockit^TM^ apple orchards typically utilise Ethrel^TM^ (as a maturity accelerator) and Harvista^TM^ (as a maturity retarder). 
 
 Ethrel^TM^ produces ethylene and acts to accelerate maturity by triggering the ethylene auto-catalysis [@busatto_climacteric_2017]. Harvista^TM^ inhibits the effect of ethylene on the fruit by blocking the ethylene receptor sites on the surface of the apple.
-Table xxxx gives a summary of the extent of Harvista^TM^ and Ethrel^TM^ use on RMS blocks (independent grower information was not available). High rate Ethrel^TM^ treatment refers to two successive treatments of 500ml/ha which is the rate used to accelerate maturity. Low rate Ethrel^TM^ is defined as 200ml/ha and is primarily used for colour development, and does not appear to have any effect on rate of maturity. Table yyyyy shows the number of blocks with one, two or three applications of Harvista^TM^. Repeated doses of Harvista^TM^ have acted to delay maturity, and therefore, allow labour to be spread further.
+
+@tbl-harvistaTable1 gives a summary of the extent of Harvista^TM^ and Ethrel^TM^ use on RMS blocks (independent grower information was not available). High rate Ethrel^TM^ treatment refers to two successive treatments of 500ml/ha which is the rate used to accelerate maturity. Low rate Ethrel^TM^ is defined as 200ml/ha and is primarily used for colour development, and does not appear to have any effect on rate of maturity. @tbl-harvistaTable2 shows the number of blocks with one, two or three applications of Harvista^TM^. Repeated doses of Harvista^TM^ have acted to delay maturity, and therefore, allow labour to be spread further.
+
+Because of the strategic importance of growth regulators for PermA96 harvest management, RGL commissioned Plant and Food Research to study the effect of both Ethrel^TM^ and Harvista^TM^ applications (including rate, timing and number of application) on the maturity of PremA96.  While the Harvista^TM^ study was covered extensively in the 2022 Season Review [@dykes_stuart_rockit_2023].  The complete Ethrel^TM^ is presented in [chapter @sec-ethrel]. 
 
 ```{r}
+#| label: tbl-harvistaTable1
+#| tbl-cap: "Extent of Harvista and Ethrel usage 2023 season"
 
 harvista <- read_csv("data/maturityManagement/HarvistaUsage2023.csv", show_col_types = F) |>
   mutate(Date = as.Date(Date, "%d/%m/%Y")) |>
@@ -698,11 +703,10 @@ read_csv("data/maturityManagement/EthrelUsage2023.csv", show_col_types = F) |>
   mutate(Treatment = c("Ethrel", "Ethrel")) |>
   relocate(Treatment, .before = Rate) |>
   bind_rows(harvistaSummary) |>
-  kableExtra::kable(caption = "Extent of Harvista and Ethrel usage 2023 season",
-        col.names = c("Treatment", "Rate", "No Of Blocks", "Hectares sprayed"),
+  kableExtra::kable(col.names = c("Treatment", "Rate", "No Of Blocks", "Hectares sprayed"),
         align=c(rep("l",2),rep("r",2)), 
         booktabs=TRUE, 
-        escape = F)  %>%
+        escape = T)  %>%
   kableExtra::kable_styling(full_width=F,
                 latex_options = "HOLD_position")
 
@@ -710,17 +714,17 @@ read_csv("data/maturityManagement/EthrelUsage2023.csv", show_col_types = F) |>
 
 ```{r} 
 #| label: tbl-harvistaTable2
+#| tbl-cap: "Blocks and hecatres by number of Harvista applications 2023 season"
 
 harvista |>
   group_by(count) |>
   summarise(NoOfBlocks = n(),
             hectares = round(sum(orchardHectares),2)) |>
-  kable(caption = "Blocks and hecatres by number of Harvista applications 2022 season",
-        col.names = c("No of applications", "blocks", "hectares sprayed"),
+  kableExtra::kable(col.names = c("No of applications", "blocks", "hectares sprayed"),
         align=c("l",rep("r",2)), 
         booktabs=TRUE, 
-        escape = F)  %>%
-  kable_styling(full_width=F,
+        escape = T)  |>
+  kableExtra::kable_styling(full_width=F,
                 latex_options = "HOLD_position")
   
   

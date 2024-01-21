@@ -1,0 +1,350 @@
+# Ethephon spray applications on PremA96 apples 2023 {#sec-ethrel}
+ 
+Authors: Niemann N1, Marinkovich D2, Julian A1, Palmer G1, Mair S1, Johnston J1
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Summary
+
+Remarkable growth in Malus domestica ‘PremA96’ plantings in New Zealand is leading to logistics pressures at storage facilities and the packhouse. Multiple actions can be brought into practice to streamline and ease these pressures, including using growth regulators such as the ethylene-producing compound ethephon (which triggers maturation, ripening and senescence in fruit) and the compound that inhibits ethylene’s action, 1-methylcyclopropene (1-MCP). Both these compounds can be applied in the orchard as spray treatments, and both have physiological effects on the fruit that may continue into storage. Ethephon spray treatments (Ethin™, containing 480 g/L chlorethephon) may bring the start of harvesting forward by a few weeks, while the research last year on the spray application of 1-MCP-containing Harvista™ 1.3 SC proved it could delay the end of the harvest period by up to 4 weeks.
+
+Ethephon treatments at two doses (applied at 200 and 500 mL/ha) were applied two or three times in test blocks on ‘PremA96’ trees in January 2023. Fruit maturity was tracked on a weekly basis to determine optimum harvest windows and to follow how fruit quality changed. One 200 mL/ha block furthermore received two Harvista spray treatments to determine how 1-MCP treatment can influence Ethephon treatment. Apples were harvested weekly from 11 January to 4 April 2023 and placed in regular air (RA) or controlled atmosphere (CA) storage after a SmartFresh™ treatment for 3 and 6 months to determine how these growth regulators affect storage performance of the apples.
+
+The key findings of this trial were:
+
+* Ethephon treatment brought the recommended harvest date forward from 21 February to as early as 30 January, depending on application number and dose. The harvest window (when average starch pattern index (SPI) was 3–4) was longer for Ethephon-treated fruit compared with unsprayed fruit. The timing of application may be more important than the number of spray applications, since little difference could be measured between blocks that received two and three applications.
+* The lower, label-recommended dose of 200 g/ha Ethin moved the recommended start date of harvest forward by only a week relative to untreated controls, and there was considerable overlap with the time when unsprayed fruit could be picked. It is unclear whether this dose can have a stronger effect if applied earlier.
+* Following Ethephon treatments with Harvista sprays can slow ripening down again, therefore fruit could be picked from the same time and up to 2 weeks later than the control fruit (21 February to 14 March). These fruit stored better than just Ethephon-treated fruit.
+* Ethephon treatments resulted in fruit with different traits than unsprayed fruit when their SPI was 3–4. Fruit firmness was higher than control fruit during their recommended harvest times. Dry matter content was lower in Ethephon-treated fruit, but soluble solids concentration (SSC) was similar. The implication is that earlier harvests deprive fruit of the opportunity to accumulate structural carbon, although SSC is similar between control and Ethephon-treated fruit.
+* Fruit permeance decreased as the fruit matured. Picking any fruit earlier (Ethephon-treated at correct maturity, or immature unsprayed fruit) increase the risk of shrivel symptom development in storage.
+* Storage tests revealed that Ethephon does have a negative effect on the times fruit can be stored. The most important quality parameter affected was shrivel symptom development. Up to 30% more Ethephon-treated fruit would develop shrivel compared with unsprayed fruit in the same storage environment.
+* Internal ethylene concentration (IEC) and SPI changes correlated with each other, proving that SPI alone can be used to judge when fruit are ready for picking.
+
+## Introduction
+
+Ethephon (2-chloroethylphosphonic acid) is one of the most commonly used plant growth regulators that can promote pre- and postharvest ripening. After being absorbed by the plant, the molecule is metabolised and ethylene is released. In addition to ripening, ethylene can induce abscission, flower induction and leaf senescence [@wang_aminoethoxyvinylglycine_2001]. In order to limit these effects, Ethephon is often applied in conjunction with the synthetic auxin plant hormone naphthalene acetic acid (NAA). NAA is known to prevent premature fruit dropping by inhibiting abscission. It can help to limit leaf drop as ethylene concentrations increase in and around the trees after Ethephon application, but likewise accelerates ripening in apples [@ozturk_effects_2019]. Additionally, it may exacerbate russet in susceptible apple cultivars [@jones_reservations_1991].
+
+The benefits of exposing apples (Malus domestica) to ethylene during the later stages of their development include improved colour development and being ready for harvest earlier. This could help to ease picking pressures during the harvest window. But once ripening has sped up, senescence will follow. The implications of this include the fact that the apples may not be stored as long as otherwise could be expected, with storage and aging disorders more likely to develop. 1-Methylcyclopropene (1-MCP) technologies such as SmartFresh™ and Harvista™ could help to slow senescence again, but since the processes have already started in the orchard, these mitigations will have limited effects [@mair_s_effect_2021].
+
+The aim of this project was to track fruit ripening in the orchard for a period after Ethephon spray applications, and to determine how well the fruit stored after the various treatments. Multiple application regimes were tracked, with two dosage concentrations applied to different blocks in the same orchard. In addition, one block received a Harvista spray treatment after conventional Ethephon treatment to investigate how 1-MCP can block the cascade of effects that Ethephon may have on ‘PremA96’ apples.
+
+## Materials & methods
+
+### Spray application
+
+A Rockit^TM^ apple orchard was selected for this trial, with several blocks receiving different spray treatments to address the questions in this trial. The spray treatments and dates are recorded in Table 1. All blocks received Erger (Valagro®) treatment to stimulate bud break in August 2022, but different doses were applied to some blocks since the experimental plans for this trial were not in place yet.
+
+The block reserved for control fruit sampling was accidentally picked by orchard staff towards the end of January, necessitating the use of a second block (designated new control) to sample fruit for the remainder of the trial.
+
+```{r}
+#| label: tbl_trialSummary
+#| tbl-cap: "Details about the spray treatments of ‘PremA96’ blocks in an orchard in Hawke’s Bay before harvest in 2023. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin™ with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista™ 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples for comparisons"
+
+tibble(block = c("E500 x 3\nE500 x 2\n E200 x 2\nControl",
+                 "New Control\nE200 + Harvista",
+                 "E500 x 3",
+                 "E500 x 3\nE500 x 2",
+                 "E200 x 2\nE200 + Harvista",
+                 "E200 + Harvista",
+                 "E500 x 3",
+                 "E500 x 2",
+                 "E200 + Harvista",
+                 "E200 + Harvista"),
+                       date = c("8th August 2022",
+                                "21st August 2022",
+                                "11th January 2023",
+                                "21st January 2023",
+                                "27th January 2023",
+                                "2nd february 2023",
+                                "2nd February 2023",
+                                "9th February 2023",
+                                "10th February 2023",
+                                "22nd February 2023"),
+                       `days after first Ethephon spray` = c(NA, NA, -1, 9, 15, 21, 21, 28, 29, 41),
+                       `spray details` = c("5 L/100 L Erger (Valagro)",
+                                           "2.5 L/100 L Erger (Valagro)",
+                                           "500 mL Ethin/ha, NAA 100 (10\\%), Spray Aid",
+                                           "500 mL Ethin/ha, NAA 100 (10\\%), Spray Aid",
+                                           "Captan 80 WG, 200 mL Ethin/ha, NAA 100 (10\\%), Spray Aid",
+                                           "200 mL Ethin/ha, Regulaid, NAA 100 (10\\%), Spray Aid",
+                                           "500 mL Ethin/ha, NAA 100 (10\\%), Spray Aid",
+                                           "Captan 80 WG, 200 mL Ethin/ha, NAA 100 (10\\%), Spray Aid",
+                                           "Harvista (150 g/ha)",
+                                           "Harvista (150 g/ha)")) |>
+  mutate(across(.cols = everything(), ~ kableExtra::linebreak(., align = "l"))) |>
+  kableExtra::kable(col.names = c("block", "date", "days after first Ethephon spray", "spray details"),
+                    align=c("l",rep("c",2), "l"), 
+                    booktabs=TRUE, 
+                    escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position", "scale_down")) |>
+  kableExtra::column_spec(column = c(3,4), width = "2in")
+
+
+
+
+```
+
+### Fruit ripening assessments after spray treatments
+
+Every effort was made to pick 20 fruit from each test block once a week from 11 January to 4 April 2023. One assessment was missed on 15 February 2023, after Cyclone Gabrielle hit the region.
+
+To evaluate fruit ripening and how Ethin™ and Harvista treatments could affect it, we concentrated on starch breakdown trends and tracked how internal ethylene was produced. Starch pattern index (SPI) is a quick and easily performed assessment method that can be completed by growers in the field, and immediate decisions can be made based on the results.
+
+* SPI — Apples were assessed at time of harvest by staining a cut half of each apple with iodine solution and recording the amount of staining according to the ENZA SPI chart for apples, a 0–7 scale where 0 = fully stained and 7 = no staining.
+* Internal ethylene concentration (IEC) — Assessments were conducted 1 and 14 days after harvest on fruit held at 20°C. IEC was measured by extracting a 1-mL gas sample from the core of an apple and injecting it into an Agilent 6890N gas chromatograph equipped with an activated alumina grade F−1 80/100 column at 130°C. Nitrogen was the carrier gas (flow rate of 35 mL/min), with hydrogen (35 mL/min) and air (350 mL/min) as makeup gas. Ethylene was detected with a flame ionising detector at 150°C. Ethylene was calibrated using a gas standard.
+
+### Fruit permeance after spray treatments
+
+Permeance was assessed for apples picked weekly after the spray applications by Rockit packhouse staff.
+
+Because of its small size, ‘PremA96’ has a high surface area to volume ratio and therefore is susceptible to shrivel via water loss from the fruit. Water vapour permeance is a measurement used to determine the ease with which water vapour can depart the fruit via the apple skin barrier.
+
+In a constant environment, the effective permeance of the fruit surface to water vapour under prevailing conditions can be calculated from the rate of water loss ($r_{H_2O}^{'}$ in $nmol s^{−1}$), provided $\Delta p_{H_2O}$ (the difference in partial pressure of water vapour between the environment and inside the fruit in Pa) and A (the surface area of the fruit in m^2^) are known, using the steady state solution of Fick’s first law of diffusion (@eq-ficksLaw):
+
+$$
+r_{H_2O}^{'} = \Delta p_{H_2O}AP_{H_2O}^{'}
+$$  {#eq-ficksLaw}
+
+Where:  
+$r_{H_2O}^{'} =$ rate of water loss from the apple in ($nmols^{-1}$)  
+$\Delta p_{H_2O} =$ difference in partial pressure of the water vapour between the environment and inside the fruit ($Pa$)  
+$A =$ surface area of the fruit ($m^2$)  
+$P_{H_2O}^{'} =$ the effective permeance of the fruit surface to movement of water vapour under prevailing conditions ($nmols^{-1}m^{-2}Pa^{-1}$) 
+
+Weekly samples of 20 fruit were taken from the same trial areas as the fruit for the SPI and IEC tests.  
+
+Each weekly sample of fruit was stored in a coolstore overnight. The following morning the fruit were acclimated by placing them in the water vapour permeance ‘stack’ in the Rockit lab and running the fan at the top and bottom of the stack for 1.5 h (Figure 1). This removed any condensation from the apples’ surfaces. The lab was kept at 19.5°C throughout the experiment with the room fan speed on high.  
+
+The apples were then weighed with a microscale (Wedderburn microscale AB623RCE serial 190016676) and placed back on the trays in the ‘stack’.  
+
+The fans were turned back on for 3 h and a dehumidifier was run on a dry setting during this time. A TinyTag datalogger was started at the beginning of the 3 h to record temperature, dew point and humidity.
+
+The apples were reweighed with the microscale at the end of the 3 h and the weight loss was calculated. Permeance (nmol/s/m2/Pa) was calculated using the following formula:
+
+$$
+permeance = \frac{m}{18At\Delta_p{H_{2}O} ∗10^{11}}
+$$ {#eq-expFormula}
+
+Where:
+$m$ = mass loss ($kg$)
+$A$ = surface area of the fruit ($m^{2}$)
+$t$ = experimental time ($s$)
+
+::: {#fig-permeanceSetup layout-ncol=2}
+
+![](img/ethrelStudy/permeanceA.jpg){#fig-permeance1}
+
+![](img/ethrelStudy/permeanceB.jpg){#fig-permenace 2}
+
+The experimental setup at the Rockit packhouse to determine permeance in ‘PremA96’ apples
+
+
+### 2.4 Fruit quality at-harvest and after storage
+
+Apples from each test block were stored by Rockit Global for up to 6 months after harvest and assessed for fruit firmness, soluble solids concentration (SSC), weight loss and shrivel symptom development by Rockit packhouse staff.  
+
+* Fruit Firmness — A thin slice (1 mm) of peel on opposite sides of each fruit was removed and the firmness of each side was measured using a fruit texture analyser (FTA, model GS, Güss Manufacturing Ltd, South Africa) fitted with an 11.1-mm diameter probe. The probe was driven into the flesh at 10 mm/s to a depth of 8.9 mm, and the maximum force recorded as the firmness value. Data were calculated as the average of the two measurements from each fruit sample and expressed in kilograms force (kgf).
+* SSC — Juice was squeezed by hand from each firmness puncture hole to extract juice from each apple. A droplet of juice from each puncture hole was placed in the well of a temperature compensated digital refractometer (HI96802 Digital Fructose Refractometer, Hannah Instruments, USA) for measurement.
+* Weight loss – Fruit was weighed on the day of removal from storage and again after the shelf-life period. Percentage weight loss was calculated.
+* Storage defects – Each fruit was checked on the day of removal from storage and again after the shelf-life period for defects and shrivel symptoms.
+
+
+## Results
+
+### Weather during the trial
+
+The La Nina weather during the summer of 2022−23 resulted in higher rainfall during January and February 2023 than normal (@fig-PFRWeather). Usually the average rainfall for these 2 months is 50−60 mm. In 1 day (14 February) 139 mm of rain fell, totalling almost 180 mm over 4 days. Other noteworthy rain events happened on 7−11 January (92 mm), 27−28 January (92 mm) and 22−28 February (120 mm). The total rainfall for January and February this year was 502 mm, five times as much as the average. The rain was accompanied by overcast days, resulting in decreased irradiance on leaves. This could affect photosynthesis, placing even more strain on trees to produce the carbohydrates that needed to be transported to the fruit.
+The temperatures this season were slightly cooler when compared with other years, average maximum temperatures usually vary from 24 to 22°C and minimum from 15 to 13.5°C. This year the average maximum hovered just above 20°C while the minimum varied from 15 to 10°C.
+
+![Rainfall, maximum and minimum temperatures in Hastings during the treatment and harvest windows of ‘PremA96’ apples in 2023. Data were collected from the MetService Te Aute Rd, Havelock North weather station (www.hortplus.metwatch.nz).](img/ethrelStudy/weather1.jpg){#fig-PFRWeather}
+
+### How apples matured in response to growth regulator applications
+
+#### Effects of different Erger spray applications on blocks
+
+Erger (active ingredient: 20−25% Oxirane, 2-methyl-, polymer with oxirane, mono(2-propylheptyl) ether) can be used to move flowering earlier and to compress the flowering window. The blocks that received a full dose of Erger (E200 x 2, E500 x 2, E500 x 3 and Control) recorded 5% buds at greentip on 30 August 2022 with full bloom on 1 October 2022, while the blocks that received a half dose of Erger (E200 + Harvista and New Control) had greentip on 5 September 2022 and were in full bloom on 11 October 2022. The full dose of Erger applied a week earlier than the half dose brought flowering forward by 10 days.  
+
+This treatment could have contributed to the earlier ripening that we may observe in E500- and E200-treated apples. It is important to remember this treatment was likewise used on the Control fruit, but not on the New Control and E200 + Harvista-treated fruit.
+
+#### Starch breakdown over time
+
+![Starch pattern index (SPI) of ‘PremA96’ apples as measured within 24 h of picking in 2023 from blocks in one orchard in Hastings, Hawke’s Bay after receiving various growth regulator spray treatments. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin™ with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista™ 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples for comparisons. Apples were picked and assessed once a week from 11 January to 4 April 2023, covering fruit maturities from SPI = 0 to SPI = 7. SPI was determined based on the ENZAFRUIT SPI chart guidelines for apples. n=20 per pick date.](img/ethrelStudy/SPIchart.png){#fig-SPIchart}
+
+
+According to @fig-SPIchart, unsprayed (New Control) apples from the test orchard reached SPI = 3 around 21 February, indicating the start date of harvesting for this block. In contrast, apples that were sprayed with the higher dose of Ethephon (E500 x 2 and E500 x 3) were ready for picking between 28 and 31 January, bringing the harvest date forward by just over 3 weeks. The Erger treatment could have contributed up to a week towards this movement in the harvest date. The difference between double and triple applications were so small that it could be negligible (E500 x 3 reached SPI = 3 a day or two before E500 x 2 fruit). In both cases the last Ethephon treatment was applied after the fruit had reached picking ripeness, but sharp increases in SPI changes could still be detected after each application.  
+
+A lower dose of Ethephon applied twice (E200 x 2) in a full dose Erger block could bring harvesting forward by almost a week (just after 15 February). This result could indicate that the effects of the full dose Erger were not as effective as suspected for the E500-treated blocks, or that 200 mL/ha Ethin did not have a strong effect at bringing the harvest window forward. Harvista spray applications on E200 x 2-sprayed trees delayed ripening back by a week, therefore the start of harvest for these apples coincided with that of the New Control apples (both blocks received half dose Erger in August 2022). A big difference between apples from these two blocks is that Harvista treatment slowed fruit ripening up to 3 weeks during the harvest window and it would be possible to pick these apples into the week of 14 March 2023 if decisions were made purely on SPI of the fruit. Using the different spray strategies tested in this trial could spread the harvest window for this orchard over 7 weeks (from 28 January to 14 March 2023). Taking the results from last year into consideration (Niemann et al. 2022), an additional 3 weeks at the tail end could be possible if the trees only receive Harvista spray treatments without any Ethephon exposure.
+
+## Recommended harvest-windows and fruit quality while SPI = 3−4
+
+We used the SPI data illustrated in Figure 3 to determine the dates that fruit would have SPI between 3 and 4 and drew up Table 2 to indicate recommended harvest windows for the different treatments applied during this trial:
+
+* Fruit that received no growth regulators (New Control) were ready for harvest between 21 February and 1 March, a window of 9 days.  
+* Fruit that received high doses of Ethephon (E500 x 3 and E500 x 2) ripened considerably faster, with picking windows from 29 and 30 January, respectively. E500 x 3 fruit could be picked for 11 days and E500 x 2 fruit for 16 days.  
+* A lower dose of Ethephon (E200 x 2) brought the picking window forward by a little more than a week (starting on 13 February) and the fruit could be picked for 15 days, resulting in a large overlap with the control fruit.  
+* The longest picking window was observed for E200 + Harvista-treated fruit. These apples were ready for picking on 21 February, and could be picked until 14 March, a window of 22 days.  
+
+The question arose whether other fruit quality parameters such as firmness, dry matter content and SSC would be altered and become unsynchronised with normal ripening traits. To answer this, we drew box plots of those traits for fruit assessed in the harvest windows based on when SPI for apples in each treatment were between 3 and 4. Fruit firmness for all the apples ranged between 8 and 10 kgf (Figure 4). Control fruit were the softest during their picking window, with fruit that received high doses of Ethephon recording the firmest values. Harvista-treated fruit had the biggest variation in fruit firmness measurements, ranging from 12 to 7 kgf. This is not surprising if we consider that the picking window is 22 days, revealing that fruit softening still proceeds even if SPI remains more stable.  
+
+Apples that received high doses of Ethephon (E500 x 2 and E500 x 3) recorded the lowest dry matter content during their recommended harvest windows (13.5−14%), while control fruit had 14−16% (Figure 5). Harvista-treated and E200 apples had similar dry matter content as the control fruit.  
+
+Ethephon treatment resulted in average SSC measurements dropping to or slightly below 12°Brix during their harvest windows (Figure 6). The control fruit samples picked during their harvest window had a greater range in SSC measurements of all the treatments assessed, with a mean SSC of just above 12°Brix.
+
+![Dates when ‘PremA96’ apples from different test blocks in an orchard in Hawke’s Bay had an average starch pattern index (SPI) between 3 and 4 (coloured yellow), indicating optimal harvest windows after different Ethephon (Ethin™) and Harvista™ 1.3 SC spray strategies. Trees in a block received one of the following spray strategies: Half dose Erger™ and two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista (E200 x 2+ Harvista x 2); Full dose Erger and two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); Full dose Erger and two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and full dose Erger and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply control (Full dose Erger) and New Control (half dose Erger) apples for comparisons. Apples were picked and assessed once a week from 11 January to 4 April 2023. Dates that Ethephon treatments were applied at either 500 mL/ha or 200 mL/ha with 10% NAA 100 are indicated in green (E500) or blue (E200). Harvista was applied at 150 g/ha on the days highlighted in red. Fruit were monitored on a weekly basis for starch pattern index based on the ENZA SPI chart for apples, on a 0−7 scale where 0 = fully stained and 7 = no staining. n=20 per pick date.](img/ethrelStudy/ethrelGanttChart.png){#fig-ethrelGanttChart}
+
+![Fruit firmness (reported as kgf) measured by a Güss penetrometer of ‘PremA96’ apples as recorded during their recommended harvest windows after various Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23. Trees received one of the following spray strategies: Two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista (E200+Harvista); Two applications of 200 mL/ha Ethin with 10% NAA (E200); Two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and Three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). An unsprayed block was used to supply control apples for comparisons (New Control). Apples were picked and assessed once a week from 11 January to 4 April 2023. n=20 per pick date, with one to three picks represented in each treatment.](img/ethrelStudy/ethrelFirmness.png){#fig-firmness}
+
+![Dry matter content (% of total mass) of ‘PremA96’ apples as recorded during their recommended harvest windows after various Ethephon (Ethin™) and 1−MCP (Harvista™ 1.3 SC) treatment strategies. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23. Trees received one of the following spray strategies Two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista (E200+Harvista); Two applications of 200 mL/ha Ethin with 10% NAA (E200); Two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and Three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). An unsprayed block was used to supply control apples for comparisons (New Control). n=20 per pick date, with one to three picks represented in each treatment.](img/ethrelStudy/ethrelDryMatter.png){#fig-dryMatter}  
+
+![Soluble solids content of ‘PremA96’ apples as recorded during their recommended harvest windows after various Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23. Trees received one of the following spray strategies: Two applications of 200 mL/ha
+Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista (E200+Harvista); Two applications of 200 mL/ha Ethin with 10% NAA (E200); Two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and Three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). An unsprayed block was used to supply control apples for comparisons (New Control). n=20 per pick date, with one to three picks represented in each treatment.](img/ethrelStudy/ethrelTSS.png){#fig-TSS fig-align="left"}
+
+
+### Changes in IEC in response to growth regulator applications
+
+Apples that received Ethephon treatment immediately developed increases in IEC (Figure 7). Apples that received the earlier, higher doses (E500) revealed a stronger response than fruit that received lower, later doses (E200). The SPI trends seen in (Figure 3) reflected the IEC trends, again indicating that monitoring SPI is a useful substitute for the costly IEC test. ‘PremA96’ apples are low ethylene producers, and it took until after 1 March before any of the fruit started producing more than 1 μL/L ethylene. It seems that IEC measured 1 day after harvest cannot be used to recommend pick times, but it can reveal a physiological response to hormone spray treatments, indicating whether treatments
+were effective or not. 
+
+An interesting phenomenon was observed just after the cyclone. IEC did not increase as quickly in the E500 and Harvista-sprayed fruit, but it increased at similar rates as before the cyclone for E200 and New Control fruit. At that stage, the average IEC was still only around 0.02–0.07 μL/L, but the trend is
+noticeable (Figure 7). 
+
+The increased ethylene production in response to Ethephon exposure that was evident 1 day after harvest were still observed 14 days later. E500 treated fruit had higher IEC than all other treatments throughout January and February 2023. Fruit sprayed with E200 likewise displayed increases in IEC,
+but not as high as E500-treated fruit.
+
+The effects of the cyclone were even more pronounced in IEC 14 days after picking (Figure 8). All fruit picked just after the cyclone (control, Ethephon-treated and Harvista-treated) had less IEC than what was measured in fruit picked just days before the cyclone. But within 2 weeks IEC had increased in all apples to around 100 μL/L. There was a small delay in this increase in E200, New Control and Harvista-sprayed fruit compared with E500 fruit.
+
+::: {#fig-IECmeasurements layout-ncol=2}
+
+![Internal ethylene concentrations (IEC) of ‘PremA96’ apples as measured within 24 h of picking in 2023. Blocks of trees in an orchard in Hawke’s Bay received one of the following Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA
+(E500 x 3). Unsprayed blocks were used to supply control (and new control) apples for comparisons. IEC was measured from a core gas sample with a gas chromatograph. n=20 per pick date.](img/ethrelStudy/IECOneDay.png){#fig-IECOneDay}
+
+![Internal ethylene concentrations (IEC) of ‘PremA96’ apples as measured after being held at 20°C for 14 days after harvest in 2023. Blocks of trees in an orchard in Hawke’s Bay received one of the following Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply control (and new control) apples for comparisons. IEC was measured from a core gas sample with a gas chromatograph. n=20 per pick date.](img/EthrelStudy/IEC14Day.png){#fig-IEC14Day}
+
+Internal ethylene concentrations at one and 14 days after harvest
+
+:::
+
+## The correlation between IEC and SPI
+
+The correlation between SPI and IEC is stronger with Ethephon-sprayed fruit than what it was with Harvista-sprayed fruit as measured in 2022 (Figure 9; Niemann et al. 2022). The correlation is constant throughout fruit maturation, where the Harvista-treated fruit demonstrated improved correlation as the fruit matured. We can be more confident that SPI alone can be used to track fruit maturations, and that we do not have to rely on IEC data.
+
+![Scatter plot depicting the correlation between the means of starch pattern index (SPI) and internal ethylene concentration (IEC) measurements taken from ‘PremA96’ apples that received various Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatments. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. SPI and IEC assessments were conducted once a week from 11 January to 4 April 2023, covering fruit maturities from SPI = 0 to SPI = 7. n=20 per pick date.](img/ethrelStudy/ethyleneCorrelation.png){#fig-ethCorr}
+## Fruit softening and SSC changes on the trees
+
+Fruit firmness measurements of ‘PremA96’ apples indicate that the Ethephon-treated fruit softened faster than the control fruit. On average, the Harvista-sprayed fruit were firmer than the control fruit at most assessment times (Figure 10). This seems to contradict the observations in Figure 4, but taking into consideration that the Harvista-treated fruit included in the data illustrated in Figure 10 were sampled between 21 February and 14 March 2023, it is clear that the New Control fruit had softened to 7.5 kgf by 14 March.
+
+Fruit that received higher doses of Ethephon developed higher concentrations of soluble solids during early February, but SSC in unsprayed fruit caught up with those concentrations by early March (Figure 11). Fruit sprayed with lower doses of Ethephon developed soluble solids at similar rates as the control fruit. Harvista-treated fruit had the slowest increase in SSC over the trial period, which aligns with other quality assessment results. Interestingly, when looking back at Figure 6, SSC for treated fruit during their harvest windows was lower than what was measured in control fruit when their SPI was between 3 and 4.
+
+More detailed graphs illustrating the spread of measurements at each pick date are in the Appendix (Figure A1, Figure A2 and Figure A3).
+
+::: {#fig-firmnessMeasurements layout-ncol=2}
+
+![Fruit firmness of ‘PremA96’ apples as measured within 24 h of picking in 2023. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2023 after receiving one of the following Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x
+2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. n=20.](img/ethrelStudy/firmnessMeasurement.png){#fig-firmness}
+
+![Soluble solids content of ‘PremA96’ apples as measured within 24 h of picking in 2023. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2023 after receiving one of the following Ethephon (Ethin™) and 1-MCP (Harvista™ 1.3 SC) treatment strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x
+2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. n=20.](img/ethrelStudy/brixMeasurement.png){#fig-TSS}
+
+firmness and soluble solids measured within 24 hours of the time of picking
+
+:::
+
+## Permeance changes on the trees
+
+Permeance in all treatments was remarkably similar before the cyclone, especially in January 2023 (Figure 12). It was only on 31 January 2023 that Harvista-treated fruit developed lower permeance than the other fruit picked and assessed on that date. Permeance results fluctuated from week to week, dropping as January progressed, but increasing and decreasing sharply during the first 2 weeks in February. This could have been in response to the high rainfall events that were experienced during that month. After the cyclone, permeance values differentiated more, with E500 fruit having up to 20 nmol/m2/Pa higher permeance than the control fruit. Permeance in E200 + Harvista-treated fruit was similar to that of the control fruit throughout the trial into April. Again fluctuations were observed from week to week, but the trend of decreasing permeance as the fruit mature can be distinguished.
+
+![Permeance of ‘PremA96’ apples as measured within 24 h of picking in 2023. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23 after various Ethephon (Ethin™) and Harvista™ 1.3 SC spray treatments. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. n=20.](img/ethrelStudy/permeanceMeasurement.png){#fig-permeance}
+
+## How to store ethephon-treated fruit
+
+Apples were picked throughout the trial and were placed in storage for 3 or 6 months to see how fruit quality changed during storage. Apples were placed in either controlled atmosphere or regular atmosphere storage, with all fruit receiving a SmartFresh treatment within 12 h of being picked.
+
+Unfortunately the storage trials started after the high dosage Ethephon-treated apples (E500 x 2 and E500 x 3) had ripened beyond SPI = 4 (the recommended picking window), therefore precise storage recommendations cannot be made for less mature fruit that received high doses of Ethephon (Figure 13).
+
+* After 3 months in storage: fruit firmness of control, E200 and E200 + Harvista apples picked with SPI = 3−4 had fruit firmness around 8 kgf. The mean fruit firmness in E200 apples was the lowest of the three treatments at 7.7 kgf.  
+  - More mature fruit at time of harvest softened to around 7.5 kgf after 3 months in storage. E200 fruit again had the softest fruit (7.3 kgf). E500 fruit recorded the highest mean firmness values at 7.7 and 7.8 kgf.  
+* After 6 months in storage: The trends observed for fruit picked at SPI = 3−4 after 3 months in RA storage were more pronounced. By then fruit had softened to between 7.3 and 7.8 kgf. E200 fruit was again the softest, but E200 + Harvista fruit were the firmest.  
+  - More mature fruit all recorded close to 7.5 kgf. E500 x 2 fruit were the firmest at 7.6 kgf.
+  - CA storage did not help the fruit to maintain firmness better than RA storage. Fruit firmness ranged from 7.8 to 7.2 kgf, with E500 x 2 and E500 x 3 developing the softest fruit.  
+  
+Weight loss:  
+
+* After 3 months in RA storage: Control and E200 + Harvista-treated fruit could lose 1.5−2% of their weight during the shelf-life period (Figure 14). Ethephon-treated fruit lost more weight, ranging from just over 2% in E200-treated fruit up to more than 3.5% in E500 x 3 fruit.  
+* After 6 months: After RA storage, fruit that received three high doses of Ethephon (E500 x 3) lost more weight than control fruit and fruit that had a subsequent Harvista treatment. E200 recorded similar weight loss as the control and Harvista-treated fruit when picked on 1 and 8 March (while their SPI was 3–4), but E200 fruit picked later than that lost more weight during their shelf-life. Fruit picked after 21 March demonstrated increased weight loss, irrespective of pre-harvest treatment. Mean weight losses ranged from 3.5% to more than 5%.  
+* All fruit stored in CA storage lost on average between 3 and 4.5% weight during their shelf life after 6 months in storage. E200 and E500 x 3 fruit lost most weight. When keeping the observations from Section 3.6 in mind, Ethephon-treated fruit tended to have higher permeance from February onwards, while a decrease in permeance could be observed as the control fruit matured. This could explain the lower weight loss in more mature control fruit, while Ethephon-treated fruit demonstrated decidedly higher weight loss.
+
+
+
+::: {#fig-firmness6months layout-nrow=3}
+
+![](img/ethrelStudy/firmness3month1.png){#fig-firmness1 width=40%}
+![](img/ethrelStudy/firmness3month2.png){#fig-firmness2 width=40%}
+![](img/ethrelStudy/firmness3month3.png){#fig-firmness3 width=40%}
+![](img/ethrelStudy/firmness3month4.png){#fig-firmness4 width=40%}
+![](img/ethrelStudy/firmness3month5.png){#fig-firmness5 width=40%}
+![](img/ethrelStudy/firmness3month6.png){#fig-firmness6 width=40%}
+
+Fruit firmness of ‘PremA96’ apples after 3 and 6 months stored at 0.5°C and 7-day shelf life at 20°C. Fruit were stored in either regular atmosphere (RA+SF) or in controlled atmosphere (CA+SF) conditions. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23 after various Ethephon (Ethin™) and Harvista™ 1.3 SC spray treatments. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. Apples were picked and once a week from 11 January to 4 April 2023. Values represent the mean of measurements, with standard error of mean. n=20−40.
+
+:::
+
+::: {#fig-weightLoss6months nrow=3}
+
+![](img/ethrelStudy/weightLoss1.png){#fig-weightLoss1 width=40%}
+![](img/ethrelStudy/weightLoss2.png){#fig-weightLoss2 width=40%}
+![](img/ethrelStudy/weightLoss3.png){#fig-weightLoss3 width=40%}
+![](img/ethrelStudy/weightLoss4.png){#fig-weightLoss4 width=40%}
+![](img/ethrelStudy/weightLoss5.png){#fig-weightLoss5 width=40%}
+![](img/ethrelStudy/weightLoss6.png){#fig-weightLoss6 width=40%}
+
+Weight loss of ‘PremA96’ apples after 3 or 6 months stored at 0.5°C. Fruit were weighed on the day of removal from storage, and again after 7 days of simulated shelf life at 20°C. Fruit were stored in regular atmosphere (RA+SF) or controlled atmosphere (CA+SF) after receiving SmartFresh™ treatment at harvest. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23 after various Ethephon (Ethin™) and Harvista™ 1.3 SC spray treatments. Trees in a block received one of the following spray strategies: two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2)
+and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. Apples were picked and assessed once a week from 11 January to 4 April 2023. Results are presented for fruit that were ready for harvest (SPI = 3–4) of fruit that were overripe (SPI >4). Values represent the mean of measurements, n=20−40.
+
+:::
+
+Shrivel symptom development (Figure 15):
+
+* After 3 months in storage: a few apples developed shrivel symptoms, notably in more than 20% of E500 x 3 apples that were picked at SPI>4.
+* After 6 months in storage: The percentage of shrivel in that treatment increased to almost 60%. In addition, E200-treated apples developed high incidences of shrivel (50%), followed by E500 x 2 apples with 30%. Apples picked at SPI = 3–4 developed less shrivel (30% in E200 apples), while there were almost no differences between control and E200 + Harvista fruit (around 10%).
+* After 6 months in CA storage, between 30% and 60% of E200-, E500 x 2- and E500 x 3-treated apples developed shrivel. Almost 30% of control apples developed shrivel symptoms in CA storage after 6 months, again irrespective of whether they were picked at SPI 3–4, or SPI > 4.
+
+::: {#fig-shrivel6Months layout-nrow=3}
+
+![](img/ethrelStudy/shrivel1.png){#fig-shrivel1 width=40%}
+![](img/ethrelStudy/shrivel2.png){#fig-shrivel2 width=40%}
+
+![](img/ethrelStudy/shrivel3.png){#fig-shrivel3 width=40%}
+![](img/ethrelStudy/shrivel4.png){#fig-shrivel4 width=40%}
+![](img/ethrelStudy/shrivel5.png){#fig-shrivel5 width=40%}
+![](img/ethrelStudy/shrivel6.png){#fig-shrivel6 width=40%}
+
+Shrivel incidences observed in ‘PremA96’ apples after 6 months stored at 0.5°C and 7-day shelf life at 20°C. Fruit were stored in regular atmosphere (RA) or controlled atmosphere (CA) conditions. All apples were grown and harvested from orchard blocks in one orchard in Hastings, Hawke’s Bay, in 2022−23 after various Ethephon (Ethin™) and Harvista™ 1.3 SC spray treatments. Trees in a block received one of the following spray strategies two applications of 200 mL/ha Ethin with 10% naphthalene acetic acid (NAA), followed by two applications of Harvista 1.3 SC (E200 + Harvista); two applications of 200 mL/ha Ethin with 10% NAA (E200 x 2); two applications of 500 mL/ha Ethin with 10% NAA (E500 x 2) and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blocks were used to supply Control (and New Control) apples. Apples were picked and assessed once a week from 11 January to 4 April 2023. Fruit were stored at 0.5°C in either RA or CA coolstores. Values represent the mean of measurements, n=20−40.
+
+:::
+
+## Conclusions
+
+Ethephon treatment can move the harvest window earlier for ‘PremA96’ apples, but at the label recommended dose of 200 mL Ethin/ha it is not adequate to make a large difference (only 1 week earlier than unsprayed apples). Increasing the dosage to 500 mL Ethin/ha moved the recommended harvest window forwards by up to 24 days to the end of January. Following Ethephon treatments with Harvista slows ripening down again. The fact that different doses of Erger was applied to different blocks makes this a complication that makes conclusions and recommendations less easy to make. 
+
+Harvest timing is important after Ethephon applications. Our trial planning underestimated when E500 fruit would be ready for picking, and the cyclone made us miss the opportunity to get any of the fruit from those spray treatments into storage while fruit were at SPI 3−4. More mature fruit from the Ethephon treatments did not store well, the most obvious symptom being shrivel developing in E500 x 3 fruit in up to 20% of fruit within 3 months. Permeance in more mature Ethephon-treated fruit were higher than any of the other fruit, indicating a possible mechanism for this.
+
+The recommendation will be for Ethephon-treated fruit to be sold as soon as possible, with the minimum storage period.
+
+How early should Harvista be applied? - The label recommendation is to apply it 3 weeks before estimated harvest date to ensure a more uniform crop with a better planned delayed harvest, while an application closer to harvest can be used as an emergency measure to keep fruit on trees for a bit longer. An additional benefit is that Harvista’s effects can be observed into storage, thus protecting fruit to a degree from picking stress. In this trial, Harvista was applied 11 days before harvest and again 1 day after fruit reached an SPI of 3. This had spectacular effects, extending the recommended harvest period for at least 3 weeks, and slowing fruit deterioration in storage. It will be a useful idea to test this strategy on E500 + Harvista and E500 x 2 + Harvista as spray treatments. Hopefully the Harvista applications can help improve storage for fruit treated with the higher doses of Ethephon.
+
+## Recommendations
+
+1. Test the effect of 200 vs 500 mL/ha Ethin application a month before estimated harvest date. Multiple applications of Ethin may prove beneficial. Combine these spray strategies with Harvista applications 3 days before estimated harvest time.
+2. Repeat the storage trial for these fruit picked at SPI = 3–4.
+
