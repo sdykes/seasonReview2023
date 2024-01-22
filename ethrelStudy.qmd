@@ -313,7 +313,7 @@ and three applications of 500 mL/ha Ethin with 10% NAA (E500 x 3). Unsprayed blo
 
 :::
 
-Shrivel symptom development (Figure 15):
+Shrivel symptom development (@fig-shrivel6Months):
 
 * After 3 months in storage: a few apples developed shrivel symptoms, notably in more than 20% of E500 x 3 apples that were picked at SPI>4.
 * After 6 months in storage: The percentage of shrivel in that treatment increased to almost 60%. In addition, E200-treated apples developed high incidences of shrivel (50%), followed by E500 x 2 apples with 30%. Apples picked at SPI = 3–4 developed less shrivel (30% in E200 apples), while there were almost no differences between control and E200 + Harvista fruit (around 10%).
