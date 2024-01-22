@@ -13,10 +13,13 @@ book:
     - seasonalPhenology.qmd
     - pestAndDiseaseMonitoring.qmd
     - yieldAndFruitSizePrediction.qmd
-    - harvestMaturityManagement.qmd
+    - MaturityManagement.qmd
+    - Harvest.qmd
+    - ethrelStudy.qmd
     - yieldPerformance.qmd
     - storage.qmd
     - qualityPhytosanitaryPerformance.qmd
+    - defectsAndDisorders.qmd
     - packHousePerformance.qmd
     - fruitSizeAndSKUMix.qmd
     - stockOnHandAndInventory.qmd
@@ -38,6 +41,9 @@ format:
     theme: cosmo
   pdf:
     documentclass: scrreprt
-
+    include-in-header: 
+      text: |
+        \usepackage[font=scriptsize,labelfont={bf,footnotesize}]{caption}
+    
 editor: source
 

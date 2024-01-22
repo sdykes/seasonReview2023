@@ -1,0 +1,733 @@
+# Maturity management {#sec-maturity}
+
+Authors: Stuart Dykes, Dharini Marinkovich and Tim Channing Pearce
+
+```{r}
+#| label: initialisation
+#| message: false
+#| warning: false
+#| echo: false
+
+library(tidyverse)
+
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+
+```
+
+## Introduction
+
+Traditionally, the maturity of apples have been measured using a suite of tests that measure the chemistry and physiology of the fruit.  The principal measurements being starch pattern index (SPI), flesh firmness (FF) and total soluble solids (TSS) or brix [@lysiak_grzegorz_determination_2011; @skic_determination_2016].  
+
+Starch accumulates in the apple during the growing season and is enzymatically hydrolysed into sugar (predominantly glucose and fructose) in the later stages of development [@smith_starch_1979]. The starch-to-sugar conversion is measured in the field by cutting the apple along its equator and applying potassium iodide solution to one of the cut faces. The solution complexes with the starch staining it dark blue.  The mono- and di-saccharide sugars are left un-stained, hence the stained area is approximately proportional to proportion of starch remaining.  As the starch conversion progresses, a smaller area of the cut surface is stained.  An empirically derived index is applied to the SPI with the value zero being given to 100% staining (i.e. no conversion) through to seven given to a face where none of the area is stained.
+
+Flesh firmness, or pressure, is traditionally measured using a device called a penetrometer.  This plunges a rod of fixed diameter a pre-defined depth into the apple and measures the maximum compressive force required to drive the rod into the apple flesh. The force measurement (divided by the cross-sectional area of the rod tip) give the FF of the fruit generally in units of kgf [@harker_penetrometer_1996].
+
+The TSS is defined as the concentration of sugars and other soluble minerals present in fruits. TSS is generally measured using a refractometer device which measures the refractive index of the juice of the apple.  It is an important measure for fruit maturity however tends to be second order in terms of its importance in determining the harvest window.  The rate of change of brix is generally slow and the effect is very linear and for PremA96 is not a good predictor of maturity.
+
+For PremA96 maturity is currently determined using the criteria detailed in @tbl-RSPclassification
+
+```{r}
+#| label: tbl-RSPclassification
+#| tbl-cap: "RSP classification for submission samples"
+
+tibble(RSP = c("A", "B", "C", "D", "I", "X", "N"),
+       SPI = c("2.0-4.0", "2.0-5.0", "3.0-5.5", ">5.5", "<5.5", ">5.5", "<2.0"),
+       pressure = c("$\\ge$8.0", "$\\ge$7.5", "$\\ge$7.0", "$\\ge$7.0", "<7.0", "<7.0", ">15"),
+       brix = c(rep("$\\ge$12.0$^{\\circ}$", 6), "<12.0$^{\\circ}$"),
+       `foreground colour` = c(rep("$\\ge$ 50\\% red", 6), "<50\\% red"),
+       `background colour` = c(rep("light green/ white", 2), rep("white", 4), "NA")) |>
+  kableExtra::kable(col.names = c("RSP", "SPI$^{1}$", "kgf", "$^{\\circ}$brix", "foreground", "background"),
+                    align=c("l",rep("r",5)), 
+                    booktabs=TRUE,
+                    linesep="",
+                    escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c(" "=2, "pressure", "soluble solids", "colour"=2)) |>
+  #kableExtra::column_spec(6, width = "1in") |>
+  kableExtra::footnote(number = c("\\\\footnotesize{for China eligibility all submissions samples must have a non-zero reading}"),
+                       threeparttable = T,
+                       escape = F) 
+       
+```
+
+The submission profile classification for 2023 was considerably different from previous years and was designed to better reflect the maturity of PremA96.  The most obvious changes is the name, going from the industry standard ENZA submission profile (ESP) to the more specific Rockit submission profile (RSP).  The thresholds for the main maturity criteria remain unchanged (e.g. SPI, Firmness and TSS), however there are now seven classifications (A, B, C, D, I, X and N) instead of three (A, B, C).  The C classification in the ESP system included fruit that was out of specification (i.e. SPI > 5.5 and/or firmness < 7.0).  With the RSP classification, out-of-specification fruit are given the designation D, I and X which indicate respectively, out-of-specification SPI, firmness and both measurements simultaneously. Additionally and N classification (for "not ready") has been introduced for completeness.  The RSP classification allow storage and packing decisions to be made more precisely than with the ESP classification.
+
+## Starch Pattern Index 
+
+The Starch pattern index directly measures the enzymatic hydrolysis of starch in the apple to simple sugars (glucose, fructose and sucrose). The rate or kinetics of this transformation can be understood using a logistic growth model characterised by a lag, growth and saturation phase [@peirs_uncertainty_2002].  This type of model is applied to many constrained biological systems and can be described mathematically using the same equation used to describe yield refer to [Section @sec-yieldModelling]. 
+
+An example of the SPI progression is given in @fig-SPIMaturityExample for a Rockit^TM^ apple production site in 2023.  Overlaid is the modeled (continuous) SPI progression and the harvest window for this particular sample. The points represent SPI assessments from individual fruit and the vertical lines represent the dates when the block was harvested. The background plot colours represents the RSP classification (based on SPI). @fig-SPIMaturityExample shows clearly the first pick on the 10th February was in the middle of the A and B RSP profile.  The first pick was significant (69% of the total bins harvested for the block).  The remaining harvest dates all occurred when the SPI was out of specification (31% of the total bins harvested).  In mitigation it should be realised that the initial pick took place before Cyclone Gabrielle.  Logistical difficulties meant that this particular orchard could not be accessed for picking until
+
+```{r}
+#| label: fig-SPIMaturityExample
+#| fig-cap: "An example of the evolution of SPI for a single production site of PremA96 from the 2023 harvest season"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+#=============================================Extract Assessment data from ABC================================
+
+con <- DBI::dbConnect(odbc::odbc(),    
+                 Driver = "ODBC Driver 17 for SQL Server", 
+                 Server = "abcrepldb.database.windows.net",  
+                 Database = "ABCPacker2023Repl",   
+                 UID = "abcadmin",   
+                 PWD = "Trauts2018!",
+                 Port = 1433
+)
+
+lab_ass <- left_join(tbl(con, "qa_Lab_Assessment_DetailT") %>% select(LabAssessmentDetailID, LabAssessmentID,
+                                                                      FirmnessA, FirmnessB, StarchPatternIndex), 
+                     tbl(con, "qa_Lab_AssessmentT") %>% select(LabAssessmentID, FarmID, BlockID, GraderBatchID,
+                                                               AssessmentDate, SampleTypeID, AverageBrixPercentage, 
+                                                               SampleQuantity, SeasonID), by = "LabAssessmentID") %>%  
+  left_join(tbl(con, "sw_Sample_TypeT") %>% select(c(SampleTypeID, SampleType)), by = "SampleTypeID") %>%
+  left_join(tbl(con, "sw_FarmT") %>% select(c(FarmID, FarmCode, FarmName)), by = "FarmID") %>%
+  left_join(tbl(con, "sw_Farm_BlockT") %>% select(c(BlockID, BlockCode, BlockName)), by = "BlockID") %>%
+  select(-c(SampleTypeID, FarmID, BlockID)) %>%
+  filter(SampleType %in% c("Orchard Progression", "Storage Maturity Progression", "China Maturity")) %>%
+  dplyr::select(SeasonID,
+         LabAssessmentID,
+         AssessmentDate,
+         FirmnessA,
+         FirmnessB, 
+         StarchPatternIndex, 
+         AverageBrixPercentage, 
+         FarmCode,
+         FarmName,
+         BlockCode,
+         SampleType
+  ) %>%
+  mutate(Season = case_when(SeasonID == 6 ~ 2020,
+                            SeasonID == 7 ~ 2021,
+                            SeasonID == 8 ~ 2022,
+                            TRUE ~ 2023)) %>%
+  select(-SeasonID) %>%
+  collect()
+
+DBI::dbDisconnect(con)
+
+#=====================Workout which blocks have been sampled more than 3 times================
+
+NoAssessments <- lab_ass |>
+  filter(AssessmentDate > as.Date("2023-01-01")) |>
+  group_by(FarmName, BlockCode, LabAssessmentID) |>
+  summarise(meanSPI = mean(StarchPatternIndex, na.rm=T),
+            .groups = "drop") |>
+  group_by(FarmName, BlockCode) |>
+  summarise(Assessments = n(),
+            .groups = "drop") |>
+  filter(Assessments > 3)
+
+#==================================Non-linear modeling function===============================
+
+nlmodeling <- function(labData) {
+  
+  suppressWarnings(normalData <- labData %>%
+    select(AssessmentDay, StarchPatternIndex) %>%
+    rename("time" = "AssessmentDay", 
+           "intensity" = "StarchPatternIndex") %>%
+    sicegar::normalizeData() %>%
+    sicegar::multipleFitFunction(dataInput=., model="sigmoidal"))
+  
+  suppressWarnings(SPICurve <- nls(StarchPatternIndex ~ (7/(1 + exp(-alpha * (AssessmentDay - mid_point)))), data = labData, 
+                  start = list(alpha = normalData$slopeParam_Estimate, 
+                               mid_point = normalData$midPoint_Estimate),
+                  trace = F))
+  
+  summaryResult <- tibble(FarmName = as.vector(labData %>% distinct(FarmName)), 
+                          Block = as.vector(labData %>% distinct(BlockCode)), 
+                          alpha = summary(SPICurve)$coefficients[[1]],
+                          MP = summary(SPICurve)$coefficients[[2]]) %>%
+    mutate(startDay = as.integer(MP - log((7/2)-1)/alpha),
+           finishDay = as.integer(MP - log((7/5)-1)/alpha),
+           startDate = as.Date(startDay, format ="%j", origin = "1.1.2023"),
+           finishDate = as.Date(finishDay, format="%j", origin = "1.1.2023"),
+           harvestWindow = finishDay - startDay) %>%
+    flatten_df(c(FarmName, Block))
+  
+  return(summaryResult)
+}
+
+#==========================================================================================
+
+harvestWindow <- function(lab_ass, harvestYear) {
+  
+  Farms <- lab_ass %>% 
+    filter(Season == {{harvestYear}}) %>%
+    distinct(FarmName) %>%
+    pull(FarmName)
+  
+  summary <- tibble(FarmName = character(),
+                    BlockCode = character(),
+                    alpha = numeric(),
+                    MP = numeric(),
+                    startDay = integer(),
+                    finishDay = integer(),
+                    startDate = Date(),
+                    finishDate = Date(),
+                    harvestWindow = integer())
+  
+  for(i in 1:length(Farms)) {
+    
+    temp <- HarvestWindowPlot(Farms[[i]], harvestYear) 
+    
+    summary <- summary %>%
+      bind_rows(temp)
+  }
+  summary <- summary %>%
+    filter(startDay >= 1 & startDay < 100,
+           harvestWindow >= 1 & harvestWindow < 100)
+  
+  return(summary)
+}
+
+#===========================================================================================
+
+IQRFilter <- function(testData) {
+  
+  IQRfilteredData <- testData |>
+    filter(StarchPatternIndex > quantile(StarchPatternIndex, 0.25),
+           StarchPatternIndex < quantile(StarchPatternIndex, 0.75))
+  
+  return(IQRfilteredData)
+}
+
+#================================harvest dates============================================
+
+bh <- rockitHelperFunctions::binsHarvested(2023, 'Trauts2018!')
+
+hd <- bh |> 
+  filter(FarmName == "Manzana 1" & BlockCode == "B1",
+         NoOfBins > 0) |>
+  group_by(HarvestDate) |>
+  summarise(NoOfBins = sum(NoOfBins, na.rm=T)) |>
+  mutate(PropBins = NoOfBins/sum(NoOfBins))
+
+
+#==========================================================================================
+
+lab_ass_sum <- lab_ass %>%
+  filter(AssessmentDate > as.Date("2023-01-01"),
+         FarmName == "Manzana 1",
+         BlockCode == "B1",
+         !is.na(StarchPatternIndex)) %>%
+  mutate(Firmness = (FirmnessA + FirmnessB)/2,
+         AssessmentDay = yday(AssessmentDate)) %>%
+  split(.$LabAssessmentID) %>%
+  map(~IQRFilter(.)) |>
+  enframe() |>
+  unnest(value) |>
+  dplyr::select(-name)
+  
+
+normalData <- lab_ass_sum %>%
+  select(AssessmentDay, StarchPatternIndex) %>%
+  rename("time" = "AssessmentDay", 
+         "intensity" = "StarchPatternIndex") %>%
+  sicegar::normalizeData() %>%
+  sicegar::multipleFitFunction(dataInput=., model="sigmoidal")
+
+
+SPICurve <- nls(StarchPatternIndex ~ (7/(1 + exp(-alpha * (AssessmentDay - mid_point)))), data = lab_ass_sum, 
+                start = list(alpha = normalData$slopeParam_Estimate, 
+                             mid_point = normalData$midPoint_Estimate),
+                trace = F)
+
+SPICurve.boot <- nlstools::nlsBoot(SPICurve, niter = 999)
+
+newdata <- data.frame(AssessmentDay = seq(1,200,2))
+
+mean_curve <- newdata %>%
+  bind_cols(data.frame(estimate = predict(SPICurve, newdata = newdata))) %>%
+  bind_cols(data.frame(nlstools::nlsBootPredict(SPICurve.boot, newdata = newdata, interval = "confidence"))) %>%
+  rename(low = X2.5.,
+         high = X97.5.) %>%
+  mutate(testDate = as.Date(parse_date_time(x=as.character(paste0("2023-",AssessmentDay)), orders="Yj")))
+
+harvestDates <- rockitHelperFunctions::graderFunction(2023, "Trauts2018!") %>%
+  filter(FarmName == "Valley Road" & BlockCode == "C") %>%
+  distinct(HarvestDate) %>%
+  mutate(AssessmentDay = yday(HarvestDate))
+
+summaryResult <- tibble(FarmName = "Manzana 1", 
+                        Block = "C1", 
+                        alpha = summary(SPICurve)$coefficients[[1]],
+                        MP = summary(SPICurve)$coefficients[[2]]) %>%
+  mutate(startDate = MP - log((7/2)-1)/alpha,
+         endOfABDate = MP - log((7/5)-1)/alpha,
+         finishDate = MP - log((7/5.5)-1)/alpha,
+         harvestWindow = finishDate - startDate)
+
+
+alpha <- summary(SPICurve)$coefficients[[1]]
+MP <- summary(SPICurve)$coefficients[[2]]
+SPIL <- 2
+SPIAB <- 5
+SPIH <- 5.5
+
+startDay <- round(MP - log((7/SPIL)-1)/alpha, 0)
+startDate <- as.Date(parse_date_time(as.character(paste0("2023-",startDay)), orders="Yj"))   
+finishDay <- round(MP - log((7/SPIH)-1)/alpha, 0)  
+finishDate <- as.Date(parse_date_time(as.character(paste0("2023-",finishDay)), orders="Yj"))
+ABfinishDay <- round(MP - log((7/SPIAB)-1)/alpha, 0)  
+ABfinishDate <- as.Date(parse_date_time(as.character(paste0("2023-",ABfinishDay)), orders="Yj"))
+window <- as.integer(finishDate - startDate)
+
+mean_curve %>%
+  ggplot(aes(testDate, estimate)) +
+  annotate("rect", xmin=as.Date("2023-01-01"), xmax=startDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#aec9e3") +
+  annotate("rect", xmin=startDate, xmax=ABfinishDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#73a83b") +
+  annotate("rect", xmin=ABfinishDate, xmax=finishDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#f6c15f") +
+  annotate("rect", xmin=finishDate, xmax=as.Date("2023-05-15"), ymin=-Inf, ymax=Inf, 
+           alpha = 0.5, fill = "#edb7a7") +
+  geom_line(colour = "black", linewidth=1) + 
+  geom_ribbon(aes(x=testDate, ymin = low, ymax = high), 
+              colour = "grey70", alpha = 0.2) +
+  geom_jitter(data=lab_ass_sum, aes(as.Date(AssessmentDate), StarchPatternIndex), alpha = 0.3) +
+  geom_vline(aes(xintercept = HarvestDate), data = hd, colour="grey50") +
+  annotate("text", x = as.Date("2023-01-15"), y = 3, label = "RSP = N", vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour="#526280") +
+  annotate("text", x = as.Date("2023-02-06"), y = 6.95, label = "RSP = A/B", vjust = 0.5, hjust = 1, size=3, angle = 90, colour = "#48762e") +
+  annotate("text", x = as.Date("2023-02-21"), y = 6.95, label = "RSP = C", vjust = 0.5, hjust = 1, size=3, angle = 90, colour = "#ed8b28") +
+  annotate("text", x = as.Date("2023-04-10"), y = 3, label = "RSP = D/X", vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour = "#a9342c") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  scale_x_date("date", breaks = scales::breaks_width("1 month"), labels = scales::label_date("%b"),
+               limits = c(as.Date("2023-01-01"), as.Date("2023-05-15")),
+               expand = expansion(mult = 0, add = 0)) +
+  theme(axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 10),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10))) +
+  labs(x = "date",
+       y = "SPI / SPI units")
+```
+## Flesh Firmness
+
+Flesh firmness (FF) or pressure as it is alternatively known, is measured at the same time as SPI measurements are taken.  Two measurements are taken on the cheek of the apple, one sample diametrically opposed to the other.  In preparation the skin is sliced leaving a flat surface approximately 25mm in diameter.  The penetrometer measurement is taken by displacing the tip of the device into the centre of the flat section.  The apple is rotated and the measurement repeated on the other side.  Flesh firmness is defined as the maximum force required to traverse a rod a pre-determined distance into the apple.  The probe moves the cortical cells either rupture or slip aside relative to each other [@mowatt_factors_1997]. As the fruit continues to senesce the inter-cellular bond strength decreases and the cell-walls become weaker, reducing the overall force requires to penetrate the flesh of the apple.
+
+```{r}
+#| label: fig-firmnessMaturityExample
+#| fig-cap: "An example of the evolution of firmness for a single production site of PremA96 from the 2023 harvest season"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+linearModel <- lm(Firmness ~ AssessmentDay, data = lab_ass_sum) 
+
+coefLinearModel <- linearModel |>
+  coef()
+
+ADay <- round((8 - coefLinearModel[[1]])/coefLinearModel[[2]],0)
+ADate <- as.Date(parse_date_time(as.character(paste0("2023-",ADay)), orders="Yj"))  
+BDay <- round((7.5 - coefLinearModel[[1]])/coefLinearModel[[2]],0)
+BDate <- as.Date(parse_date_time(as.character(paste0("2023-",BDay)), orders="Yj")) 
+CDay <- round((7.0 - coefLinearModel[[1]])/coefLinearModel[[2]], 0)
+CDate <- as.Date(parse_date_time(as.character(paste0("2023-",CDay)), orders="Yj")) 
+
+
+predLinearModel <- linearModel |>
+  predict(newdata = newdata, interval = "confidence") |>
+  as_tibble()
+
+meanCurvePress <- newdata |>
+  bind_cols(predLinearModel) |>
+  mutate(testDate = as.Date(parse_date_time(x=as.character(paste0("2023-",AssessmentDay)), orders="Yj"))) 
+  
+
+meanCurvePress |>
+  ggplot(aes(x=testDate, y=fit)) +
+  geom_line() +
+  geom_ribbon(aes(x=testDate, ymin = lwr, ymax = upr), colour = "grey70", alpha = 0.2) +
+  geom_jitter(data=lab_ass_sum, aes(x=as.Date(AssessmentDate), y=Firmness), alpha = 0.3) +
+  annotate("rect", xmin=as.Date("2023-01-01"), xmax=ADate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#73a83b") +
+  annotate("rect", xmin=ADate, xmax=BDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#526280") +
+  annotate("rect", xmin=BDate, xmax=CDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#f6c15f") +
+  annotate("rect", xmin=CDate, xmax=as.Date("2023-05-15"), ymin=-Inf, ymax=Inf, 
+           alpha = 0.5, fill = "#edb7a7") +
+  scale_x_date("date", breaks = scales::breaks_width("1 month"), labels = scales::label_date("%b"),
+               limits = c(as.Date("2023-01-01"), as.Date("2023-05-15")),
+               expand = expansion(mult = 0, add = 0)) +
+  geom_vline(aes(xintercept = HarvestDate), data = hd, colour="grey50") +
+  annotate("text", x = as.Date("2023-01-20"), y = 2.5, label = "RSP = A", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour="#48762e") +
+  annotate("text", x = as.Date("2023-02-25"), y = 2.5, label = "RSP = B", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 90, colour = "#526280") +
+  annotate("text", x = as.Date("2023-03-18"), y = 2.5, label = "RSP = C", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 90, colour = "#ed8b28") +
+  annotate("text", x = as.Date("2023-04-20"), y = 2.5, label = "RSP = I/X", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour = "#a9342c") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 10),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10))) +
+  labs(x = "date",
+       y = "flesh firmness / kgf")
+
+
+```
+
+Flesh firmness tends to reduce as a linear function of time (as compared to the non-linear behaviour of SPI).  @fig-firmnessMaturityExample presents the same block as in  @fig-SPIMaturityExample plotting flesh firmness as a function of assessment date. Note that the predicted firmness does not intersect with the minimum threshold of 7.0 kgf until `r CDate`. This is typical of most blocks and firmness is a second order predictor for maturity compared to SPI.  While this is the case firmness remains an important measurement in fruit quality.  As discussed in [chapter @sec-defects] the relatively strong and stable inter-cellular bonding observed in PremA96 means that firmness does not deteriorate as rapidly as other apples [@segonne_multiscale_2014].  
+
+Comparing the RSP threshold dates for SPI and firmness shown in @fig-SPIMaturityExample and @fig-firmnessMaturityExample the behaviour is typical of most production sites and for most seasons. @tbl-SPIFirmnessComparison presents the dates and by every measure the RSP classification is driven by the changes in SPI which are more dynamic than firmness over the ripening period.  The exception being for classification I and X which are driven by pressure and both pressure and SPI by definition.
+
+```{r}
+#| label: tbl-SPIFirmnessComparison
+#| tbl-cap: "comparison of maturity drivers SPI and firmness using a PremA96 single block example from the 2023 growing season"
+
+tibble(RSP = c("N", "A", "B", "C", "D", "I", "X"),
+                   `SPI upper threshold dates` = c(as.character(startDate), as.character(ABfinishDate), as.character(ABfinishDate), 
+                                                   as.character(finishDate), "NA", as.character(finishDate), "NA"),
+                   `firmness lower threshold dates` = c("NA", as.character(ADate), as.character(BDate), as.character(CDate), as.character(CDate), "NA", "NA"),
+                   `decision driver` = c("SPI", "SPI", "SPI", "SPI", "SPI", "firmness", "both")) |>
+  kableExtra::kable(col.names = c("RSP", "SPI upper", "firmness lower", "decsion driver"),
+                    align=c("l",rep("c",2), "l"), 
+                    booktabs=TRUE,
+                    linesep="",
+                    escape = F)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c("", "threshold date" = 2, " "=1)) 
+
+
+
+```
+
+## Total Soluable solids
+
+For completeness the evolution of total soluble solids (TSS) is shown for the same block that was presented in @fig-SPIMaturityExample and @fig-firmnessMaturityExample is shown in @fig-brixMaturityExample. If the three charts are compared, there are fewer data points.  This is because TSS is measured by taking the combined (blended) juice fraction from all of the 20 sample apples. While a linear model is applied the relationship between assessment day and TSS may not be linear.
+
+```{r}
+#| label: fig-brixMaturityExample
+#| fig-cap: "An example of the evolution of TSS for a single production site of PremA96 from the 2023 harvest season"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+modelBrix <- lm(AverageBrixPercentage~AssessmentDay, data = lab_ass_sum)
+
+brixCoefs <- coef(modelBrix)
+
+brixDay <- round((12 - brixCoefs[[1]])/brixCoefs[[2]],0)
+brixDate <- as.Date(parse_date_time(as.character(paste0("2023-",brixDay)), orders="Yj"))  
+
+predLinearModelBrix <- modelBrix |>
+  predict(newdata = newdata, interval = "confidence") |>
+  as_tibble()
+
+meanCurveBrix <- newdata |>
+  bind_cols(predLinearModelBrix) |>
+  mutate(testDate = as.Date(parse_date_time(x=as.character(paste0("2023-",AssessmentDay)), orders="Yj"))) 
+  
+
+meanCurveBrix |>
+  ggplot(aes(x=testDate, y=fit)) +
+  geom_line() +
+  geom_ribbon(aes(x=testDate, ymin = lwr, ymax = upr), colour = "grey70", alpha = 0.2) +
+  geom_point(data = lab_ass_sum, aes(x=as.Date(AssessmentDate), y=AverageBrixPercentage), alpha=0.3) +
+  annotate("rect", xmin=as.Date("2023-01-01"), xmax=brixDate, ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#aec9e3") +
+  annotate("rect", xmin=brixDate, xmax=as.Date("2023-05-15"), ymin=-Inf, ymax=Inf, 
+           alpha = 0.3, fill = "#73a83b") +
+  annotate("text", x = as.Date("2023-01-15"), y = 14, label = "RSP = N", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour="#526280") +
+  annotate("text", x = as.Date("2023-03-15"), y = 14, label = "RSP = A/B/C", 
+           vjust = 0.5, hjust = 0.5, size=3, angle = 0, colour = "#48762e") +
+  scale_x_date("assessment date", breaks = scales::breaks_width("1 month"), labels = scales::label_date("%b"),
+               limits = c(as.Date("2023-01-01"), as.Date("2023-05-15")),
+               expand = expansion(mult = 0, add = 0)) +
+  labs(y = "total soluble solids / \u00B0brix") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7")) +
+  theme(axis.title.x = element_text(margin = margin(t = 10)),
+        axis.title.y = element_text(margin = margin(r = 10)),
+        axis.text.y = element_text(size = 10, hjust=1),
+        axis.text.x = element_text(size = 10),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        legend.text = element_text(size = 10),
+        strip.text = element_text(margin = margin(b=10))) 
+
+```
+
+## Maturity performance
+
+Maturity management performance can be measured a number of ways.  One way is to plot each consignment by RSP classification and measure the proportion of each class.  As a very broad measure, the bins (or consignments) that were harvested within specification as a proportion of the total bins (or consignments).  This is visualised in @fig-SPISubmissions and @fig-pressureSubmissions
+
+```{r}
+#| label: fig-SPISubmissions
+#| fig-cap: "SPI measurements at bin submission as a function of assessment date.  The RSP classifications are overlaid on the plot"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+
+con <- DBI::dbConnect(odbc::odbc(),    
+                      Driver = "ODBC Driver 17 for SQL Server", #"SQLServer", #
+                      Server = "abcrepldb.database.windows.net",  
+                      Database = "ABCPacker2023Repl",   
+                      UID = "abcadmin",   
+                      PWD = "Trauts2018!",
+                      Port = 1433
+)
+
+labAssDetail <- tbl(con, "qa_Lab_Assessment_detailT") |>
+  filter(CreatedDateTime > as.POSIXct("2022-01-01 00:00:00")) |>
+  dplyr::select(LabAssessmentID, FirmnessA, FirmnessB, StarchPatternIndex) |>
+  group_by(LabAssessmentID) |>
+  summarise(FirmnessA = mean(FirmnessA, na.rm=T),
+            FirmnessB = mean(FirmnessB, na.rm=T),
+            SPI = mean(StarchPatternIndex, na.rm=T)) |>
+  mutate(Firmness = (FirmnessA + FirmnessB)/2) |>
+  dplyr::select(-c(FirmnessA, FirmnessB)) |>
+  collect()
+
+labAss <- tbl(con, "qa_Lab_AssessmentT") |>
+  filter(SeasonID %in% c(8,9)) |>
+  dplyr::select(-c(VarietyID, QualityTechnicianID, DocketNo, SampleSourceID, SampleWeight, CreatedByUserName,
+                  CreatedDateTime, TimeStamp, )) |>
+  left_join(tbl(con, "sw_FarmT") |> dplyr::select(c(FarmID, FarmCode, FarmName)),
+            by = "FarmID") |>
+  left_join(tbl(con, "sw_Farm_BlockT") |> dplyr::select(c(BlockID, BlockCode, BlockName)),
+            by = "BlockID") |>
+  left_join(tbl(con, "sw_Sample_TypeT") |> dplyr::select(c(SampleTypeID, SampleType)),
+            by = "SampleTypeID") |>
+  left_join(tbl(con, "sw_MaturityT") |> dplyr::select(c(MaturityID, MaturityCode)),
+            by = "MaturityID") |>
+  dplyr::select(-c(FarmID, BlockID, SampleTypeID, MaturityID)) |>
+  collect()
+
+DBI::dbDisconnect(con)
+
+binDev <- rockitHelperFunctions::binsHarvested(c(2022,2023), 'Trauts2018!')
+
+pickDates <- binDev |>
+  dplyr::select(c(Season, FarmName, BlockCode, HarvestDate, PickNoDesc, NoOfBins)) |>
+  group_by(Season, FarmName, BlockCode, PickNoDesc) |>
+  summarise(HarvestDate = min(HarvestDate),
+            NoOfBins = sum(NoOfBins),
+            .groups = "drop") |>
+  pivot_wider(id_cols = c(Season, FarmName, BlockCode), names_from = PickNoDesc, values_from = HarvestDate)
+
+SubmissionAss <- labAss |>
+  filter(SampleType %in% c("China Maturity", "Harvest Maturity", "Orchard Progression"),
+         SeasonID %in% c(8,9)) |>
+  inner_join(labAssDetail, by = "LabAssessmentID") |>
+  mutate(Season = if_else(SeasonID == 8, 2022, 2023)) |>
+  #====Integrate the pick dates===========================================================================
+  left_join(pickDates, by = c("Season", "FarmName", "BlockCode")) |>
+  mutate(dayDiff1 = abs(as.numeric(as.Date(`1st Pick`) - as.Date(AssessmentDate))),
+         dayDiff2 = abs(as.numeric(as.Date(`2nd Pick`) - as.Date(AssessmentDate))),
+         dayDiff3 = abs(as.numeric(as.Date(`3rd Pick`) - as.Date(AssessmentDate))),
+         dayDiffA = abs(as.numeric(as.Date(HarvestDate) - as.Date(AssessmentDate))),
+         across(.cols = c(dayDiff1:dayDiffA), ~ replace_na(., 100))) |>
+  filter(if_any(.cols = c(dayDiff1:dayDiffA), ~.x>0)) |>
+  rowwise() |>
+  mutate(dayDiffMin = min(c_across(dayDiff1:dayDiffA)),
+         index = case_when((Season == 2022 & dayDiffMin < 1) | (Season == 2023 & (dayDiffMin < 4)) ~ "submission",
+                            TRUE ~ "non-submission"),
+         plotDate = as.POSIXct(str_c("2023-", str_sub(as.character(AssessmentDate), 6,10)))) |>
+  filter(index == "submission",
+         !is.na(dayDiffMin)) |>
+  #====Use ABC logic to assign maturity code=============================================================
+  mutate(indexSPI = case_when(SPI > 5.5  ~ "D", 
+                              SPI > 5.0 & SPI <= 5.5 ~ "C",
+                              SPI > 3.0 & SPI <= 5.0 ~ "B",
+                              SPI >= 2.0 & SPI <= 4.0 ~ "A",
+                              TRUE ~ "N"),
+         indexPres = case_when(Firmness < 7.0 ~ "I",
+                               Firmness >= 7.0 & Firmness < 7.5 ~ "C",
+                               Firmness >= 7.5 & Firmness < 8.0 ~ "B",
+                               Firmness >= 8.0 ~ "A",
+                               TRUE ~ "N"),
+         index = case_when(indexSPI == indexPres ~ indexSPI,
+                           indexSPI == "A" & indexPres == "B" ~ "B",
+                           indexSPI == "A" & indexPres == "C" ~ "C",
+                           indexSPI == "A" & indexPres == "I" ~ "I",
+                           indexSPI == "B" & indexPres == "A" ~ "B",
+                           indexSPI == "B" & indexPres == "C" ~ "C",
+                           indexSPI == "B" & indexPres == "I" ~ "I",
+                           indexSPI == "C" & indexPres == "A" ~ "C",
+                           indexSPI == "C" & indexPres == "B" ~ "C",
+                           indexSPI == "C" & indexPres == "I" ~ "I",
+                           indexSPI == "D" & indexPres == "A" ~ "D",
+                           indexSPI == "D" & indexPres == "B" ~ "D",
+                           indexSPI == "D" & indexPres == "C" ~ "D",
+                           indexSPI == "D" & indexPres == "I" ~ "X",
+                           indexSPI == "N" & indexPres == "A" ~ "N",
+                           indexSPI == "N" & indexPres == "B" ~ "N",
+                           indexSPI == "N" & indexPres == "C" ~ "N",
+                           indexSPI == "N" & indexPres == "I" ~ "N",
+                           indexSPI == "A" & indexPres == "N" ~ "N",
+                           indexSPI == "B" & indexPres == "N" ~ "N",
+                           indexSPI == "C" & indexPres == "N" ~ "N",
+                           indexSPI == "D" & indexPres == "N" ~ "N",
+                           TRUE ~ "N")) |>
+  filter(index != "N")
+
+
+SubmissionAss |>
+  filter(AssessmentDate >= as.Date("2022-01-01")) |>
+  ggplot(aes(x=plotDate, y = SPI, colour = index)) +
+  geom_jitter(size = 1.5, alpha = 0.3) +
+  facet_wrap(~Season, ncol=1) +
+  geom_hline(yintercept = 5.5, colour = "grey40", linewidth = .5, linetype = "dashed") +
+  scale_x_datetime(expand = expansion(mult = 0, add = 0)) +
+  labs(x = "assessment date",
+       y = "starch pattern index") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f", "#e31313")) +
+  theme(axis.title.x = element_text(margin = margin(t = 7)),
+        axis.title.y = element_text(margin = margin(r = 7)),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        plot.title = element_text(margin = margin(b = 10)),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8))
+  
+
+```
+
+```{r}
+#| label: fig-pressureSubmissions
+#| fig-cap: "Firmness measurements at bin submission as a function of assessment date.  The RSP classifications are overlaid on the plot"
+#| fig-align: center
+#| out-width: 100%
+#| fig-asp: 0.7
+
+SubmissionAss |>
+  filter(AssessmentDate >= as.Date("2022-01-01")) |>
+  ggplot(aes(x=plotDate, y = Firmness, colour = index)) +
+  geom_jitter(size = 1.5, alpha = 0.3) +
+  facet_wrap(~Season, ncol=1) +
+  geom_hline(yintercept = 7.0, colour = "grey40", linewidth = .5, linetype = "dashed") +
+  scale_x_datetime(expand = expansion(mult = 0, add = 0)) +
+  labs(x = "assessment date",
+       y = "flesh firmness / kgf") +
+  ggthemes::theme_economist() + 
+  scale_colour_manual(values=c("#a9342c", "#48762e", "#526280", "#aec9e3", "#edb7a7", "#f6c15f", "#e31313")) +
+  theme(axis.title.x = element_text(margin = margin(t = 7)),
+        axis.title.y = element_text(margin = margin(r = 7)),
+        axis.text.y = element_text(size = 8, hjust=1),
+        axis.text.x = element_text(size = 8),
+        plot.background = element_rect(fill = "#F7F1DF", colour = "#F7F1DF"),
+        plot.title = element_text(margin = margin(b = 10)),
+        legend.text = element_text(size = 8),
+        legend.title = element_text(size = 8))
+
+```
+```{r}
+#| label: tbl-percentOOSpec
+#| tbl-cap: "comparison of fruit submission samples based on different RSP classifications for 2022 and 2023 growing seasons"
+
+SubmissionAss |>
+  group_by(Season, index) |>
+  summarise(count = n()) |>
+  mutate(prop = count/sum(count)) |>
+  pivot_wider(id_cols = Season, names_from = index, values_from = prop) |>
+  mutate(inspec = A + B + C,
+         oospec = D + I + X,
+          across(.cols = c(A:oospec), ~scales::percent(., accuracy=0.1))) |>
+  kableExtra::kable(col.names = c("season", "A", "B", "C", "D", "I", "X", "in", "out"),
+                    align=c("l",rep("r",8)), 
+                    booktabs=TRUE,
+                    linesep="",
+                    escape = T)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = c("HOLD_position")) |>
+  kableExtra::add_header_above(c("", "RSP classification" = 6, "specification"=2))
+
+```
+
+## Application of growth regulators
+
+One of the principal tools for managing harvest timing is the application of growth regulators to either delay or accelerate maturity. Three chemicals are currently widely used in the New Zealand pip fruit sector. Rockit^TM^ apple orchards typically utilise Ethrel^TM^ (as a maturity accelerator) and Harvista^TM^ (as a maturity retarder). 
+
+Ethrel^TM^ produces ethylene and acts to accelerate maturity by triggering the ethylene auto-catalysis [@busatto_climacteric_2017]. Harvista^TM^ inhibits the effect of ethylene on the fruit by blocking the ethylene receptor sites on the surface of the apple.
+
+@tbl-harvistaTable1 gives a summary of the extent of Harvista^TM^ and Ethrel^TM^ use on RMS blocks (independent grower information was not available). High rate Ethrel^TM^ treatment refers to two successive treatments of 500ml/ha which is the rate used to accelerate maturity. Low rate Ethrel^TM^ is defined as 200ml/ha and is primarily used for colour development, and does not appear to have any effect on rate of maturity. @tbl-harvistaTable2 shows the number of blocks with one, two or three applications of Harvista^TM^. Repeated doses of Harvista^TM^ have acted to delay maturity, and therefore, allow labour to be spread further.
+
+Because of the strategic importance of growth regulators for PermA96 harvest management, RGL commissioned Plant and Food Research to study the effect of both Ethrel^TM^ and Harvista^TM^ applications (including rate, timing and number of application) on the maturity of PremA96.  While the Harvista^TM^ study was covered extensively in the 2022 Season Review [@dykes_stuart_rockit_2023].  The complete Ethrel^TM^ is presented in [chapter @sec-ethrel]. 
+
+```{r}
+#| label: tbl-harvistaTable1
+#| tbl-cap: "Extent of Harvista and Ethrel usage 2023 season"
+
+harvista <- read_csv("data/maturityManagement/HarvistaUsage2023.csv", show_col_types = F) |>
+  mutate(Date = as.Date(Date, "%d/%m/%Y")) |>
+  dplyr::select(c(Date, Orchard, ManagementArea, LandAreaHa)) |>
+  group_by(Orchard, ManagementArea) |>
+  summarise(count = n(),
+            LandAreaHa = sum(LandAreaHa),
+            .groups = "drop") |>
+  mutate(orchardHectares = LandAreaHa/count) 
+
+harvistaSummary <- harvista |>
+  summarise(NoOfBlocks = n(),
+            totalHectares = round(sum(orchardHectares, na.rm=T),2)) |>
+  mutate(Treatment = "Harvista",
+         Rate = "various") |>
+  relocate(Treatment, .before = NoOfBlocks) |>
+  relocate(Rate, .after = Treatment)
+
+read_csv("data/maturityManagement/EthrelUsage2023.csv", show_col_types = F) |>
+  select(c(Orchard, ManagementArea, LandAreaHa, ChemicalRate, ChemicalUnit, WaterRate)) |>
+  mutate(ChemRate = case_when(ChemicalUnit == "ml/Ha" ~ ChemicalRate,
+                              ChemicalUnit == "ml/100 litres" ~ WaterRate*(ChemicalRate/100),
+                              ChemicalUnit == "l/Ha" ~ ChemicalRate*1000,
+                              ChemicalUnit == "l/100 litres" ~ WaterRate*ChemicalRate*10),
+         Rate = if_else(ChemRate > 400, "high rate", "low rate")) |>
+  group_by(Orchard, ManagementArea, Rate) |>
+  summarise(count = n(),
+            LandAreaHa = sum(LandAreaHa, na.rm=T),
+            .groups = "drop") |>
+  mutate(orchardHectares = LandAreaHa/count) |>
+  group_by(Rate) |>
+  summarise(NoOfBlocks = n(),
+            totalHectares = round(sum(orchardHectares, na.rm=T),2)) |>
+  mutate(Treatment = c("Ethrel", "Ethrel")) |>
+  relocate(Treatment, .before = Rate) |>
+  bind_rows(harvistaSummary) |>
+  kableExtra::kable(col.names = c("Treatment", "Rate", "No Of Blocks", "Hectares sprayed"),
+        align=c(rep("l",2),rep("r",2)), 
+        booktabs=TRUE, 
+        escape = T)  %>%
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position")
+
+```
+
+```{r} 
+#| label: tbl-harvistaTable2
+#| tbl-cap: "Blocks and hecatres by number of Harvista applications 2023 season"
+
+harvista |>
+  group_by(count) |>
+  summarise(NoOfBlocks = n(),
+            hectares = round(sum(orchardHectares),2)) |>
+  kableExtra::kable(col.names = c("No of applications", "blocks", "hectares sprayed"),
+        align=c("l",rep("r",2)), 
+        booktabs=TRUE, 
+        escape = T)  |>
+  kableExtra::kable_styling(full_width=F,
+                latex_options = "HOLD_position")
+  
+  
+```
+
+Harvista^TM^ is a relatively new product and its effects on PremA96 are not understood in great detail.  In 2022, RGL engaged with Plant and Food Research (PFR) to assist with a trial to measure the efficacy of multiple Harvista^TM^ applications.  The trial involved measuring the internal ethylene levels at set times after the Harvista^TM^ applications.  Three treatments were applied initially when the SPIs were 1.3, 1.8 and 3 for Omahu AB, Omahu F and TRS respectively.  Figure \@ref(fig:harvestTrial1) shows the rate of increase of internal ethylene for all four treatments.  The Harvista^TM^ treatment show a very clear inhibition of ethylene production relative to the control.  Successive applications of Harvista^TM^ also show a positive effect however the etheylene levels are not reduced, the rate of increase is merely slowed.  By 21^st^ April, the internal ethylene of all treatments are close to the control.   
